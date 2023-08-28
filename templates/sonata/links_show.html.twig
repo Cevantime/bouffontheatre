@@ -1,0 +1,12 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {% for linkItem in attribute(object,field_description.name) %}
+                <li>
+                    <a href="{{ linkItem.link.url }}" title="{{ linkItem.link.title }}">{{ linkItem.link.title }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </td>
+</tr>

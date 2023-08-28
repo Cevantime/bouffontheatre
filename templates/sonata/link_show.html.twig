@@ -1,0 +1,9 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {% set link = attribute(object,field_description.name) %}
+            <a href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+        {% endif %}
+    </td>
+</tr>

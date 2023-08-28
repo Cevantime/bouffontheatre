@@ -4,6 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    locale: fr
+    google_calendar_redirect_uri: '%env(GOOGLE_REDIRECT_URI)%'
+    google_calendar_client_id: '%env(GOOGLE_CLIENT_ID)%'
+    google_calendar_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+    google_email: '%env(GOOGLE_EMAIL)%'
+
 
 services:
     # default configuration for services in *this* file
@@ -20,5 +26,151 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Crop\CropResizer:
+        tags: [ 'sonata.media.resizer' ]
+        arguments:
+            $adapter: '@sonata.media.adapter.image.default'
+            $metadata: '@sonata.media.metadata.proxy'
+
+    App\Admin\ArtistAdmin:
+        arguments:
+            $pool: '@sonata.media.pool'
+
+    admin.artist:
+        class: App\Admin\ArtistAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Artist, manager_type: orm, label: 'Les artistes' }
+
+    admin.artistItem:
+        class: App\Admin\ArtistItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\ArtistItem, manager_type: orm, label: 'Objet artiste' }
+
+    admin.job:
+        class: App\Admin\JobAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Job, manager_type: orm, label: 'Les métiers' }
+
+    admin.jobItem:
+        class: App\Admin\JobItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\JobItem, manager_type: orm, label: 'Les objets métiers' }
+
+    admin.link:
+        class: App\Admin\LinkAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Link, manager_type: orm, label: 'Lien' }
+
+    admin.linkItem:
+        class: App\Admin\LinkItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\LinkItem, manager_type: orm, label: 'Objet lien' }
+
+    admin.paper:
+        class: App\Admin\PaperAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Paper, manager_type: orm, label: 'Revue de presse' }
+
+    admin.paperItem:
+        class: App\Admin\PaperItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\PaperItem, manager_type: orm, label: 'Objet revue de presse' }
+
+    admin.period:
+        class: App\Admin\PeriodAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Period, manager_type: orm, label: 'Périodes' }
+
+    admin.periodItem:
+        class: App\Admin\PeriodItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\PeriodItem, manager_type: orm, label: 'Objet période' }
+
+    admin.offer:
+        class: App\Admin\OfferAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Offer, manager_type: orm, label: 'Annonces' }
+
+    admin.candidature:
+        class: App\Admin\CandidatureAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Candidature, manager_type: orm, label: 'Candidatures' }
+
+    admin.show:
+        class: App\Admin\ShowAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Show, manager_type: orm, label: 'Les spectacles' }
+
+
+    admin.service:
+        class: App\Admin\ServiceAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Service, manager_type: orm, label: 'Les prestations' }
+
+    admin.proContact:
+        class: App\Admin\ProContactAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\ProContact, manager_type: orm, label: 'Les contacts pro' }
+
+    admin.page:
+        class: App\Admin\PageAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Page, manager_type: orm, label: 'Les pages' }
+
+    admin.contentItem:
+        class: App\Admin\ContentItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\ContentItem, manager_type: orm, label: 'Les objets contenu' }
+
+    admin.content:
+        class: App\Admin\ContentAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Content, manager_type: orm, label: 'Les contenus' }
+
+
+    admin.role:
+        class: App\Admin\RoleAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Role, manager_type: orm, label: 'Les rôles' }
+
+    admin.roleItem:
+        class: App\Admin\RoleItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\RoleItem, manager_type: orm, label: 'Les objets rôles' }
+
+    admin.mediaItem:
+        class: App\Admin\MediaItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\MediaItem, manager_type: orm, label: 'Les documents' }
+
+    admin.projectItem:
+        class: App\Admin\ProjectItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\ProjectItem, manager_type: orm, label: 'Les objets projet' }
+
+    admin.project:
+        class: App\Admin\ProjectAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Project, manager_type: orm, label: 'Les projets' }
+
+    admin.user:
+        class: App\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\User, manager_type: orm, label: 'Les utilisateurs' }
+
+    gedmo.listener.sluggable:
+        class: Gedmo\Sluggable\SluggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+
+    Sonata\MediaBundle\Model\MediaManagerInterface: '@sonata.media.manager.media'

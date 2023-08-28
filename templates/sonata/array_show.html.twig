@@ -1,0 +1,8 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {{ attribute(object,field_description.name) | join(', ', ' et ') }}
+        {% endif %}
+    </td>
+</tr>

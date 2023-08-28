@@ -1,0 +1,20 @@
+{% extends "front/base.html.twig" %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="section-title">Contactez-nous dès à présent</h1>
+                <hr>
+                <p>
+                    Vous souhaitez nous envoyer un message directement, sans avoir besoin de vous inscrire ? Remplissez
+                    dès à présent notre formulaire de contact. Votre adresse email ne sera pas enregistrée dans notre base
+                    de donnée et nous y répondrons directement.
+                </p>
+
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

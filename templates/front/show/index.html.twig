@@ -1,0 +1,49 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Nos spectacles
+{% endblock %}
+{% block body %}
+    <div class="banner">
+        <img class="banner-image" src="{{ sonata_path(get_content('shows_banner'), 'banner') }}" alt="">
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">Tous nos spectacles</h3>
+                <p>
+                    Retrouvez tous nos spectacles présents, passés... et futurs !
+                </p>
+            </div>
+        </div>
+    </div>
+    <section class="container">
+        <h2 class="section-title">Notre exigence</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+            {{ get_content('shows_description') | raw }}
+            </div>
+        </div>
+    </section>
+    <section class="container-fluid dark">
+        <h1 class="text-center">Nos spectacles</h1>
+        <hr>
+        <div class="container">
+            <div class="row gallery-mosaic">
+                {% for showItem in get_content('shows_gallery') %}
+                    {% set show = showItem.project %}
+                    {% if show is instanceof('App\\Entity\\Show') %}
+                        <a class="col-md-6" href="{{ path('app_project_view', {slug: show.slug}) }}">
+                            <div class="mosaic-item">
+                                <h2 class="mosaic-title">{{ show.name }}</h2>
+                                <img class="mosaic-image" src="{{ sonata_path(show.banner, 'very_big') }}" alt="">
+                                <div class="mosaic-text">
+                                    {{ show.description | strip_and_truncate(250, '...') }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

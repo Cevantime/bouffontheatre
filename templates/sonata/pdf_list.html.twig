@@ -1,0 +1,5 @@
+<td>
+{% if attribute(object,field_description.name) %}
+<a href="{{ path('sonata_media_download', { id : attribute(object,field_description.name).id})  }}">{{ attribute(object,field_description.name) }}</a>
+{% endif %}
+</td>

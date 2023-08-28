@@ -1,0 +1,10 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        <ul>
+        {% for contentItem in attribute(object,field_description.name) %}
+            <li><a href="{{ path('admin_app_content_edit', { id: contentItem.content.id, '_sonata_admin':'admin.page', }) }}">{{ contentItem.content }}</a> : {{ contentItem.content.slug }}</li>
+        {% endfor %}
+        </ul>
+    </td>
+</tr>

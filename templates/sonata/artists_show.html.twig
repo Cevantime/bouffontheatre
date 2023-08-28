@@ -1,0 +1,6 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {{ attribute(object,field_description.name) | map(o => o.artist.fullname) | join(', ', ' et ') }}
+    </td>
+</tr>

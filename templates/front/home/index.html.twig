@@ -1,0 +1,178 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+    <div id="carouselShows" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for project in get_content('home_slider') %}
+                <button type="button" data-bs-target="#carouselShows"
+                        data-bs-slide-to="{{ loop.index0 }}"{% if loop.index == 1 %} class="active" aria-current="true"{% endif %}
+                        aria-label="Slide {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for projectItem in get_content('home_slider') %}
+                {% set  project = projectItem.project %}
+                <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
+                    <img src="{% if project.banner %}{{ sonata_path(project.banner, 'banner') }}{% else %}{% endif %}"
+                         class="d-block w-100" alt="{{ project.name }}">
+                    <div class="carousel-item-content">
+                        {% if project.punchline is defined %}
+                            <h3>{{ project.punchline }}</h3>
+                        {% endif %}
+                        <h2 class="m-4">{{ project.name }}</h2>
+                        {% if project.currentSessions is defined %}
+                            {% for session in project.currentSessions %}
+                                <p>
+                                    {% include 'common/period_details.html.twig' with {period : session.period} %}
+                                </p>
+                            {% endfor %}
+                        {% endif %}
+                        <p class="m-4">
+                            {% if project.currentSessions is defined and project.currentSessions is not empty and project.shopLinks is defined and project.shopLinks is not empty %}
+                                {% set link = project.shopLinks.first.link %}
+                                <a class="btn btn-primary btn-light" href="{{ link.url }}"
+                                   title="Rejoindre la billeterie {{ link.title }}">Réserver</a>
+                            {% endif %}
+                            <a class="btn btn-outline-primary btn-outline-light"
+                               href="{{ path('app_project_view', {'slug' : project.slug}) }}">Voir les
+                                détails</a>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselShows"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselShows"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
+
+    <section>
+        <div class="container">
+
+            <h1 class="section-title">{{ get_content('home_title') }}</h1>
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    {{ get_content('home_company_description') | raw }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="featured-shows" class="container-fluid dark">
+        <h1 class="section-title">Nos spectacles</h1>
+        <hr>
+        <div role="group" aria-label="Gallerie des spectacles"
+             class="splide" {{ stimulus_controller('splide_slider') }}>
+            <div class="splide__track">
+                <div class="splide__list">
+                    {% for showItem in get_content('home_shows') | filter(si => si.project is instanceof('App\\Entity\\Show')) %}
+                        {% set show = showItem.project %}
+                        <div class="gallery-show-item splide__slide text-center pb-3">
+                            <img src="{{ sonata_path(show.banner, 'big') }}"
+                                 alt="Un extrait de {{ show.name }}">
+                            <h4>{{ show.name }}</h4>
+                            <div>
+                                {{ show.description | strip_and_truncate(150, '...') }}
+                            </div>
+                            <div>
+                                <a href="{{ path('app_project_view', { slug: show.slug }) }}"
+                                   class="btn btn-primary btn-light">En
+                                    savoir plus</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="featured-services" class="container-fluid">
+        <h1 class="section-title">Nos prestations</h1>
+        <hr>
+        <div role="group" aria-label="Gallerie des spectacles"
+             class="splide" {{ stimulus_controller('splide_slider') }}>
+            <div class="splide__track">
+                <div class="splide__list">
+                    {% for serviceItem in get_content('home_services')| filter(si => si.project is instanceof('App\\Entity\\Service')) %}
+                        {% set service = serviceItem.project %}
+                        <div class="gallery-show-item splide__slide text-center pb-3">
+                            <img src="{{ sonata_path(service.banner, 'big') }}"
+                                 alt="Un extrait de {{ service.name }}">
+                            <h4>{{ service.name }}</h4>
+                            <div>
+                                {{ service.description | strip_and_truncate(150, '...') }}
+                            </div>
+                            <div>
+                                <a href="{{ path('app_project_view', { slug: service.slug }) }}"
+                                   class="btn btn-primary">En
+                                    savoir plus</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="featured-artists" class="container-fluid dark">
+        <h1 class="section-title">Nos artistes</h1>
+        <hr>
+        <div role="group" aria-label="Gallerie des artistes" class="splide" {{ stimulus_controller('splide_slider', {
+            perPage: 8
+        }) }}>
+            <div class="splide__track">
+                <div class="splide__list">
+                    {% for artistItem in get_content('home_artists')| filter(ai => ai.artist.photo != null) %}
+                        {% set artist = artistItem.artist %}
+                        <div class="gallery-show-item splide__slide text-center pb-3">
+                            <img src="{{ sonata_path(artist.photo, 'square') }}"
+                                 alt="Une photo de {{ artist.fullname }}">
+                            <h4>{{ artist.fullname }}</h4>
+                            <div>
+                                {{ artist.biography | strip_and_truncate(150, '...') }}
+                            </div>
+                            {% if is_granted('ARTIST_VIEW_PROFILE', artist) %}
+                                <div>
+                                    <a href="{{ path('app_artist_view', { slug: artist.slug }) }}"
+                                       class="btn btn-primary btn-light">En
+                                        savoir plus</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container">
+        <h1 class="section-title">Nous contacter</h1>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <p>
+                    Vous souhaitez nous contacter directement ? utilisez le <a href="{{ path('app_contact') }}">formulaire
+                        de contact</a>.
+                </p>
+                <p>
+                    Vous êtes interéssé par nos projets et nos artistes ? <a href="{{ path('app_register') }}">Inscrivez-vous</a>
+                    gratuitement et profitez de nombreux avantages :
+                </p>
+                <ul>
+                    <li>Abonnement à notre newsletter</li>
+                    <li>Suivi des documents que vous avez consultés</li>
+                    <li>Suivi de vos artistes préférés</li>
+                </ul>
+                <p>Vous aimeriez travailler avec nous ? consultez <a href="{{ path('app_offer') }}">les annonces</a>
+                </p>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}

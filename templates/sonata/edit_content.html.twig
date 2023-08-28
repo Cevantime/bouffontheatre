@@ -1,0 +1,32 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+{% block form %}
+    {{ parent() }}
+    <script type="text/javascript">
+        (function(){
+            const typeSelect = $('select[name$="[type]"]:not(.parsed)');
+            const relatedForm = typeSelect.closest('form');
+            relatedForm.submit(function (e) {
+                for (let instanceName in CKEDITOR.instances) {
+                    CKEDITOR.instances[instanceName].updateElement();
+                }
+            })
+            $(function () {
+                function refreshFields() {
+                    let select = $(this);
+                    let typeSelected = select.val();
+                    let fields = ['image', 'text', 'title', 'projectGallery', 'artistGallery'];
+                    for (const field of fields) {
+                        const input = relatedForm.find('.form-group[id$="' + field + '"]');
+                        if (field === typeSelected) {
+                            input.show();
+                        } else {
+                            input.hide();
+                        }
+                    }
+                }
+
+                typeSelect.change(refreshFields).addClass('parsed').trigger('change');
+            });
+        })();
+    </script>
+{% endblock %}

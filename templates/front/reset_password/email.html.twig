@@ -1,0 +1,9 @@
+<h1>Bonjour, {{ user.firstname }} {{ user.lastname }}</h1>
+
+<p>Pour réninitialiser votre mot de passe sur les <a href="{{ absolute_url(path('app_home')) }}">kapokiers.fr</a>, veuillez suivre ce lien : </p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Ce lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>À très bientôt sur <a href="{{ absolute_url(path('app_home')) }}">kapokiers.fr</a></p>

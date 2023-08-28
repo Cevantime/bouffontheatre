@@ -1,0 +1,58 @@
+{% extends "front/base.html.twig" %}
+{% block title %}
+    Les artistes
+{% endblock %}
+
+{% block body %}
+    <div class="banner">
+        <img class="banner-image" src="{{ sonata_path(get_content('artists_banner'), 'banner') }}" alt="">
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">Nos artistes</h3>
+                <p>
+                    Découvrez les personnalités qui travaillent avec nous
+                </p>
+            </div>
+        </div>
+    </div>
+    <section class="container-fluid">
+        <h2 class="section-title">Confiance comme maître mot</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ get_content('artists_description') | raw }}
+            </div>
+        </div>
+    </section>
+    <section class="container-fluid dark">
+        <h1 class="section-title">Ces artistes travaillent avec nous</h1>
+        <hr>
+        <div role="group" aria-label="Gallerie des Acteurs" class="splide" {{ stimulus_controller('splide_slider', {
+            perPage: 12
+        }) }}>
+            <div class="splide__track">
+                <div class="splide__list">
+                    {% for artistItem in get_content('artists_gallery') %}
+                    {% set artist = artistItem.artist %}
+                    {% if artist.photo is defined and artist.photo %}
+                    {% if artist.hasFile %}
+                        <a href="{{ path('app_artist_view', {slug: artist.slug}) }}"
+                       class="gallery-show-item splide__slide text-center pb-3">
+                    {% else %}
+                        <div class="gallery-show-item splide__slide text-center pb-3">
+                    {% endif %}
+                            <img src="{{ sonata_path(artist.photo, 'square') }}"
+                                 alt="Une photo de {{ artist.fullname }}">
+                            <h4>{{ artist.fullname }}</h4>
+                    {% if artist.hasFile %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,18 @@
+Bonjour {{ user.firstname }} {{ user.lastname }}, <br>
+<br>
+Vous avez été ajouté à la plateforme leskapokiers.fr. Un mot de passe a été généré pour vous. N'oubliez pas de le changer:
+<br>
+<br>
+<em>{{ plain_password }}</em>
+<br>
+<br>
+Vous pouvez dès à présent accéder à notre interface d'administration via ce lien : <a href="{{ absolute_url(path('sonata_admin_dashboard')) }}">interface d'administration</a>.
+<br>
+<br>
+Vous pouvez réninitialiser votre mot de passe  en cliquant sur ce lien : <a href="{{ absolute_url(path('app_forgot_password_request')) }}">réinitialiser mon mot de passe</a>
+<br>
+<br>
+À très bientôt,
+<br>
+<br>
+Toute l'équipe des Kapokiers

@@ -1,0 +1,6 @@
+type.concert: Concert
+type.show: Spectacle
+type.rehearsal: Répétition
+type.course: Cours
+type.appointment: Rendez-vous
+type.default: Non précisé

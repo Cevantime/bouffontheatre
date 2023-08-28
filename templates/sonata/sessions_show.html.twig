@@ -1,0 +1,12 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {% for periodItem in attribute(object,field_description.name) %}
+                <li>
+                    {% include 'common/period_details.html.twig' with {period: periodItem.period} %}
+                </li>
+            {% endfor %}
+        {% endif %}
+    </td>
+</tr>

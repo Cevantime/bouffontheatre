@@ -1,0 +1,7 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% set rolesDict = constant('App\\Entity\\User::ROLES') | flip %}
+        {{ attribute(object,field_description.name) | filter(r => r != 'ROLE_USER') | map(r => rolesDict[r]) | join(', ', ' et ') }}
+    </td>
+</tr>

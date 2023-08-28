@@ -1,0 +1,14 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {% for paperItem in attribute(object,field_description.name) %}
+                <li>
+                    {% set paper = paperItem.paper %}
+                    <blockquote>{{ paper.extract }}</blockquote>
+                    <a href="{{ paper.link.url }}" title="{{ paper.link.title }}">{{ paper.link.title }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </td>
+</tr>

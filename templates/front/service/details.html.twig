@@ -1,0 +1,86 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    {{ service.name }}
+{% endblock %}
+
+{% block body %}
+    <div class="banner">
+        {% if service.banner is defined and service.banner %}
+            <img class="banner-image" src="{{ sonata_path(service.banner, 'banner') }}" alt="">
+        {% else %}
+            <img src="{{ sonata_path(get_content('service_details_default_banner'), 'banner') }}" alt="">
+        {% endif %}
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">{{ service.name }}</h3>
+            </div>
+        </div>
+    </div>
+    <section id="service-profile" class="container" {{ stimulus_controller('thumbnail_slider') }}>
+        <h1 class="section-title">Les photos</h1>
+        <hr>
+
+        {% if service.gallery is defined and service.gallery and service.gallery.galleryItems is not empty %}
+            <div class="splide thumbnail-main-carousel">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        {% for mediaItem in service.gallery.galleryItems %}
+                            <li class="splide__slide">
+                                <img src="{{ sonata_path(mediaItem.media, 'very_big') }}" alt="">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div
+                    id="artist-gallery-carousel"
+                    class="splide thumbnail-nav-carousel"
+                    aria-label="La galerie de photo de {{ service.name }}"
+            >
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        {% for mediaItem in service.gallery.galleryItems %}
+                            <li class="splide__slide">
+                                <img src="{{ sonata_path(mediaItem.media, 'square') }}" alt="">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <h2 class="section-title mt-5">Notre service</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <article class="mt-4 col-md-6">
+                {{ service.description | raw }}
+            </article>
+        </div>
+    </section>
+    <section class="container">
+        {% if service.offers is not empty %}
+            <div class="text-center">
+                <h3 class="section-title">Annonces</h3>
+                <hr>
+                <p>
+                    <strong>Nous pourrions avoir besoin de vous !</strong>
+                </p>
+                <p>Intéressé pour rejoindre l'équipe ? <em>{{ service.name }}</em> ? Consultez l'une des annonces
+                    suivantes : </p>
+                {% for offer in service.offers %}
+                    <a href="{{ path('app_offer_details', {id:offer.id}) }}">
+                        <article class="my-3 border pt-4 pb-3 px-4 offer-short">
+                            <h4>{{ offer.title }}</h4>
+                            <div>
+                                {{ offer.description | raw }}
+                            </div>
+                        </article>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Nos prestations
+{% endblock %}
+{% block body %}
+    <div class="banner">
+        <img class="banner-image" src="{{ sonata_path(get_content('services_banner'), 'banner') }}" alt="">
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">Toutes nos prestations</h3>
+                <p>
+                    Nous intervenons aussi dans les établissements scolaires
+                </p>
+            </div>
+        </div>
+    </div>
+    <section class="container">
+        <h2 class="section-title">Ce que nous faisons</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ get_content('services_description') | raw }}
+            </div>
+        </div>
+    </section>
+    <section class="container-fluid dark">
+        <h1 class="text-center">Nos prestations</h1>
+        <hr>
+        <div class="container">
+            <div class="row gallery-mosaic">
+                {% for serviceItem in get_content('services_gallery') %}
+                    {% set service = serviceItem.project %}
+                    {% if service is instanceof('App\\Entity\\Service') %}
+                        <a class="col-md-6" href="{{ path('app_project_view', {slug: service.slug}) }}">
+                            <div class="mosaic-item">
+                                <h2 class="mosaic-title">{{ service.name }}</h2>
+                                <img class="mosaic-image" src="{{ sonata_path(service.banner, 'very_big') }}" alt="">
+                                <div class="mosaic-text">
+                                    {{ service.description | strip_and_truncate(250, '...') }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,21 @@
+<h1>Hi! Please confirm your email!</h1>
+
+<p>
+    Please confirm your email address by clicking the following link: <br><br>
+    <a href="{{ signedUrl }}">Confirm my Email</a>.
+    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+</p>
+
+<p>
+    Cheers!
+</p>
+
+<h1>Bonjour, {{ user.firstname }} {{ user.lastname }}</h1>
+
+<p>Vous vous êtes inscrit sur le site des Kapokiers. Pour confirmer votre email, veuillez cliquer sur le lien suivant : </p>
+
+<a href="{{ signedUrl }}">Confirmer mon email</a>.
+
+<p>Ce lien expire dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.</p>
+
+<p>À très bientôt sur <a href="{{ absolute_url(path('app_home')) }}">kapokiers.fr</a></p>

@@ -1,0 +1,99 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    {{ artist.fullname }}
+{% endblock %}
+
+{% block body %}
+<div class="banner">
+    <img class="banner-image" src="{{ sonata_path(get_content('profile_banner'), 'banner') }}" alt="">
+    <div class="banner-content container-fluid">
+        <div class="row flex-column align-items-center justify-content-center">
+            <h3 class="banner-title">{{ artist.fullname }}</h3>
+            <h2 class="mb-4">{{ artist.jobNames | join(', ', ' et ') }}</h2>
+        </div>
+    </div>
+</div>
+<section id="artist-profile" class="container">
+    <h1>{{ artist.fullname }}</h1>
+    <h2 class="mb-4">{{ artist.jobNames | join(', ', ' et ') }}</h2>
+    <div class="row">
+        <div class="col-md-8" {{ stimulus_controller('thumbnail_slider') }}>
+            {% if artist.photo is defined or artist.gallery is defined %}
+                <div class="splide thumbnail-main-carousel">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            {% if artist.photo is defined and artist.photo %}
+                                <li class="splide__slide">
+                                    <img src="{{ sonata_path(artist.photo, 'very_big') }}" alt="">
+                                </li>
+                            {% endif %}
+                            {% if artist.gallery is defined and artist.gallery %}
+                                {% for mediaItem in artist.gallery.galleryItems %}
+                                    <li class="splide__slide">
+                                        <img src="{{ sonata_path(mediaItem.media, 'very_big') }}" alt="">
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <div
+                        id="artist-gallery-carousel"
+                        class="splide thumbnail-nav-carousel"
+                        aria-label="La galerie de photo de {{ artist.fullname }}"
+                >
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            {% if artist.photo is defined and artist.photo %}
+                                <li class="splide__slide">
+                                    <img src="{{ sonata_path(artist.photo, 'square') }}" alt="">
+                                </li>
+                            {% endif %}
+                            {% if artist.gallery is defined and artist.gallery %}
+                                {% for mediaItem in artist.gallery.galleryItems %}
+                                    <li class="splide__slide">
+                                        <img src="{{ sonata_path(mediaItem.media, 'square') }}" alt="">
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <hr>
+            <p>Revenir à notre <a href="{{ path('app_artist') }}">Page artistes</a></p>
+        </div>
+        <div class="col-md-4">
+            <h3>Sa bio</h3>
+            <section class="mt-4">
+                {{ artist.biography | raw }}
+            </section>
+            {% set social_links =  artist.links | filter((l) => l.link.siteName != null) %}
+            {% if social_links is not empty %}
+                <h3>Liens sociaux</h3>
+                <p>
+                    Retrouvez {{ artist.fullname }} sur :
+                </p>
+                {% for linkItem in social_links %}
+                    {% set link = linkItem.link %}
+                    {{ link_icon(link) }}
+                {% endfor %}
+            {% endif %}
+            {% set standard_links = artist.links | filter((l) => l.link.siteName == null) %}
+            {% if standard_links is not empty %}
+                <h3 class="mt-4">Autres liens : </h3>
+                <ul>
+                    {% for linkItem in standard_links %}
+                        {% set link = linkItem.link %}
+                        <li>{{ link(link) }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}

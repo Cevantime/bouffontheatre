@@ -1,0 +1,181 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    {{ show.name }}
+{% endblock %}
+
+{% block body %}
+    <div class="banner">
+        {% if show.banner is defined and show.banner %}
+            <img class="banner-image" src="{{ sonata_path(show.banner, 'banner') }}" alt="">
+        {% else %}
+            <img src="{{ sonata_path(get_content('show_details_default_banner'), 'banner') }}" alt="">
+        {% endif %}
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">{{ show.name }}</h3>
+                {% if show.punchline %}
+                    <h2 class="mb-4">{{ show.punchline }}</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <section id="show-profile" class="container">
+        <h1>{{ show.name }}</h1>
+        {% if show.punchline %}
+            <h2 class="mb-4">{{ show.punchline }}</h2>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-8" {{ stimulus_controller('thumbnail_slider') }}>
+
+                {% if show.gallery is defined and show.gallery and show.gallery.galleryItems is not empty %}
+                    <div class="splide thumbnail-main-carousel">
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                {% for mediaItem in show.gallery.galleryItems %}
+                                    <li class="splide__slide">
+                                        <img src="{{ sonata_path(mediaItem.media, 'very_big') }}" alt="">
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div
+                            id="artist-gallery-carousel"
+                            class="splide thumbnail-nav-carousel"
+                            aria-label="La galerie de photo de {{ show.name }}"
+                    >
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                {% for mediaItem in show.gallery.galleryItems %}
+                                    <li class="splide__slide">
+                                        <img src="{{ sonata_path(mediaItem.media, 'square') }}" alt="">
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <article class="mt-4">
+                    {{ show.description | raw }}
+                </article>
+                {% if show.papers is not empty %}
+                    <hr>
+                    <h3 class="mb-4">Revue de presse</h3>
+                    <section>
+                        <div>
+                            {% for paperItem in show.papers %}
+                                {% set paper = paperItem.paper %}
+                                <figure>
+                                    <blockquote cite="{{ paper.link.title }}">
+                                        {{ paper.extract | raw }}
+                                    </blockquote>
+                                    <figcaption><cite>{{ link(paper.link) }}</cite></figcaption>
+                                </figure>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+                <hr>
+                {% if show.currentSessions is not empty %}
+                    <div>
+                        <p>
+                            <strong>Ce spectacle se joue en ce moment !</strong>
+                        </p>
+                        <p>
+                            Retrouvez
+                            <em>{{ show.name }}</em> {{ show.currentSessions | map(s => s.period) | join(', ', ' et ') }}
+                        </p>
+                        {% if show.shopLinks is not empty %}
+                        <p>Réservez vos places dès à présent sur :</p>
+                            {% for linkItem in show.shopLinks %}
+                                {% set link = linkItem.link %}
+                                <a href="{{ link.url }}" class="btn btn-outline-primary"
+                                   title="Accédez à la billeterie {{ link.title }}">{{ link.title }}</a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if show.offers is not empty %}
+                    <div>
+                        <hr>
+                        <p>
+                            <strong>Ce spectacle recrute !</strong>
+                        </p>
+                        <p>Intéressé pour rejoindre l'équipe du <em>{{ show.name }}</em> ? Consultez l'une des annonces
+                            suivantes : </p>
+                        {% for offer in show.offers %}
+                            <a href="{{ path('app_offer_details', {id:offer.id}) }}">
+                                <article class="my-3 border pt-4 pb-3 px-4 offer-short">
+                                    <h4>{{ offer.title }}</h4>
+                                    <div>
+                                        {{ offer.description | raw }}
+                                    </div>
+                                </article>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <p class="mt-4">Revenir à notre <a href="{{ path('app_show') }}">Page de spectacles</a></p>
+            </div>
+            <section class="col-md-4">
+                {% if show.poster %}
+                    <img class="show-poster mb-4" src="{{ sonata_path(show.poster, 'big') }}"
+                         alt="Affiche du spectacle {{ show.name }}">
+                {% endif %}
+                <h3>L'équipe</h3>
+                <dl>
+                    {% if show.authors %}
+                        <dt>Auteur{% if show.authors.count > 1 %}s{% endif %}</dt>
+                        <dd>{{ show.authors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
+                    {% endif %}
+                    {% if show.directors %}
+                        <dt>Metteur{% if show.directors.count > 1 %}s{% endif %} en scène</dt>
+                        <dd>{{ show.directors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
+                    {% endif %}
+                    {% if show.actors %}
+                        <dt>Interprète{% if show.authors.count > 1 %}s{% endif %}</dt>
+                        <dd>{{ show.actors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
+                    {% endif %}
+                    {% for roleItem in show.roles | filter((r) => r.displayed) %}
+                        {% set role = roleItem.role %}
+                        <dt>{{ role.artist.gender == constant('App\\Entity\\Artist::GENDER_FEMALE') ? role.job.feminin : role.job.name }}</dt>
+                        <dd>{{ link(role.artist) }}</dd>
+                    {% endfor %}
+                </dl>
+                {% if show.featuredLinks is not empty %}
+                    <h3>Liens</h3>
+                    Retrouvez-nous sur :
+                    {% set standard_links = show.featuredLinks | filter((l) => l.link.siteName == null) %}
+                    {% if standard_links %}
+                        <ul>
+                            {% for linkItem in standard_links %}
+                                <li>{{ link(linkItem) }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% set social_links = show.featuredLinks | filter((l) => l.link.siteName != null) %}
+                    {% if social_links %}
+                        <p>
+                            {{ social_links | map((s) => link_icon(s.link)) | join(' ') | raw }}
+                        </p>
+                    {% endif %}
+                {% endif %}
+                {% if show.featuredDocuments is not empty %}
+                    <h3>Document{% if show.featuredDocuments.count > 1 %}s{% endif %}</h3>
+                    <ul>
+                        {% for document in show.featuredDocuments %}
+                            <li>
+                                <a href="{{ path('app_media_download', { id : document.media.id }) }}">{{ document.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+
+        </div>
+
+    </section>
+
+{% endblock %}

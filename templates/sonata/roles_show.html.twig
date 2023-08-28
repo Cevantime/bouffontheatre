@@ -1,0 +1,12 @@
+<tr>
+        <th>{{ field_description.label }}</th>
+        <td>
+                <dl>
+                    {% for roleItem in attribute(object,field_description.name) %}
+                        {% set role = roleItem.role %}
+                        <dt>{{ role.job.name }}</dt>
+                        <dd>{{ role.artist.fullname }}</dd>
+                    {% endfor %}
+                </dl>
+        </td>
+</tr>

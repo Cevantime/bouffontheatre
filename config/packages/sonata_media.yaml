@@ -1,0 +1,66 @@
+sonata_media:
+    default_context: default
+    db_driver: doctrine_orm
+    class:
+        media: App\Entity\Media
+        gallery: App\Entity\MediaGallery
+        gallery_item: App\Entity\MediaGalleryItem
+
+    contexts:
+        default:
+            download:
+                strategy: sonata.media.security.public_strategy
+                mode: http
+            providers:
+                - sonata.media.provider.dailymotion
+                - sonata.media.provider.youtube
+                - sonata.media.provider.image
+                - sonata.media.provider.file
+                - sonata.media.provider.vimeo
+
+            formats:
+                small: { width: 100, quality: 70 }
+                medium: { width: 200, quality: 80 }
+                big: { width: 500, quality: 70, constraint: false }
+                very_big:
+                    {
+                        width: 1000,
+                        height: 560,
+                        quality: 80,
+                        resizer: App\Crop\CropResizer,
+                        constraint: false,
+                    }
+                banner:
+                    {
+                        width: 1920,
+                        height: 550,
+                        quality: 80,
+                        resizer: App\Crop\CropResizer,
+                        constraint: false,
+                    }
+                square:
+                    {
+                        width: 800,
+                        height: 800,
+                        quality: 80,
+                        resizer: App\Crop\CropResizer,
+                        constraint: false,
+                    }
+                portrait:
+                    {
+                        width: 800,
+                        height: 1070,
+                        quality: 80,
+                        resizer: App\Crop\CropResizer,
+                        constraint: false,
+                    }
+
+    cdn:
+        server:
+            path: /upload/media
+
+    filesystem:
+        local:
+            # Directory for upload should be writable
+            directory: "%kernel.project_dir%/public/upload/media"
+            create: false

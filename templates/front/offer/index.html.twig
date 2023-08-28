@@ -1,0 +1,34 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Nos annonces
+{% endblock %}
+
+
+{% block body %}
+    <div class="banner">
+        <img class="banner-image" src="{{ sonata_path(get_content('offers_banner'), 'banner') }}" alt="">
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">Nos annonces</h3>
+                {{ get_content('offers_description') | raw }}
+            </div>
+        </div>
+    </div>
+    <section class="container">
+        <h1>Nos annonces</h1>
+        <p>
+            Pour répondre, vous n'avez qu'à cliquer sur l'annonce qui vous intéresse
+        </p>
+        {% for offer in offers %}
+            <a href="{{ path('app_offer_details', {id:offer.id}) }}">
+                <article class="border my-4 px-3 pt-4 pb-3 offer-short">
+                    <h2>{{ offer.title }}<small> pour <em>{{ offer.project.name }}</em></small></h2>
+                    <div>
+                        {{ offer.description | raw }}
+                    </div>
+                </article>
+            </a>
+        {% endfor %}
+    </section>
+{% endblock %}

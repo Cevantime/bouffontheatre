@@ -1,0 +1,13 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            <ul>
+            {% for documentItem in attribute(object,field_description.name) %}
+                {%  set document = documentItem.media %}
+                <li><a href="{{ path('sonata_media_download', { id : document.id}) }}">{{ documentItem.name }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </td>
+</tr>

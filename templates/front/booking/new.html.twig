@@ -1,0 +1,6 @@
+<h2>Créer un nouvel évènement</h2>
+
+{{ form_start(form, {action: path('app_booking_new'), attr:{id: 'form'}}) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Créer</button>
+{{ form_end(form) }}

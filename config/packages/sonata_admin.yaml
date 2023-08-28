@@ -1,0 +1,49 @@
+sonata_admin:
+    title: "Administration Bouffon"
+    title_logo: sonata/img/logo.png
+    security:
+        handler: sonata.admin.security.handler.role
+    dashboard:
+        blocks:
+            - { type: sonata.admin.block.admin_list, position: left }
+        groups:
+            artists:
+                label: "Les artistes"
+                items:
+                    - admin.artist
+            projects:
+                label: "Les projets"
+                items:
+                    - admin.show
+                    - admin.service
+            proContact:
+                label: "Les contacts pro"
+                items:
+                    - admin.proContact
+            contents:
+                label: "Les contenus"
+                items:
+                    - admin.page
+            offer:
+                label: "Les annonces"
+                items:
+                    - admin.offer
+                    - admin.candidature
+            media:
+                label: "Gestion des média"
+                items:
+                    - sonata.media.admin.gallery
+                    - sonata.media.admin.media
+
+            job:
+                label: "Gestion des métiers"
+                items:
+                    - admin.job
+
+            user:
+                label: "Gestion des utilisateurs"
+                items:
+                    - admin.user
+    assets:
+        extra_stylesheets:
+            - sonata/styles/main.css

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap" rel="stylesheet">
+    <link href="{{ asset('icofont/icofont.min.css') }}" rel="stylesheet">
+    <title>Le Bouffon Théâtre | {% block title %}{% endblock %}</title>
+    {{ encore_entry_link_tags('app') }}
+    {% block stylesheets %}{% endblock %}
+    {{ encore_entry_script_tags('app') }}
+    {% block javascripts_head %}{% endblock %}
+</head>
+<body>
+<header>
+    <div class="container">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main-nav">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('app_home') }}"><img src="{{ sonata_path(get_content('logo'), 'small') }}"
+                                                      alt="Logo des Kapokiers représentant un kapokier avec des masques au lieu de feuilles"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link{{ active_class('app_home') }}" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle{{ active_class(['app_show', 'app_service']) }}" href="#" id="activityDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Notre activité</a>
+                            <ul class="dropdown-menu" aria-labelledby="activityDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_show') }}">Nos spectacles</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_service') }}">Nos prestations</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle{{ active_class(['app_contact', 'app_offer']) }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Contact
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_contact') }}">Formulaire de contact</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_offer') }}">Rejoignez-nous</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle{{ active_class(['app_login', 'app_register']) }}" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Connexion
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                                {% if is_granted('ROLE_ACCESS_BACKOFFICE') %}
+                                    <li><a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_calendar') }}">Calendrier</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_USER') %}
+                                    {% if is_granted('ROLE_ARTIST') and app.user.associatedArtist and app.user.associatedArtist.file %}
+                                        <li><a class="dropdown-item" href="{{ path('app_artist_view', { slug: app.user.associatedArtist.slug }) }}">Ma fiche perso</a></li>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_PRO') %}
+                                        <li><a class="dropdown-item" href="{{ path('app_profile') }}">Mon profil</a></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<main>
+    {% include 'front/incs/flash_messages.html.twig' %}
+    {% block body %}
+        TODO: Add content to body
+    {% endblock %}
+</main>
+<footer class="dark">
+    <section class="container">
+        <div class="row">
+            <section class="col-md-4" id="footer-infos">
+                <h4>Informations</h4>
+                <ul>
+                    <li><i class="icofont-map me-2"></i>{{ get_content('company_address') }}</li>
+                    <li><i class="icofont-ui-email me-2"></i><a href="mailto:{{ get_content('company_email') }}">{{ get_content('company_email') }}</a></li>
+                    <li><i class="icofont-ui-cell-phone me-2"></i><a href="tel:{{ get_content('company_phone') }}">{{ get_content('company_phone') }}</a></li>
+                </ul>
+            </section>
+            <section class="col-md-4" id="footer-projects">
+                <h4>Les projets</h4>
+                <ul>
+                    {% for projectItem in get_content('footer_projects') %}
+                        {% set project = projectItem.project %}
+                    <li><a href="{{ path('app_project_view', {slug: project.slug}) }}">{{ project.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <section class="col-md-4" id="footer-links">
+                <h4>Liens sociaux</h4>
+                <ul>
+                    <li>
+                        <a href="https://www.helloasso.com/associations/bouffon-theatre"><i class="icofont-thumbs-up me-2"></i>Helloasso</a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </section>
+</footer>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

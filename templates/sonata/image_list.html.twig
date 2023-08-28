@@ -1,0 +1,5 @@
+<td>
+    {% if attribute(object,field_description.name) %}
+        {{ sonata_thumbnail(attribute(object,field_description.name), 'small') }}
+    {% endif %}
+</td>

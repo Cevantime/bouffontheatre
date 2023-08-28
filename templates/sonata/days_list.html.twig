@@ -1,0 +1,4 @@
+<td>
+    {% set daysDict = constant('App\\Entity\\Period::DAYS') | keys %}
+    {{ object.days | map(d => daysDict[d]) | join(', ', ' et ') }}
+</td>

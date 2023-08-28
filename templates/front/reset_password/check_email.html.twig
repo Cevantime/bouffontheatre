@@ -1,0 +1,23 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Email envoyé{% endblock %}
+
+{% block body %}
+    <section class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 pb-4">
+                <p>
+                    Si l'adresse entrée existe dans notre base de données, un email contenant le lien de
+                    réinitialisation lui a été adressé.
+                </p>
+                <p>
+                    Ce lien expire
+                    dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                    .
+                </p>
+                <p>Si vous ne recevez pas cet email dans votre boîte mail, vérifiez vos spams ou <a
+                            href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
