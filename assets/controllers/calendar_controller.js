@@ -85,6 +85,9 @@ export default class extends Controller {
 
         this.generateForm();
 
+        setInterval(() => {
+            this.calendar.refetchEvents();
+        }, 30000);
     }
 
     createForm(dateStart, dateEnd) {

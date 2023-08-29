@@ -23,7 +23,6 @@ class CalendarSyncGoogleEventsCommand extends Command
     public function __construct(
         private GoogleAuthentication $googleAuthentication,
         private CalendarService $calendarService,
-        private EntityManagerInterface $manager,
         string $name = null
     )
     {
@@ -36,18 +35,7 @@ class CalendarSyncGoogleEventsCommand extends Command
         $this->googleAuthentication->refreshTokenIfNeeded();
         $io = new SymfonyStyle($input, $output);
 
-        $i = 1;
-        $nextPageToken = null;
-        do {
-            $json = $this->calendarService->getEvents(250, $nextPageToken);
-            foreach ($json->items as $item) {
-                $this->calendarService->persistGoogleEvent($item);
-            }
-            $this->manager->flush();
-            $io->info('Saving page '.$i);
-            $i++;
-            $nextPageToken = $json->nextPageToken ?? null;
-        } while($nextPageToken);
+       $this->calendarService->syncEvents();
 
         $io->success('Events successfully fetched from Google');
 

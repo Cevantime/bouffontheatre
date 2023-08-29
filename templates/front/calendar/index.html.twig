@@ -2,14 +2,14 @@
 {% extends 'front/base.html.twig' %}
 
 {% block body %}
-    <div class="container" {{ stimulus_controller('calendar') }}>
+    <div class="container" {{ stimulus_controller(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show') }}>
         <div class="row">
             <div class="col-lg-8" >
                 <h1>Le calendrier</h1>
-                <div {{ stimulus_target('calendar', 'calendar') }}
+                <div {{ stimulus_target(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show', 'calendar') }}
                 data-events-url="{{ path('fc_load_events') }}"></div>
             </div>
-            <div {{ stimulus_target('calendar', 'formWrap') }} class="col-lg-4">
+            <div {{ stimulus_target(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show', is_granted('ROLE_ADMIN') ? 'formWrap' : 'viewWrap') }} class="col-lg-4">
             
             </div>
         </div>

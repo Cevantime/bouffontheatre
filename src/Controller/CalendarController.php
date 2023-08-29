@@ -10,24 +10,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CalendarController extends AbstractController
 {
     #[Route('/calendar', name: 'app_calendar')]
-    public function index(GoogleAuthentication $googleAuthentication): Response
+    public function index(): Response
     {
-        $googleAuthentication->refreshTokenIfNeeded();
-        return $this->render('front/calendar/index.html.twig', [
-            'controller_name' => 'CalendarController',
-        ]);
+        return $this->render('front/calendar/index.html.twig');
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/calendar/connect-to-google', name: 'app_calendar_connect_to_google')]
     public function connectToGoogle(GoogleAuthentication $googleAuthentication): Response
     {
         return $googleAuthentication->goToAuthUrl();
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/calendar/google-callback', name: 'app_calendar_google_callback')]
     public function callbackOAuth(GoogleAuthentication $googleAuthentication, Request $request): Response
     {
@@ -42,11 +42,5 @@ class CalendarController extends AbstractController
         return $this->redirectToRoute('app_calendar');
     }
 
-    #[Route('/calendar/notifications', name: 'app_calendar_notifications')]
-    public function callbackPushNotification(Request $request, CalendarService $calendarService)
-    {
 
-        $eventGoogleId = $request->headers->get('X-Goog-Resource-ID');
-
-    }
 }

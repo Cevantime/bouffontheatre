@@ -70,7 +70,7 @@ class CalendarService
         return $this->getJson($this->makeRequest('GET', self::EVENT_END_POINT.'?' . http_build_query($query)));
     }
 
-    public function persistGoogleEvent($googleEvent)
+    public function persistBookingFromGoogleEvent($googleEvent)
     {
         $booking = $this->bookingRepository->findOneBy(['googleId' => $googleEvent->id]);
         if(!$booking) {
@@ -85,9 +85,9 @@ class CalendarService
         return $booking;
     }
 
-    public function syncGoogleEvent($googleEvent)
+    public function syncBookingFromGoogleEvent($googleEvent)
     {
-        $this->persistGoogleEvent($googleEvent);
+        $this->persistBookingFromGoogleEvent($googleEvent);
         $this->manager->flush();
     }
 
@@ -108,7 +108,7 @@ class CalendarService
 
     public function patchGoogleEventFromBooking(Booking $booking)
     {
-        $request = $this->makeJsonRequest($this->bookingToEvent($booking), 'PATCH', self::EVENT_END_POINT.'/'.$booking->getGoogleId());
+        $request = $this->makeJsonRequest($this->bookingToEvent($booking), 'PUT', self::EVENT_END_POINT.'/'.$booking->getGoogleId());
         return $this->guzzleClient->send($request);
     }
 
@@ -128,19 +128,51 @@ class CalendarService
         return $this->guzzleClient->send($request);
     }
 
+    public function syncEvents()
+    {
+        $nextSyncToken = $this->config->hasValue(ConfigService::EVENT_NEXT_SYNC_TOKEN)
+            ? $this->config->getValue(ConfigService::EVENT_NEXT_SYNC_TOKEN)
+            : null;
+        do {
+            $params = [];
+            if($nextSyncToken) {
+                $params['syncToken'] = $nextSyncToken;
+            }
+            if(isset($nextPageToken)) {
+                $params['pageToken'] = $nextPageToken;
+            }
+            $request = $this->makeRequest('GET', self::EVENT_END_POINT.'?'.http_build_query($params));
+            $result = $this->getJson($request);
+            $nextSyncToken = $result->nextSyncToken ?? null;
+            $nextPageToken = $result->nextPageToken ?? null;
+            $events = $result->items;
+            foreach ($events as $event) {
+                if($event->status === 'cancelled') {
+                    $booking = $this->bookingRepository->findOneBy(['googleId' => $event->id]);
+                    if($booking) {
+                        $this->manager->remove($booking);
+                        $this->manager->flush();
+                    }
+                } else {
+                    $this->persistBookingFromGoogleEvent($event);
+                }
+            }
+            $this->manager->flush();
+        } while($nextPageToken);
+        $this->config->saveConfig(ConfigService::EVENT_NEXT_SYNC_TOKEN, $nextSyncToken);
+    }
+
     private function bookingToEvent(Booking $booking)
     {
         return [
             'summary' => $booking->getTitle(),
             'end' => [
-                'date' => $booking->getEndAt()->format('Y-m-d'),
-                'datetime' => $booking->getEndAt()->format(\DateTime::RFC3339),
-                'timezone' => $booking->getEndAt()->getTimezone()->getName()
+                'dateTime' => $booking->getEndAt()->format(\DateTime::RFC3339),
+                'timeZone' => $booking->getEndAt()->getTimezone()->getName()
             ],
             'start' => [
-                'date' => $booking->getBeginAt()->format('Y-m-d'),
-                'datetime' => $booking->getBeginAt()->format(\DateTime::RFC3339),
-                'timezone' => $booking->getBeginAt()->getTimezone()->getName()
+                'dateTime' => $booking->getBeginAt()->format(\DateTime::RFC3339),
+                'timeZone' => $booking->getBeginAt()->getTimezone()->getName()
             ],
             'colorId' => $this->colorService->getBookingGoogleColorId($booking)
         ];

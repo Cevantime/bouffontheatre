@@ -36,6 +36,7 @@
                             <ul class="dropdown-menu" aria-labelledby="activityDropdown">
                                 <li><a class="dropdown-item" href="{{ path('app_show') }}">Nos spectacles</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_service') }}">Nos prestations</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_calendar') }}">Calendrier</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -54,7 +55,6 @@
                             <ul class="dropdown-menu" aria-labelledby="loginDropdown">
                                 {% if is_granted('ROLE_ACCESS_BACKOFFICE') %}
                                     <li><a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}">Administration</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_calendar') }}">Calendrier</a></li>
                                 {% endif %}
                                 {% if is_granted('ROLE_USER') %}
                                     {% if is_granted('ROLE_ARTIST') and app.user.associatedArtist and app.user.associatedArtist.file %}

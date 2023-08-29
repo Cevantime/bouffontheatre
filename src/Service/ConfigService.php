@@ -12,6 +12,8 @@ class ConfigService
     const ACCESS_TOKEN = "access_token";
     const REFRESH_TOKEN = "refresh_token";
     const EXPIRES_AT = "expires_at";
+    const EVENT_NEXT_SYNC_TOKEN = "event_next_sync_token";
+    const EVENT_LAST_SYNC_TIME = "event_last_sync_time";
 
     private $configs;
 
