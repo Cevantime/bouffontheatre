@@ -85,7 +85,8 @@
                         </p>
                         <p>
                             Retrouvez
-                            <em>{{ show.name }}</em> {{ show.currentSessions | map(s => s.period) | join(', ', ' et ') }}
+                            <em>{{ show.name }}</em>
+                            {{ show.currentSessions | map(s => s.period) | join(', ', ' et ') }}
                         </p>
                         {% if show.shopLinks is not empty %}
                         <p>Réservez vos places dès à présent sur :</p>
@@ -119,7 +120,7 @@
                 {% endif %}
                 <p class="mt-4">Revenir à notre <a href="{{ path('app_show') }}">Page de spectacles</a></p>
             </div>
-            <section class="col-md-4">
+            <section class="col-md-4 text-center">
                 {% if show.poster %}
                     <img class="show-poster mb-4" src="{{ sonata_path(show.poster, 'big') }}"
                          alt="Affiche du spectacle {{ show.name }}">
@@ -164,7 +165,7 @@
                 {% endif %}
                 {% if show.featuredDocuments is not empty %}
                     <h3>Document{% if show.featuredDocuments.count > 1 %}s{% endif %}</h3>
-                    <ul>
+                    <ul class="list-unstyled">
                         {% for document in show.featuredDocuments %}
                             <li>
                                 <a href="{{ path('app_media_download', { id : document.media.id }) }}">{{ document.name }}</a>

@@ -21,6 +21,7 @@
         "sonata-project/media-bundle": "^4.5",
         "sonata-project/translation-bundle": "^3.1",
         "stof/doctrine-extensions-bundle": "^1.7",
+        "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.3.*",
         "symfony/console": "6.3.*",
         "symfony/dotenv": "6.3.*",

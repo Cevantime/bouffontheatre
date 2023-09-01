@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Subscriber\Calendar;
+namespace App\Calendar\Subscriber;
 
 use App\Calendar\Entity\BookingEvent;
 use App\Calendar\Service\ColorService;
@@ -36,13 +36,7 @@ class EventSubscriber implements EventSubscriberInterface
 
         // Modify the query to fit to your entity and needs
         // Change booking.beginAt by your start date property
-        $bookings = $this->bookingRepository
-            ->createQueryBuilder('booking')
-            ->where('booking.beginAt BETWEEN :start and :end OR booking.endAt BETWEEN :start and :end')
-            ->setParameter('start', $start->format('Y-m-d H:i:s'))
-            ->setParameter('end', $end->format('Y-m-d H:i:s'))
-            ->getQuery()
-            ->getResult();
+        $bookings = $this->bookingRepository->getEventsBetween($start, $end);
 
         foreach ($bookings as $booking) {
             // this create the events with your data (here booking data) to fill calendar

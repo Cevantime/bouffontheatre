@@ -7,6 +7,11 @@ sonata_admin:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
         groups:
+            home:
+                label: "Accéder au site"
+                items:
+                    - { route: app_home, label: Accueil }
+                    - { route: app_show, label: Les spectacles}
             artists:
                 label: "Les artistes"
                 items:

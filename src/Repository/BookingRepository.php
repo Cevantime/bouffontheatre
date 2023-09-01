@@ -39,6 +39,17 @@ class BookingRepository extends ServiceEntityRepository
         }
     }
 
+    public function getEventsBetween($dateStart, $dateEnd)
+    {
+        return $this
+            ->createQueryBuilder('booking')
+            ->where('booking.beginAt BETWEEN :start and :end OR booking.endAt BETWEEN :start and :end')
+            ->setParameter('start', $dateStart->format('Y-m-d H:i:s'))
+            ->setParameter('end', $dateEnd->format('Y-m-d H:i:s'))
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Booking[] Returns an array of Booking objects
 //     */

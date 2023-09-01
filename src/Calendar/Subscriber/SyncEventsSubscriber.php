@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Subscriber\Calendar;
+namespace App\Calendar\Subscriber;
 
 use App\Calendar\Service\CalendarService;
 use App\Service\ConfigService;
