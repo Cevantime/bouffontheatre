@@ -57,6 +57,7 @@ class ShowAdmin extends AbstractAdmin
                 'inline' => 'table',
                 'sortable' => 'position',
             ])
+
             ->add('actors', CollectionType::class, [
                 'by_reference' => false,
                 'label' => 'Acteur(s)'

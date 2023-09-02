@@ -20,6 +20,7 @@ class ArtistItemAdmin extends AbstractAdmin
     {
         $form
             ->add('artist', ModelListType::class)
+            ->add('position',HiddenType::class)
         ;
     }
 
