@@ -27,6 +27,7 @@
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^1.17|^2",
         "symfony/framework-bundle": "6.3.*",
+        "symfony/google-mailer": "6.3.*",
         "symfony/mailer": "6.3.*",
         "symfony/maker-bundle": "^1.43",
         "symfony/proxy-manager-bridge": "6.3.*",
