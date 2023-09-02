@@ -16,8 +16,21 @@
             {% for projectItem in get_content('home_slider') %}
                 {% set  project = projectItem.project %}
                 <div class="carousel-item{% if loop.index == 1 %} active{% endif %}">
-                    <img src="{% if project.banner %}{{ sonata_path(project.banner, 'banner') }}{% else %}{% endif %}"
-                         class="d-block w-100" alt="{{ project.name }}">
+                    <picture>
+                        <source
+                                srcset="{% if project.banner %}{{ sonata_path(project.banner, 'banner') }}{% else %}{% endif %}"
+                                media="(min-width: 1000px)"
+                        />
+                        <source
+                                srcset="{% if project.banner %}{{ sonata_path(project.banner, 'square') }}{% else %}{% endif %}"
+                                media="(min-width: 320px)"
+                        />
+                        <img
+                                src="{% if project.banner %}{{ sonata_path(project.banner, 'banner') }}{% else %}{% endif %}"
+                                alt="{{ project.name }}" class="d-block w-100"
+                        />
+                    </picture>
+
                     <div class="carousel-item-content">
                         {% if project.punchline is defined %}
                             <h3>{{ project.punchline }}</h3>
