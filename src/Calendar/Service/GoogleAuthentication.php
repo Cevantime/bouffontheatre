@@ -94,7 +94,7 @@ class GoogleAuthentication
             ConfigService::EXPIRES_AT => $token->getExpires()
         ]);
 
-        if($this->config->getValue(ConfigService::REFRESH_TOKEN) === null) {
+        if( ! $this->config->hasValue(ConfigService::REFRESH_TOKEN) || $this->config->getValue(ConfigService::REFRESH_TOKEN) === null) {
             $this->config->saveConfig(ConfigService::REFRESH_TOKEN, $token->getRefreshToken());
         }
     }
