@@ -43,6 +43,7 @@ class UserAdmin extends AbstractAdmin
             ->add('email', null, [
                 'label' => 'Adresse Email'
             ])
+            ->add('newsletter')
             ->add('roles', ChoiceType::class, [
                 'label' => 'Roles',
                 'choices' => User::ROLES,
