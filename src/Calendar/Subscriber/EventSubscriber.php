@@ -4,21 +4,22 @@ namespace App\Calendar\Subscriber;
 
 use App\Calendar\Entity\BookingEvent;
 use App\Calendar\Service\ColorService;
+use App\Calendar\Service\EventDisplayService;
 use App\Entity\Booking;
 use App\Repository\BookingRepository;
 use CalendarBundle\CalendarEvents;
-use CalendarBundle\Entity\Event;
 use CalendarBundle\Event\CalendarEvent;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class EventSubscriber implements EventSubscriberInterface
 {
 
     public function __construct(
         private BookingRepository $bookingRepository,
-        private ColorService $colorService
-    ) {
+        private EventDisplayService $eventDisplayService
+    )
+    {
     }
 
     public static function getSubscribedEvents()
@@ -41,12 +42,12 @@ class EventSubscriber implements EventSubscriberInterface
         foreach ($bookings as $booking) {
             // this create the events with your data (here booking data) to fill calendar
             $bookingEvent = new BookingEvent(
-                $booking->getTitle(),
+                $this->eventDisplayService->getEventTitle($booking),
                 $booking->getBeginAt(),
                 $booking->getEndAt() // If the end date is null or not defined, a all day event is created.
             );
 
-            $color = $this->colorService->getBookingColor($booking);
+            $color = $this->eventDisplayService->getEventColor($booking);
 
             $bookingEvent->setOptions([
                 'backgroundColor' => $color,

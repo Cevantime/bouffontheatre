@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Calendar\Service\CalendarService;
-use App\Calendar\Service\GoogleAuthentication;
+use App\Calendar\Service\GoogleAuthenticationService;
 use App\Service\ConfigService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -22,9 +22,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CalendarTest extends Command
 {
     public function __construct(
-        private CalendarService $calendarService,
-        private GoogleAuthentication $googleAuthentication,
-        string $name = null,
+        private CalendarService             $calendarService,
+        private GoogleAuthenticationService $googleAuthentication,
+        string                              $name = null,
     )
     {
         parent::__construct($name);

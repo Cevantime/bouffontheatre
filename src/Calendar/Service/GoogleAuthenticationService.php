@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class GoogleAuthentication
+class GoogleAuthenticationService
 {
     const AUTH_SCOPE_URL = 'https://www.googleapis.com/auth/calendar';
     const OAUTH_URL = 'https://accounts.google.com/o/oauth2/auth';

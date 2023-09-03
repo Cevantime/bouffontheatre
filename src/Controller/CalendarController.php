@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Calendar\Service\CalendarService;
-use App\Calendar\Service\GoogleAuthentication;
+use App\Calendar\Service\GoogleAuthenticationService;
 use Cassandra\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,14 +22,14 @@ class CalendarController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/calendar/connect-to-google', name: 'app_calendar_connect_to_google')]
-    public function connectToGoogle(GoogleAuthentication $googleAuthentication): Response
+    public function connectToGoogle(GoogleAuthenticationService $googleAuthentication): Response
     {
         return $googleAuthentication->goToAuthUrl();
     }
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/calendar/google-callback', name: 'app_calendar_google_callback')]
-    public function callbackOAuth(GoogleAuthentication $googleAuthentication, Request $request): Response
+    public function callbackOAuth(GoogleAuthenticationService $googleAuthentication, Request $request): Response
     {
         $stateValid = $googleAuthentication->checkState($request->get('state'));
         $googleAuthentication->unsetState();

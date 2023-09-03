@@ -3,7 +3,7 @@
 namespace App\Calendar\Subscriber;
 
 use App\Calendar\Service\CalendarService;
-use App\Calendar\Service\GoogleAuthentication;
+use App\Calendar\Service\GoogleAuthenticationService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class RefreshCalendarTokenSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private GoogleAuthentication $googleAuthentication
+        private GoogleAuthenticationService $googleAuthentication
     )
     {
     }

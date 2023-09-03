@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Calendar\Service\CalendarService;
-use App\Calendar\Service\GoogleAuthentication;
+use App\Calendar\Service\GoogleAuthenticationService;
 use App\Repository\BookingRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,10 +20,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CalendarSyncBookingCommand extends Command
 {
     public function __construct(
-        private BookingRepository $bookingRepository,
-        private GoogleAuthentication $googleAuthentication,
-        private CalendarService $calendarService,
-        string $name = null
+        private BookingRepository           $bookingRepository,
+        private GoogleAuthenticationService $googleAuthentication,
+        private CalendarService             $calendarService,
+        string                              $name = null
     )
     {
         parent::__construct($name);
