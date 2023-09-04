@@ -40,9 +40,9 @@ class UserSubscriber implements EventSubscriberInterface
             $user->setPassword($this->hasher->hashPassword($user, $plainPassword));
             $user->setIsVerified(true);
             $mail = (new TemplatedEmail())
-                ->from('leskapokiers@gmail.com')
+                ->from('contactbouffon@gmail.com')
                 ->to(new Address($user->getEmail(), $user->getFirstname().' '.$user->getLastname()))
-                ->subject('Vous avez été ajouté à la plateforme leskapokiers.com')
+                ->subject('Vous avez été ajouté à la plateforme bouffontheatre.fr')
                 ->htmlTemplate('front/user/email_user_admin_register.html.twig')
                 ->context(['user' => $user, 'plain_password' => $plainPassword])
             ;

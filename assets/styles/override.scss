@@ -1,4 +1,4 @@
-$bannerHSize: 3rem;
+$bannerHSize: 4rem;
 $iconColor: #ff0000;
 
 body {
@@ -105,11 +105,12 @@ hr {
 
   h2 {
     font-size: $bannerHSize;
+    font-weight: bold;
   }
 
   h3 {
     font-style: italic;
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 }
 
