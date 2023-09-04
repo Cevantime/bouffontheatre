@@ -6,7 +6,7 @@
 
 
 {% block body %}
-    <section class="container" {{ stimulus_controller('popup_profile') }}>
+    <section class="container" {{ stimulus_controller('popup_group') }}>
         <h1 class="section-title">Mon profil</h1>
         <hr>
 
@@ -22,13 +22,33 @@
                     <dt>Adresse email</dt>
                     <dd>{{ app.user.email }}</dd>
                 </dl>
-                <button {{ stimulus_action('popup_profile', 'displayPopup')}} class="btn btn-primary">Modifier</button>
+                <button {{ stimulus_action('popup_group', 'displayPopup') }} class="btn btn-primary">Modifier</button>
             </div>
         </div>
 
-        <div class="popup" {{ stimulus_target('popup_profile', 'popup') }} {{ stimulus_action('popup_profile', 'hidePopup', 'click')}}>
-            <div class="popup-wrap" {{ stimulus_action('popup_profile', 'stopPropagation', 'click')}}>
+        <div class="popup" {{ stimulus_target('popup_group', 'popup') }} {{ stimulus_action('popup_group', 'hidePopup', 'click') }}>
+            <div class="popup-wrap" {{ stimulus_action('popup_group', 'stopPropagation', 'click') }}>
                 {{ form(formProfile) }}
+            </div>
+        </div>
+    </section>
+
+    <section class="container" {{ stimulus_controller('popup_group') }}>
+        <h1 class="section-title">Mon mot de passe</h1>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <button {{ stimulus_action('popup_group', 'displayPopup') }} class="btn btn-primary">Modifier mon mot de
+                    passe
+                </button>
+            </div>
+        </div>
+        <div class="popup" {{ stimulus_target('popup_group', 'popup') }} {{ stimulus_action('popup_group', 'hidePopup', 'click') }}>
+            <div class="popup-wrap" {{ stimulus_action('popup_group', 'stopPropagation', 'click') }}>
+                {{ form_start(formPassword) }}
+                {{ form_widget(formPassword) }}
+                <button type="submit" class="btn btn-primary">Modifier</button>
+                {{ form_end(formPassword) }}
             </div>
         </div>
     </section>
@@ -40,71 +60,13 @@
             <div class="col-md-4">
                 <ul>
                     {% for download in downloads %}
-                        <li><a href="{{ path('sonata_media_download', { id: download.media.id }) }}">{{ download.media.name }}</a></li>
+                        <li>
+                            <a href="{{ path('sonata_media_download', { id: download.media.id }) }}">{{ download.media.name }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </section>
 
-    <section class="container-fluid dark">
-        <h1 class="section-title">Les artistes que vous avez consultés</h1>
-        <hr>
-        <div role="group" aria-label="Gallerie des artistes" class="splide" {{ stimulus_controller('splide_slider', {
-            perPage: 8
-        }) }}>
-            <div class="splide__track">
-                <div class="splide__list">
-                    {% for view in views | filter(v => v.artist != null) %}
-                        {% set artist = view.artist %}
-                        {% if artist.photo %}
-                            <div class="gallery-show-item splide__slide text-center pb-3">
-                                <img src="{{ sonata_path(artist.photo, 'square') }}"
-                                     alt="Une photo de {{ artist.fullname }}">
-                                <h4>{{ artist.fullname }}</h4>
-                                <div>
-                                    {{ artist.biography | strip_and_truncate(150, '...') }}
-                                </div>
-                                {% if is_granted('ARTIST_VIEW_PROFILE', artist) %}
-                                    <div>
-                                        <a href="{{ path('app_artist_view', { slug: artist.slug }) }}"
-                                           class="btn btn-primary btn-light">En
-                                            savoir plus</a>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="featured-shows" class="container-fluid">
-        <h1 class="section-title">Les spectacles que vous avez consultés</h1>
-        <hr>
-        <div role="group" aria-label="Gallerie des spectacles"
-             class="splide" {{ stimulus_controller('splide_slider') }}>
-            <div class="splide__track">
-                <div class="splide__list">
-                    {% for v in views | filter(v => v.project is instanceof('App\\Entity\\Show')) %}
-                        {% set show = v.project %}
-                        <div class="gallery-show-item splide__slide text-center pb-3">
-                            <img src="{{ sonata_path(show.banner, 'big') }}"
-                                 alt="Un extrait de {{ show.name }}">
-                            <h4>{{ show.name }}</h4>
-                            <div>
-                                {{ show.description | strip_and_truncate(150, '...') }}
-                            </div>
-                            <div>
-                                <a href="{{ path('app_project_view', { slug: show.slug }) }}"
-                                   class="btn btn-primary">En
-                                    savoir plus</a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
 {% endblock %}

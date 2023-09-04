@@ -1,4 +1,5 @@
 $bannerHSize: 3rem;
+$iconColor: #ff0000;
 
 body {
   background-color: $light;
@@ -67,7 +68,7 @@ footer {
       margin: 0;
 
       i {
-        color: gold;
+        color: $iconColor;
       }
 
       a {

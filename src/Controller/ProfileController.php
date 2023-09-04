@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ChangePasswordFormType;
 use App\Form\ProfileType;
 use App\Repository\DownloadRepository;
 use App\Repository\ViewRepository;
@@ -21,22 +22,24 @@ class ProfileController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $views = $viewRepository->getUserViewsWithArtistAndProject($user);
         $downloads = $downloadRepository->getDownloadsWithMedia($user);
 
         $formProfile = $this->createForm(ProfileType::class, $user);
+        $formPassword = $this->createForm(ChangePasswordFormType::class, $user);
 
-        $formProfile->handleRequest($request);
+        foreach ([$formProfile, $formPassword] as $form) {
+            $form->handleRequest($request);
 
-        if($formProfile->isSubmitted() && $formProfile->isValid()) {
-            $manager->persist($user);
-            $manager->flush();
+            if($form->isSubmitted() && $form->isValid()) {
+                $manager->persist($user);
+                $manager->flush();
+            }
         }
 
         return $this->render('front/profile/index.html.twig', [
-            'views' => $views,
             'downloads' => $downloads,
-            'formProfile' => $formProfile->createView()
+            'formProfile' => $form->createView(),
+            'formPassword' => $formPassword->createView()
         ]);
     }
 }
