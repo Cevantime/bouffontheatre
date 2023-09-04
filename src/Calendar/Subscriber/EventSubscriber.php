@@ -46,7 +46,6 @@ class EventSubscriber implements EventSubscriberInterface
                 $booking->getBeginAt(),
                 $booking->getEndAt() // If the end date is null or not defined, a all day event is created.
             );
-
             $color = $this->eventDisplayService->getEventColor($booking);
 
             $bookingEvent->setOptions([

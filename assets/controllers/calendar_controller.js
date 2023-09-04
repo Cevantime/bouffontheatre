@@ -62,9 +62,6 @@ export default class extends Controller {
                         dateEnd
                     })
                 })
-                    .then(() => {
-                        // this.calendar.refetchEvents()
-                    })
             },
             eventClick: (info) => {
                 let updateUrl = Routing.generate('app_booking_edit', {
