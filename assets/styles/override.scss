@@ -51,6 +51,14 @@ main > section, footer {
   font-size: 2rem;
 }
 
+
+@media (min-width: 600px) {
+  .slider-actions {
+    position: absolute;
+    bottom: 40px;
+  }
+}
+
 footer {
   h4 {
     text-align: center;
@@ -108,13 +116,22 @@ hr {
   text-align: center;
 
   h2 {
-    font-size: $bannerHSize;
+    font-size: 2rem;
     font-weight: bold;
   }
 
   h3 {
     font-style: italic;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
+  }
+
+  @media (min-width: 600px) {
+    h2 {
+      font-size: $bannerHSize;
+    }
+    h3 {
+      font-size: 2.5rem;
+    }
   }
 }
 
@@ -254,10 +271,12 @@ blockquote {
   &.displayed {
     opacity: 1;
     visibility: visible;
+
     .popup-wrap {
       transform: translateY(0);
     }
   }
+
   .popup-wrap {
     background-color: white;
     margin: auto;

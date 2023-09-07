@@ -43,7 +43,7 @@
                                 </p>
                             {% endfor %}
                         {% endif %}
-                        <p class="m-4">
+                        <p class="slider-actions">
                             {% if project.currentSessions is defined and project.currentSessions is not empty and project.shopLinks is defined and project.shopLinks is not empty %}
                                 {% set link = project.shopLinks.first.link %}
                                 <a class="btn btn-primary btn-light" href="{{ link.url }}"
@@ -150,7 +150,6 @@
                 <ul>
                     <li>Abonnement à notre newsletter</li>
                     <li>Suivi des documents que vous avez consultés</li>
-                    <li>Suivi de vos artistes préférés</li>
                 </ul>
                 <p>Vous aimeriez travailler avec nous ? consultez <a href="{{ path('app_offer') }}">les annonces</a>
                 </p>

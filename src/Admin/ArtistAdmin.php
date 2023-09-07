@@ -109,7 +109,6 @@ class ArtistAdmin extends AbstractAdmin
                 'edit' => 'inline',
                 'inline' => 'table',
                 'sortable' => 'position',
-                'link_parameters' => ['provider' => 'sonata.media.provider.image'],
                 'admin_code' => 'sonata.media.admin.gallery',
             ])
             ->end()
