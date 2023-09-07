@@ -11,12 +11,12 @@ use Symfony\Component\Security\Core\Security;
 
 class LinkItemVoter extends Voter
 {
-    public const ADMIN_LIST = 'ROLE_ADMIN_LINK_LIST';
-    public const ADMIN_ALL = 'ROLE_ADMIN_LINK_ALL';
-    public const ADMIN_CREATE = 'ROLE_ADMIN_LINK_CREATE';
-    public const ADMIN_EDIT = 'ROLE_ADMIN_LINK_EDIT';
-    public const ADMIN_DELETE = 'ROLE_ADMIN_LINK_DELETE';
-    public const ADMIN_VIEW = 'ROLE_ADMIN_LINK_VIEW';
+    public const ADMIN_LIST = 'ROLE_ADMIN_LINKITEM_LIST';
+    public const ADMIN_ALL = 'ROLE_ADMIN_LINKITEM_ALL';
+    public const ADMIN_CREATE = 'ROLE_ADMIN_LINKITEM_CREATE';
+    public const ADMIN_EDIT = 'ROLE_ADMIN_LINKITEM_EDIT';
+    public const ADMIN_DELETE = 'ROLE_ADMIN_LINKITEM_DELETE';
+    public const ADMIN_VIEW = 'ROLE_ADMIN_LINKITEM_VIEW';
 
     private Security $security;
 
