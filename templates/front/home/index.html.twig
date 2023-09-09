@@ -44,7 +44,7 @@
                             {% endfor %}
                         {% endif %}
                         <p class="slider-actions">
-                            {% if project.currentSessions is defined and project.currentSessions is not empty and project.shopLinks is defined and project.shopLinks is not empty %}
+                            {% if is_project_bookable(project) %}
                                 {% set link = project.shopLinks.first.link %}
                                 <a class="btn btn-primary btn-light" href="{{ link.url }}"
                                    title="Rejoindre la billeterie {{ link.title }}">Réserver</a>

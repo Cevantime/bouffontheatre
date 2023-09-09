@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twig\Extension;
+namespace App\Twig;
 
 use App\Calendar\Service\EventDisplayService;
 use App\Entity\Booking;

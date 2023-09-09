@@ -44,6 +44,9 @@ class Show extends Project
     #[ORM\OneToMany(targetEntity: LinkItem::class, mappedBy: 'featuringShow', cascade: ['all'])]
     private $featuredLinks;
 
+    #[ORM\Column]
+    private ?bool $bookable = false;
+
     public function __construct()
     {
         parent::__construct();
@@ -55,6 +58,20 @@ class Show extends Project
         $this->authors = new ArrayCollection();
         $this->featuredDocuments = new ArrayCollection();
         $this->featuredLinks = new ArrayCollection();
+    }
+
+    public function canBeBooked(): bool
+    {
+        return $this->isBookable() && ! $this->shopLinks->isEmpty() && $this->getLastSession() && $this->getLastSession()->getPeriod()->getDateEnd()->format('U') > \time();
+    }
+
+    public function getLastSession(): ?PeriodItem
+    {
+        $sessionsAsArray = $this->sessions->toArray();
+        usort($sessionsAsArray, function(PeriodItem $periodItem1, PeriodItem $periodItem2) {
+            return $periodItem1->getPeriod()->getDateEnd() <=> $periodItem2->getPeriod()->getDateEnd();
+        });
+        return $sessionsAsArray ? $sessionsAsArray[count($sessionsAsArray) - 1] : null;
     }
 
     /**
@@ -324,6 +341,18 @@ class Show extends Project
                 $featuredLink->setFeaturingShow(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isBookable(): ?bool
+    {
+        return $this->bookable;
+    }
+
+    public function setBookable(bool $bookable): static
+    {
+        $this->bookable = $bookable;
 
         return $this;
     }

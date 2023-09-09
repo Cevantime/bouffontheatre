@@ -151,6 +151,11 @@ class ShowAdmin extends AbstractAdmin
             ])
             ->end()
             ->with('Sessions')
+            ->add('bookable', null, [
+                'label' => 'Réservable en ligne',
+                'required' => false,
+                'help' => 'Indique si le site doit afficher les liens de réservations du spectacle'
+            ])
             ->add('sessions', CollectionType::class, [
                 'label' => 'Sessions',
                 'help' => 'Renseignez ici les périodes durant lesquelles le spectacle se joue (ou s\'est joué)',
@@ -243,6 +248,9 @@ class ShowAdmin extends AbstractAdmin
             ])
             ->end()
             ->with('Sessions')
+            ->add('bookable', null, [
+                'label' => 'Réservable'
+            ])
             ->add('sessions', CollectionType::class, [
                 'label' => 'Sessions',
                 'template' => 'sonata/sessions_show.html.twig'

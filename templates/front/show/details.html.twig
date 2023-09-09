@@ -88,7 +88,7 @@
                             <em>{{ show.name }}</em>
                             {{ show.currentSessions | map(s => s.period) | join(', ', ' et ') }}
                         </p>
-                        {% if show.shopLinks is not empty %}
+                        {% if is_project_bookable(show) %}
                         <p>Réservez vos places dès à présent sur :</p>
                             {% for linkItem in show.shopLinks %}
                                 {% set link = linkItem.link %}
