@@ -29,7 +29,7 @@ class CalendarController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/calendar/google-callback', name: 'app_calendar_google_callback')]
-    public function callbackOAuth(GoogleAuthenticationService $googleAuthentication, Request $request): Response
+    public function callbackOAuth(GoogleAuthenticationService $googleAuthentication, Request $request, CalendarService $calendarService): Response
     {
         $stateValid = $googleAuthentication->checkState($request->get('state'));
         $googleAuthentication->unsetState();
@@ -39,6 +39,9 @@ class CalendarController extends AbstractController
             throw $this->createAccessDeniedException('Code missing');
         }
         $googleAuthentication->getAccessToken($request->get('code'));
+        $calendarService->syncEvents();
+        $calendarService->syncBookings();
+
         return $this->redirectToRoute('app_calendar');
     }
 

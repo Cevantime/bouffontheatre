@@ -35,21 +35,27 @@ class ConfigService
     public function getConfig($key)
     {
         $this->loadConfig();
-        if($this->hasValue($key)){
+        if($this->hasKey($key)){
             return $this->configs[$key];
         }
         throw new Exception("Trying to get a config with non existing key name");
     }
 
+    public function hasKey($key)
+    {
+        $this->loadConfig();
+        return array_key_exists($key, $this->configs);
+    }
+
     public function hasValue($key)
     {
         $this->loadConfig();
-        return isset($this->configs[$key]);
+        return $this->hasKey($key) && $this->getConfig($key)->getValue() !== null;
     }
 
     private function setConfig($key, $value)
     {
-        if($this->hasValue($key)) {
+        if($this->hasKey($key)) {
             $config = $this->getConfig($key);
         } else {
             $config = new Config();

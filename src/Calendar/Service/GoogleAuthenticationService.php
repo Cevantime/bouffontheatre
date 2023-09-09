@@ -4,7 +4,9 @@ namespace App\Calendar\Service;
 
 use _PHPStan_7c8075089\Nette\Neon\Exception;
 use App\Service\ConfigService;
+use App\Service\EmailService;
 use League\OAuth2\Client\Grant\RefreshToken;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\Google;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,6 +23,7 @@ class GoogleAuthenticationService
     public function __construct(
         private RequestStack  $stack,
         private ConfigService $config,
+        private EmailService $emailService,
         ParameterBagInterface $parameterBag
     )
     {
@@ -38,13 +41,19 @@ class GoogleAuthenticationService
         if (!$this->config->hasValue(ConfigService::EXPIRES_AT) || !$this->config->hasValue(ConfigService::REFRESH_TOKEN)) {
             return;
         }
+
         $expiredAt = $this->config->getValue(ConfigService::EXPIRES_AT);
         if (time() - 100 >= $expiredAt) {
-            $token = $this->google->getAccessToken(new RefreshToken(), [
-                'refresh_token' => $this->config->getValue(ConfigService::REFRESH_TOKEN),
-                'access_type' => 'offline'
-            ]);
-            $this->saveToken($token);
+            try {
+                $token = $this->google->getAccessToken(new RefreshToken(), [
+                    'refresh_token' => $this->config->getValue(ConfigService::REFRESH_TOKEN),
+                    'access_type' => 'offline'
+                ]);
+                $this->saveToken($token);
+            } catch (IdentityProviderException $exception) {
+                $this->config->saveConfig(ConfigService::REFRESH_TOKEN, null);
+                $this->emailService->sendEmailToAdmins('Il faut relancer un synchronisation avec Google Agenda', 'emails/time_to_refresh_token.html.twig');
+            }
         }
     }
 

@@ -85,6 +85,14 @@ class CalendarService
         return $booking;
     }
 
+    public function syncBookings()
+    {
+        $unsyncedBooking = $this->bookingRepository->findBy(['googleId' => null]);
+        foreach ($unsyncedBooking as $booking) {
+            $this->syncBooking($booking);
+        }
+    }
+
     public function syncBookingFromGoogleEvent($googleEvent)
     {
         $this->persistBookingFromGoogleEvent($googleEvent);
@@ -130,7 +138,7 @@ class CalendarService
 
     public function syncEvents()
     {
-        $nextSyncToken = $this->config->hasValue(ConfigService::EVENT_NEXT_SYNC_TOKEN)
+        $nextSyncToken = $this->config->hasKey(ConfigService::EVENT_NEXT_SYNC_TOKEN)
             ? $this->config->getValue(ConfigService::EVENT_NEXT_SYNC_TOKEN)
             : null;
         do {
