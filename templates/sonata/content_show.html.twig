@@ -9,15 +9,21 @@
                         {{ content }}
                     </a> ({{ content.slug }}) :
                     <br>
-                        {% if content.type == constant('App\\Entity\\Content::TYPE_IMAGE') %}
+                    {% if content.type == constant('App\\Entity\\Content::TYPE_IMAGE') %}
+                        {% if content.image %}
                             <img src="{{ sonata_path(content.image, 'small') }}" alt="">
-                        {% elseif content.type == constant('App\\Entity\\Content::TYPE_TITLE') %}
-                            {{ content.title }}
-                        {% elseif content.type == constant('App\\Entity\\Content::TYPE_TEXTE') %}
-                            {{ content.text | raw }}
-                        {% elseif content.type == constant('App\\Entity\\Content::TYPE_PROJECT_GALLERY') %}
-                            <a class="btn btn-primary" href="{{ path('admin_app_content_edit', { id: content.id, '_sonata_admin':'admin.page', }) }}">Voir la gallerie</a>
+                        {% else %}
+                            Pas d'image pour l'instant
                         {% endif %}
+                    {% elseif content.type == constant('App\\Entity\\Content::TYPE_TITLE') %}
+                        {{ content.title }}
+                    {% elseif content.type == constant('App\\Entity\\Content::TYPE_TEXTE') %}
+                        {{ content.text | raw }}
+                    {% elseif content.type == constant('App\\Entity\\Content::TYPE_PROJECT_GALLERY') %}
+                        <a class="btn btn-primary"
+                           href="{{ path('admin_app_content_edit', { id: content.id, '_sonata_admin':'admin.page', }) }}">Voir
+                            la gallerie</a>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
