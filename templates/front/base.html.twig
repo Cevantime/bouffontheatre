@@ -49,7 +49,7 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle{{ active_class(['app_login', 'app_register']) }}" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle{{ active_class(['app_login']) }}" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Connexion
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="loginDropdown">
@@ -66,7 +66,6 @@
                                     <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
                                 {% else %}
                                     <li><a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_register') }}">S'inscrire</a></li>
                                 {% endif %}
                             </ul>
                         </li>
