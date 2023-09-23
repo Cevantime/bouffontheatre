@@ -17,9 +17,15 @@
     </div>
     <section class="container">
         <h1>Nos annonces</h1>
-        <p>
-            Pour répondre, vous n'avez qu'à cliquer sur l'annonce qui vous intéresse
-        </p>
+        {% if offers is not empty %}
+            <p>
+                Pour répondre, vous n'avez qu'à cliquer sur l'annonce qui vous intéresse
+            </p>
+        {% else %}
+            <p>
+                Pas d'annonce pour l'instant
+            </p>
+        {% endif %}
         {% for offer in offers %}
             <a href="{{ path('app_offer_details', {id:offer.id}) }}">
                 <article class="border my-4 px-3 pt-4 pb-3 offer-short">

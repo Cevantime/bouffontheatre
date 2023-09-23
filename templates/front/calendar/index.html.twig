@@ -1,6 +1,11 @@
 {# templates/booking/calendar.html.twig #}
 {% extends 'front/base.html.twig' %}
 
+{% block title %}
+    Notre calendrier
+{% endblock %}
+
+
 {% block body %}
     <div class="container" {{ stimulus_controller(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show') }}>
         <div class="row">
