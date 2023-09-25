@@ -1,0 +1,14 @@
+<picture>
+    <source
+            srcset="{% if banner %}{{ sonata_path(banner, 'banner') }}{% elseif default is defined %}{{ sonata_path(default, 'banner') }}{% endif %}"
+            media="(min-width: 1000px)"
+    />
+    <source
+            srcset="{% if banner %}{{ sonata_path(banner, 'square') }}{% elseif default is defined %}{{ sonata_path(default, 'square') }}{% endif %}"
+            media="(min-width: 320px)"
+    />
+    <img
+            src="{% if banner %}{{ sonata_path(banner, 'banner') }}{% elseif default is defined %}{{ sonata_path(default, 'banner') }}{% endif %}"
+            alt="{{ alt }}" class="d-block w-100"
+    />
+</picture>

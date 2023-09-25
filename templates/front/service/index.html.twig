@@ -5,13 +5,10 @@
 {% endblock %}
 {% block body %}
     <div class="banner">
-        <img class="banner-image" src="{{ sonata_path(get_content('services_banner'), 'banner') }}" alt="">
+        {% include 'front/incs/banner_picture.html.twig' with { banner: get_content('services_banner'), alt: 'Nos prestations' } %}
         <div class="banner-content container-fluid">
             <div class="row flex-column align-items-center justify-content-center">
                 <h3 class="banner-title">Toutes nos prestations</h3>
-                <p>
-                    Nous intervenons aussi dans les établissements scolaires
-                </p>
             </div>
         </div>
     </div>

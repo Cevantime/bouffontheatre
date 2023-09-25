@@ -5,7 +5,7 @@
 {% endblock %}
 {% block body %}
     <div class="banner">
-        <img class="banner-image" src="{{ sonata_path(get_content('shows_banner'), 'banner') }}" alt="">
+        {% include 'front/incs/banner_picture.html.twig' with { banner: get_content('shows_banner'), alt: 'Nos spectacles' } %}
         <div class="banner-content container-fluid">
             <div class="row flex-column align-items-center justify-content-center">
                 <h3 class="banner-title">Tous nos spectacles</h3>
