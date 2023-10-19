@@ -2,6 +2,7 @@
 
 namespace App\Subscriber\Doctrine;
 
+use App\Entity\Project;
 use App\Entity\Show;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
@@ -21,10 +22,10 @@ class ShowSubscriber implements EventSubscriberInterface
     public function prePersist(LifecycleEventArgs $args)
     {
         $show = $args->getObject();
-        if(!($show instanceof Show)) {
+        if (!($show instanceof Project)) {
             return;
         }
-        if($show->getOwner() === null) {
+        if ($show->getOwner() === null) {
             $show->setOwner($this->security->getUser());
         }
     }

@@ -32,6 +32,7 @@ class ServiceAdmin extends AbstractAdmin
                 'label' => 'Nom du projet'
             ])
             ->add('slug', null, [
+                'required' => false,
                 'label' => 'Slug',
                 'help' => 'Laissez ce champs vide si vous ne savez pas ce que c\'est'
             ])
@@ -67,8 +68,7 @@ class ServiceAdmin extends AbstractAdmin
                 'link_parameters' => ['provider' => 'sonata.media.provider.image'],
                 'admin_code' => 'sonata.media.admin.gallery',
             ])
-            ->end()
-        ;
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
