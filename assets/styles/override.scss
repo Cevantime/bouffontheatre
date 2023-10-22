@@ -5,7 +5,10 @@ body {
   background-color: $light;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: 'Cormorant Garamond', serif;
 }
 
@@ -31,7 +34,8 @@ h2.section-title {
   background-color: black;
 }
 
-main > section, footer {
+main>section,
+footer {
   padding: 3rem 0 3rem;
 }
 
@@ -129,6 +133,7 @@ hr {
     h2 {
       font-size: $bannerHSize;
     }
+
     h3 {
       font-size: 2.5rem;
     }
@@ -140,7 +145,7 @@ hr {
     font-style: italic;
   }
 
-  & > * {
+  &>* {
     margin-bottom: 1.5rem;
     padding-right: calc(var(--bs-gutter-x) * 0.5);
     padding-left: calc(var(--bs-gutter-x) * 0.5);
@@ -216,7 +221,8 @@ hr {
   }
 }
 
-#artist-profile {
+#artist-profile,
+#show-profile {
   h1 {
     font-style: italic;
     font-size: 2rem;
