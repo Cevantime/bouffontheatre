@@ -2,7 +2,7 @@
 
 namespace App\Subscriber\Doctrine;
 
-use App\Entity\Artist;
+use App\Entity\BlogPost;
 use App\Service\SlugService;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -10,7 +10,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class ArtistSlugSubscriber implements EventSubscriberInterface
+class BlogPostSlugSubscriber implements EventSubscriberInterface
 {
     private SlugService $slugService;
 
@@ -35,27 +35,22 @@ class ArtistSlugSubscriber implements EventSubscriberInterface
 
     public function prePersist(LifecycleEventArgs $args)
     {
-        $this->changeSlug($args, fn (Artist $artist) => $artist->getSlug() === null);
+        $this->changeSlug($args, fn (BlogPost $post) => $post->getSlug() === null);
     }
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        $this->changeSlug(
-            $args,
-            function ($artist) use ($args) {
-                return $artist->getSlug()  === null || (!empty(array_intersect(['firstname', 'lastname'], array_keys($args->getEntityChangeSet())) && !in_array('slug', $args->getEntityChangeSet())));
-            }
-        );
+        $this->changeSlug($args, fn (BlogPost $post) => $post->getSlug() === null);
     }
 
     private function changeSlug(LifecycleEventArgs $args, $condition)
     {
-        $artist = $args->getObject();
-        if (!($artist instanceof Artist)) {
+        $post = $args->getObject();
+        if (!($post instanceof BlogPost)) {
             return;
         }
-        if ($condition($artist)) {
-            $this->slugService->generateArtistSlug($artist);
+        if ($condition($post)) {
+            $this->slugService->generatePostSlug($post);
         }
     }
 }

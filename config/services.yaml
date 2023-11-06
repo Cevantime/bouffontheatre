@@ -46,6 +46,12 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\ArtistItem, manager_type: orm, label: 'Objet artiste' }
 
+    admin.blogPost:
+        class: App\Admin\BlogPostAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\BlogPost, manager_type: orm, label: 'Les posts' }
+
+
     admin.job:
         class: App\Admin\JobAdmin
         tags:

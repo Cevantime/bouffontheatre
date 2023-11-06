@@ -3,9 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Artist;
+use App\Entity\BlogPost;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class ArtistSlugService
+class SlugService
 {
     private SluggerInterface $slugger;
 
@@ -20,5 +21,10 @@ class ArtistSlugService
     public function generateArtistSlug(Artist $artist)
     {
         $artist->setSlug(strtolower($this->slugger->slug($artist->getFullname())));
+    }
+
+    public function generatePostSlug(BlogPost $post)
+    {
+        $post->setSlug(strtolower($this->slugger->slug($post->getTitle())));
     }
 }

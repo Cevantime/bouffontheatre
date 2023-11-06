@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Repository\ArtistRepository;
-use App\Service\ArtistSlugService;
+use App\Service\SlugService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,14 +18,14 @@ class GenerateArtistSlugsCommand extends Command
     protected static $defaultDescription = 'Generate artists slugs';
 
     private ArtistRepository $artistRepository;
-    private ArtistSlugService $artistSlugService;
+    private SlugService $artistSlugService;
     private EntityManagerInterface $entityManager;
 
     /**
      * @param ArtistRepository $artistRepository
      * @param ArtistSlugService $artistSlugService
      */
-    public function __construct(ArtistRepository $artistRepository, ArtistSlugService $artistSlugService, EntityManagerInterface $entityManager)
+    public function __construct(ArtistRepository $artistRepository, SlugService $artistSlugService, EntityManagerInterface $entityManager)
     {
         $this->artistRepository = $artistRepository;
         $this->artistSlugService = $artistSlugService;

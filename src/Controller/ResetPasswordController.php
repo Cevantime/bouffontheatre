@@ -167,8 +167,7 @@ class ResetPasswordController extends AbstractController
             ->context([
                 'resetToken' => $resetToken,
                 'user' => $user
-            ])
-        ;
+            ]);
 
         $mailer->send($email);
 

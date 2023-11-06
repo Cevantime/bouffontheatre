@@ -68,12 +68,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[ORM\Column(type: 'boolean')]
     private $newsletter;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: BlogPost::class)]
+    private Collection $blogPosts;
+
     public function __construct()
     {
-        $this->followedArtists = new ArrayCollection();
         $this->downloads = new ArrayCollection();
-        $this->views = new ArrayCollection();
         $this->ownedProjects = new ArrayCollection();
+        $this->blogPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +147,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
+    public function resetPassword()
+    {
+        $this->password = null;
+    }
+
     /**
      * Returning a salt is only needed, if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
@@ -211,29 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    /**
-     * @return Collection<int, Artist>
-     */
-    public function getFollowedArtists(): Collection
-    {
-        return $this->followedArtists;
-    }
-
-    public function addFollowedArtist(Artist $followedArtist): self
-    {
-        if (!$this->followedArtists->contains($followedArtist)) {
-            $this->followedArtists[] = $followedArtist;
-        }
-
-        return $this;
-    }
-
-    public function removeFollowedArtist(Artist $followedArtist): self
-    {
-        $this->followedArtists->removeElement($followedArtist);
-
-        return $this;
-    }
 
     public function isVerified(): bool
     {
@@ -320,36 +304,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     }
 
     /**
-     * @return Collection<int, View>
-     */
-    public function getViews(): Collection
-    {
-        return $this->views;
-    }
-
-    public function addView(View $view): self
-    {
-        if (!$this->views->contains($view)) {
-            $this->views[] = $view;
-            $view->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeView(View $view): self
-    {
-        if ($this->views->removeElement($view)) {
-            // set the owning side to null (unless already changed)
-            if ($view->getUser() === $this) {
-                $view->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Project>
      */
     public function getOwnedProjects(): Collection
@@ -387,6 +341,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function setNewsletter(bool $newsletter): self
     {
         $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BlogPost>
+     */
+    public function getBlogPosts(): Collection
+    {
+        return $this->blogPosts;
+    }
+
+    public function addBlogPost(BlogPost $blogPost): static
+    {
+        if (!$this->blogPosts->contains($blogPost)) {
+            $this->blogPosts->add($blogPost);
+            $blogPost->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogPost(BlogPost $blogPost): static
+    {
+        if ($this->blogPosts->removeElement($blogPost)) {
+            // set the owning side to null (unless already changed)
+            if ($blogPost->getAuthor() === $this) {
+                $blogPost->setAuthor(null);
+            }
+        }
 
         return $this;
     }

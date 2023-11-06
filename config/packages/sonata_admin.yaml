@@ -16,6 +16,11 @@ sonata_admin:
                 label: "Les artistes"
                 items:
                     - admin.artist
+
+            posts:
+                label: "Les posts"
+                items:
+                    - admin.blogPost
             projects:
                 label: "Les projets"
                 items:

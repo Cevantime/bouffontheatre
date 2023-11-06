@@ -29,7 +29,7 @@ class UserAdmin extends AbstractAdmin
     {
         $roles = User::ROLES;
 
-        if(!$this->security->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->security->isGranted('ROLE_SUPER_ADMIN')) {
             unset($roles['Super-administrateur']);
         }
 
@@ -63,8 +63,7 @@ class UserAdmin extends AbstractAdmin
             ])
             ->add('email', null, [
                 'label' => 'Email'
-            ])
-        ;
+            ]);
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -93,13 +92,13 @@ class UserAdmin extends AbstractAdmin
             ->add('email', null, [
                 'label' => 'Adresse Email'
             ])
+            ->add('password', null, [
+                'label' => 'Mot de passe',
+                'template' => 'sonata/admin_password_show.html.twig'
+            ])
             ->add('roles', ChoiceType::class, [
                 'label' => 'Roles',
-                'choices' => User::ROLES,
-                'multiple' => true,
-                'expanded' => true,
                 'template' => 'sonata/admin_roles_show.html.twig'
-            ]);
-        ;
+            ]);;
     }
 }
