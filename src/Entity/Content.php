@@ -20,6 +20,7 @@ class Content
         'Texte' => 'text',
         'Image' => 'image',
         'Gallerie de projets' => 'projectGallery',
+        'Gallerie d\'article de blog' => "blogPostGallery"
     ];
 
     #[ORM\Id]
@@ -52,14 +53,14 @@ class Content
     #[ORM\OrderBy(['position' => 'ASC'])]
     private $projectGallery;
 
-    #[ORM\OneToMany(targetEntity: ArtistItem::class, mappedBy: 'content', cascade: ['all'])]
+    #[ORM\OneToMany(mappedBy: 'content', targetEntity: BlogPostItem::class, cascade: ['all'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
-    private $artistGallery;
+    private Collection $blogPostGallery;
 
     public function __construct()
     {
-        $this->artistGallery = new ArrayCollection();
         $this->projectGallery = new ArrayCollection();
+        $this->blogPostGallery = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,29 +188,29 @@ class Content
     }
 
     /**
-     * @return Collection<int, ArtistItem>
+     * @return Collection<int, BlogPostItem>
      */
-    public function getArtistGallery(): Collection
+    public function getBlogPostGallery(): Collection
     {
-        return $this->artistGallery;
+        return $this->blogPostGallery;
     }
 
-    public function addArtistGallery(ArtistItem $artistGallery): self
+    public function addBlogPostGallery(BlogPostItem $blogPostGallery): static
     {
-        if (!$this->artistGallery->contains($artistGallery)) {
-            $this->artistGallery[] = $artistGallery;
-            $artistGallery->setContent($this);
+        if (!$this->blogPostGallery->contains($blogPostGallery)) {
+            $this->blogPostGallery->add($blogPostGallery);
+            $blogPostGallery->setContent($this);
         }
 
         return $this;
     }
 
-    public function removeArtistGallery(ArtistItem $artistGallery): self
+    public function removeBlogPostGallery(BlogPostItem $blogPostGallery): static
     {
-        if ($this->artistGallery->removeElement($artistGallery)) {
+        if ($this->blogPostGallery->removeElement($blogPostGallery)) {
             // set the owning side to null (unless already changed)
-            if ($artistGallery->getContent() === $this) {
-                $artistGallery->setContent(null);
+            if ($blogPostGallery->getContent() === $this) {
+                $blogPostGallery->setContent(null);
             }
         }
 

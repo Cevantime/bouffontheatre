@@ -65,10 +65,6 @@ class BlogPostAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('poster', MediaType::class, [
-                'label' => 'Affiche',
-                'template' => 'sonata/image_list.html.twig'
-            ])
             ->addIdentifier('title', null, [
                 'label' => "Nom"
             ])

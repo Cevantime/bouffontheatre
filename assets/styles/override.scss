@@ -55,6 +55,12 @@ footer {
   font-size: 2rem;
 }
 
+.blog-post {
+  .blog-post-footer {
+    font-style: italic;
+  }
+}
+
 
 @media (min-width: 600px) {
   .slider-actions {

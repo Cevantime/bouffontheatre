@@ -1,0 +1,40 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Notre blog
+{% endblock %}
+{% block body %}
+   
+    <section class="container dark">
+        <h2 class="section-title">{{ get_content('blog_title') }}</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+            {{ get_content('blog_description') | raw }}
+            </div>
+        </div>
+    </section>
+    <section class="container-fluid">
+        <h1 class="text-center">Nos articles</h1>
+        <hr>
+        <div class="container">
+            <div class="row gallery-mosaic">
+                {% for postItem in get_content('blog_posts_gallery') %}
+                    {% set post = postItem.blogPost %}
+                    <a class="col-md-6" href="{{ path('app_blog_details', {slug: post.slug}) }}">
+                        <div class="mosaic-item">
+                            <h2 class="mosaic-title">{{ post.title }}</h2>
+                            <img class="mosaic-image" src="{{ sonata_path(post.image, 'very_big') }}" alt="">
+                            <div class="mosaic-text">
+                                {{ post.excerpt | strip_and_truncate(250, '...') }}
+                            </div>
+                        </div>
+                    </a>
+
+                {% else %}
+                <p>Cette section est pour l'instant vide.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

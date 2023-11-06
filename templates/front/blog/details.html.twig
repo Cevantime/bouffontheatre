@@ -1,0 +1,31 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block body %}
+<article class="container">
+    <div class="banner">
+        <img class="banner-image img-fluid" src="{{ sonata_path(post.image, 'banner') }}" alt="">
+    </div>
+    <section class="blog-post">
+        <h1 class="my-5">{{ post.title }}</h1>
+
+        <div>
+            {{ post.content | raw }}
+        </div>
+        <p class="blog-post-footer">
+        Ajouté le {{ post.createdAt | date('d/m/Y') }}
+        {% if post.updatedAt %}
+            <br>
+            Mis à jour le {{ post.updatedAt | date('d/m/Y') }}
+        {% endif %}
+        </p>
+    </section>
+
+    <nav>
+    <a class="btn btn-primary my-5" href="{{ path('app_blog') }}" title="Revenir au blog">Revenir aux articles</a>
+    </nav>
+</article>
+{% endblock %}

@@ -36,9 +36,9 @@ class ContentAdmin extends AbstractAdmin
         ]);
 
         $form->add('name', null, [
-                'label' => 'Nom',
-                'disabled' => !$isSuperAdmin
-            ]);
+            'label' => 'Nom',
+            'disabled' => !$isSuperAdmin
+        ]);
 
         if ($isSuperAdmin) {
             $form->add('slug', null, [
@@ -70,11 +70,11 @@ class ContentAdmin extends AbstractAdmin
                 'inline' => 'table',
                 'sortable' => 'position',
             ])
-            ->add('artistGallery', CollectionType::class, [
+            ->add('blogPostGallery', CollectionType::class, [
                 'by_reference' => false,
-                'label' => 'Artistes'
+                'label' => 'Articles'
             ], [
-                'admin_code' => 'admin.artistItem',
+                'admin_code' => 'admin.blogPostItem',
                 'edit' => 'inline',
                 'inline' => 'table',
                 'sortable' => 'position',
@@ -100,20 +100,18 @@ class ContentAdmin extends AbstractAdmin
 
     protected function preValidate(object $object): void
     {
-        /** @var Content $object */
-        foreach ($object->getArtistGallery() as $actorItem) {
-            /** @var ArtistItem $galleryItem */
-            if ($actorItem->getArtist() === null) {
-                $this->entityManager->remove($actorItem);
-                $object->removeArtistGallery($actorItem);
-            }
-        }
 
         foreach ($object->getProjectGallery() as $projectItem) {
-            /** @var ArtistItem $galleryItem */
             if ($projectItem->getProject() === null) {
                 $this->entityManager->remove($projectItem);
                 $object->removeProjectGallery($projectItem);
+            }
+        }
+
+        foreach ($object->getBlogPostGallery() as $blogPostItem) {
+            if ($blogPostItem->getBlogPost() === null) {
+                $this->entityManager->remove($blogPostItem);
+                $object->removeBlogPostGallery($blogPostItem);
             }
         }
     }

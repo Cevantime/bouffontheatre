@@ -14,7 +14,7 @@
                 function refreshFields() {
                     let select = $(this);
                     let typeSelected = select.val();
-                    let fields = ['image', 'text', 'title', 'projectGallery', 'artistGallery'];
+                    let fields = ['image', 'text', 'title', 'projectGallery', 'blogPostGallery'];
                     for (const field of fields) {
                         const input = relatedForm.find('.form-group[id$="' + field + '"]');
                         if (field === typeSelected) {

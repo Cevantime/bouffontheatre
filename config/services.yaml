@@ -51,6 +51,11 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\BlogPost, manager_type: orm, label: 'Les posts' }
 
+    admin.blogPostItem:
+        class: App\Admin\BlogPostItemAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\BlogPostItem, manager_type: orm, label: 'Les objets posts' }
+
 
     admin.job:
         class: App\Admin\JobAdmin
