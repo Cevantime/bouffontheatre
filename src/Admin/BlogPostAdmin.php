@@ -42,8 +42,8 @@ class BlogPostAdmin extends AbstractAdmin
                 'help' => 'Laissez ce champs vide si vous ne savez pas ce que c\'est'
             ])
             ->add('excerpt', null, [
-                'label' => 'Phrase d\'accroche',
-                'help' => 'Quelques mots d\'accroche. Ex: "À l\'odéon" ou "D\'après Dumas". Apparaît dans certaines galleries'
+                'label' => 'Présentation de l\'article',
+                'help' => 'Une courte description accrocheuse du contenu du post. Apparaît dans certaines galeries.'
             ])
             ->add('content', CKEditorType::class, [
                 'label' => 'Description',

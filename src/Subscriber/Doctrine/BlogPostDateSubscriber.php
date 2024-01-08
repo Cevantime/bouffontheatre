@@ -6,6 +6,7 @@ use App\Entity\BlogPost;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
@@ -22,7 +23,7 @@ class BlogPostDateSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(PrePersistEventArgs $args)
     {
         $post = $args->getObject();
         if (!($post instanceof BlogPost)) {

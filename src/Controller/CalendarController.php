@@ -33,17 +33,15 @@ class CalendarController extends AbstractController
     {
         $stateValid = $googleAuthentication->checkState($request->get('state'));
         $googleAuthentication->unsetState();
-        if(!$stateValid) {
+        if (!$stateValid) {
             throw $this->createAccessDeniedException('Invalid state');
-        } elseif(!$request->get('code')) {
+        } elseif (!$request->get('code')) {
             throw $this->createAccessDeniedException('Code missing');
         }
         $googleAuthentication->getAccessToken($request->get('code'));
-        $calendarService->syncEvents();
-        $calendarService->syncBookings();
+        // $calendarService->syncEvents();
+        // $calendarService->syncBookings();
 
         return $this->redirectToRoute('app_calendar');
     }
-
-
 }

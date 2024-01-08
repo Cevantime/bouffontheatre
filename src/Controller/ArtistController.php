@@ -34,9 +34,9 @@ class ArtistController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        if($user) {
+        if ($user) {
             $view = $viewRepository->findOneBy(['user' => $user, 'artist' => $artist]);
-            if(!$view) {
+            if (!$view) {
                 $view = new View();
                 $view->setUser($user);
                 $view->setArtist($artist);

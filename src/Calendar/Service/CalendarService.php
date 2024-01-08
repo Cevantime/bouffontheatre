@@ -28,16 +28,15 @@ class CalendarService
         private BookingRepository $bookingRepository,
         private EntityManagerInterface $manager,
         ParameterBagInterface $parameterBag
-    )
-    {
+    ) {
         $this->apiUrl = self::API_URL . $parameterBag->get('google_email') . '/';
         $this->guzzleClient = new Client();
     }
 
     private function makeRequest($method, $uri, $headers = [], $body = null, $version = '1.1'): RequestInterface
     {
-        if( ! $this->config->hasValue(ConfigService::ACCESS_TOKEN)) {
-            throw new Exception('Unable to connect to Google API. The app is not connected yet.');
+        if (!$this->config->hasValue(ConfigService::ACCESS_TOKEN)) {
+            throw new \Exception('Unable to connect to Google API. The app is not connected yet.');
         }
         /** @var RequestInterface $request */
         $request = (new Request($method, $this->apiUrl . $uri, $headers, $body, $version))
@@ -45,7 +44,7 @@ class CalendarService
         return $request;
     }
 
-    private function makeJsonRequest($json,$method, $uri, $headers = [], $version = '1.1')
+    private function makeJsonRequest($json, $method, $uri, $headers = [], $version = '1.1')
     {
         return $this->makeRequest($method, $uri, $headers, null, $version)
             ->withBody(Utils::streamFor(json_encode($json)))
@@ -55,8 +54,8 @@ class CalendarService
     private function getJson(RequestInterface $request)
     {
         $response = $this->guzzleClient->send($request);
-        if($response->getStatusCode() < 200 || $response->getStatusCode() >= 400) {
-            throw new Exception('Resource not found');
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 400) {
+            throw new \Exception('Resource not found');
         }
         return json_decode($response->getBody());
     }
@@ -64,16 +63,16 @@ class CalendarService
     public function getEvents($maxResults = 250, $pageToken = null)
     {
         $query = ['maxResults' => $maxResults];
-        if($pageToken) {
+        if ($pageToken) {
             $query['pageToken'] = $pageToken;
         }
-        return $this->getJson($this->makeRequest('GET', self::EVENT_END_POINT.'?' . http_build_query($query)));
+        return $this->getJson($this->makeRequest('GET', self::EVENT_END_POINT . '?' . http_build_query($query)));
     }
 
     public function persistBookingFromGoogleEvent($googleEvent)
     {
         $booking = $this->bookingRepository->findOneBy(['googleId' => $googleEvent->id]);
-        if(!$booking) {
+        if (!$booking) {
             $booking = new Booking();
         }
         $booking->setType($this->colorService->findTypeFromGoogleColorId($googleEvent->colorId ?? 0));
@@ -101,13 +100,13 @@ class CalendarService
 
     public function getGoogleEvent($googleId)
     {
-        $request = $this->makeRequest('GET', self::EVENT_END_POINT.'/'.$googleId);
+        $request = $this->makeRequest('GET', self::EVENT_END_POINT . '/' . $googleId);
         return $this->getJson($request);
     }
 
     public function syncBooking(Booking $booking)
     {
-        if($booking->getGoogleId() !== null) {
+        if ($booking->getGoogleId() !== null) {
             $this->patchGoogleEventFromBooking($booking);
         } else {
             $this->createGoogleEventFromBooking($booking);
@@ -116,7 +115,7 @@ class CalendarService
 
     public function patchGoogleEventFromBooking(Booking $booking)
     {
-        $request = $this->makeJsonRequest($this->bookingToEvent($booking), 'PUT', self::EVENT_END_POINT.'/'.$booking->getGoogleId());
+        $request = $this->makeJsonRequest($this->bookingToEvent($booking), 'PUT', self::EVENT_END_POINT . '/' . $booking->getGoogleId());
         return $this->guzzleClient->send($request);
     }
 
@@ -132,7 +131,7 @@ class CalendarService
 
     public function deleteGoogleEvent($idEvent)
     {
-        $request = $this->makeRequest('DELETE', self::EVENT_END_POINT.'/'.$idEvent);
+        $request = $this->makeRequest('DELETE', self::EVENT_END_POINT . '/' . $idEvent);
         return $this->guzzleClient->send($request);
     }
 
@@ -143,21 +142,21 @@ class CalendarService
             : null;
         do {
             $params = [];
-            if($nextSyncToken) {
+            if ($nextSyncToken) {
                 $params['syncToken'] = $nextSyncToken;
             }
-            if(isset($nextPageToken)) {
+            if (isset($nextPageToken)) {
                 $params['pageToken'] = $nextPageToken;
             }
-            $request = $this->makeRequest('GET', self::EVENT_END_POINT.'?'.http_build_query($params));
+            $request = $this->makeRequest('GET', self::EVENT_END_POINT . '?' . http_build_query($params));
             $result = $this->getJson($request);
             $nextSyncToken = $result->nextSyncToken ?? null;
             $nextPageToken = $result->nextPageToken ?? null;
             $events = $result->items;
             foreach ($events as $event) {
-                if($event->status === 'cancelled') {
+                if ($event->status === 'cancelled') {
                     $booking = $this->bookingRepository->findOneBy(['googleId' => $event->id]);
-                    if($booking) {
+                    if ($booking) {
                         $this->manager->remove($booking);
                         $this->manager->flush();
                     }
@@ -166,7 +165,7 @@ class CalendarService
                 }
             }
             $this->manager->flush();
-        } while($nextPageToken);
+        } while ($nextPageToken);
         $this->config->saveConfig(ConfigService::EVENT_NEXT_SYNC_TOKEN, $nextSyncToken);
     }
 
@@ -187,11 +186,10 @@ class CalendarService
     }
     private function parseDate($googleDate)
     {
-        if(isset($googleDate->dateTime)) {
+        if (isset($googleDate->dateTime)) {
             return \DateTimeImmutable::createFromFormat(\DateTime::RFC3339, $googleDate->dateTime);
         } else {
             return \DateTimeImmutable::createFromFormat('Y-m-d', $googleDate->date);
         }
     }
-
 }
