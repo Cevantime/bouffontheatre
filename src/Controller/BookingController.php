@@ -92,7 +92,7 @@ class BookingController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $booking->getId(), $request->request->get('_token'))) {
             $bookingRepository->remove($booking, true);
-            $calendarService->deleteGoogleEvent($booking->getGoogleId());
+            $de = $calendarService->deleteAssociatedGoogleEvent($booking);
         }
 
         return $this->json(['status' => 'ok', 'booking deleted'], Response::HTTP_ACCEPTED);

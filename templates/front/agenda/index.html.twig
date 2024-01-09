@@ -12,23 +12,42 @@
 
 {% if days %}
 {% set current_month = days[0] | date('F') %}
-
+{% set current_week = days[0] | date('W') %}
 <h2>{{ current_month | trans }}</h2>
+<div class="row">
 {% for d in days %}
     {% set next_month = d | date('F') %}
-    
-    {% if current_month != next_month %}
+    {% set next_week = d | date('W') %}
+    {% set change_month = current_month != next_month %}
+    {% if change_month %}
         {% set current_month = next_month %}
+        </div>
         <h2>{{ current_month | trans }}</h2>
+        <div class="row">
+    {% endif %}
+    {% set change_week = current_week != next_week %}
+    {% if change_week %}
+        {% set current_week = next_week %}
+        </div>
+        <p class="my-2">Semaine {{ current_week }}</p>
+        <div class="row">
     {% endif %}
     {% if availables[d|date("d/m/Y")] is defined and availables[d|date("d/m/Y")] %}
-    {{ d | date('l') | trans }} {{ d | date('d')}} :<br>
-    {% for av in availables[d|date("d/m/Y")] %}
-     -  {{ av.o_from }} à {{ av.o_to }}<br>
-    {% endfor %}
-    <br>
+        <div class="col-md-4">
+            <div class="date-card">
+                <label>{{ d | date('l') | trans }} {{ d | date('d')}} :</label>
+                <ul>
+                {% for av in availables[d|date("d/m/Y")] %}
+                    <li>{{ av.o_from }} à {{ av.o_to }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
     {% endif %}
+    
+
 {% endfor %}
 {% endif %}
+</div>
 </div>
 {% endblock %}

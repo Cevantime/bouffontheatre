@@ -39,8 +39,8 @@ class CalendarController extends AbstractController
             throw $this->createAccessDeniedException('Code missing');
         }
         $googleAuthentication->getAccessToken($request->get('code'));
-        // $calendarService->syncEvents();
-        // $calendarService->syncBookings();
+        $calendarService->syncEvents();
+        $calendarService->syncBookings();
 
         return $this->redirectToRoute('app_calendar');
     }

@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
+#[ORM\Index(name: "google_id_idx", columns: ["google_id"])]
 class Booking
 {
     public const TYPE_CONCERT = 'type.concert';
@@ -45,6 +47,9 @@ class Booking
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
+
+    #[ORM\Column]
+    private ?bool $isInstance = null;
 
     public function getId(): ?int
     {
@@ -107,6 +112,18 @@ class Booking
     public function setGoogleId(?string $googleId): static
     {
         $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function isInstance(): ?bool
+    {
+        return $this->isInstance;
+    }
+
+    public function setIsInstance(bool $isInstance): static
+    {
+        $this->isInstance = $isInstance;
 
         return $this;
     }

@@ -19,6 +19,8 @@ class CalendarService
 
     const API_URL = 'https://www.googleapis.com/calendar/v3/calendars/';
     const EVENT_END_POINT = 'events';
+    const EVENT_INSTANCES_END_POINT = "events/%s/instances";
+
     private string $apiUrl;
     private Client $guzzleClient;
 
@@ -69,7 +71,7 @@ class CalendarService
         return $this->getJson($this->makeRequest('GET', self::EVENT_END_POINT . '?' . http_build_query($query)));
     }
 
-    public function persistBookingFromGoogleEvent($googleEvent)
+    public function persistBookingFromGoogleEvent($googleEvent, $isInstance = false)
     {
         $booking = $this->bookingRepository->findOneBy(['googleId' => $googleEvent->id]);
         if (!$booking) {
@@ -80,6 +82,7 @@ class CalendarService
         $booking->setEndAt($this->parseDate($googleEvent->end));
         $booking->setTitle($googleEvent->summary ?? 'Inconnu');
         $booking->setGoogleId($googleEvent->id);
+        $booking->setIsInstance($isInstance);
         $this->manager->persist($booking);
         return $booking;
     }
@@ -102,6 +105,13 @@ class CalendarService
     {
         $request = $this->makeRequest('GET', self::EVENT_END_POINT . '/' . $googleId);
         return $this->getJson($request);
+    }
+
+    public function getRecurringEventInstances($googleId)
+    {
+        $request = $this->makeRequest('GET', sprintf(self::EVENT_INSTANCES_END_POINT, $googleId));
+        $result = $this->getJson($request);
+        return $result->items;
     }
 
     public function syncBooking(Booking $booking)
@@ -129,9 +139,11 @@ class CalendarService
         $this->manager->flush();
     }
 
-    public function deleteGoogleEvent($idEvent)
+    public function deleteAssociatedGoogleEvent(Booking $booking)
     {
-        $request = $this->makeRequest('DELETE', self::EVENT_END_POINT . '/' . $idEvent);
+
+        $request = $this->makeRequest('DELETE', self::EVENT_END_POINT . '/' . $booking->getGoogleId());
+
         return $this->guzzleClient->send($request);
     }
 
@@ -155,18 +167,31 @@ class CalendarService
             $events = $result->items;
             foreach ($events as $event) {
                 if ($event->status === 'cancelled') {
-                    $booking = $this->bookingRepository->findOneBy(['googleId' => $event->id]);
-                    if ($booking) {
-                        $this->manager->remove($booking);
-                        $this->manager->flush();
-                    }
+                    $this->deleteBookingsAssociatedWithEvent($event->id);
                 } else {
-                    $this->persistBookingFromGoogleEvent($event);
+                    if (isset($event->recurrence)) {
+                        $this->deleteBookingsAssociatedWithEvent($event->id);
+                        $instances = $this->getRecurringEventInstances($event->id);
+                        foreach ($instances as $instance) {
+                            $this->persistBookingFromGoogleEvent($instance, true);
+                        }
+                    } else {
+                        $this->persistBookingFromGoogleEvent($event);
+                    }
                 }
             }
             $this->manager->flush();
         } while ($nextPageToken);
         $this->config->saveConfig(ConfigService::EVENT_NEXT_SYNC_TOKEN, $nextSyncToken);
+    }
+
+    private function deleteBookingsAssociatedWithEvent($eventId)
+    {
+        $bookings = $this->bookingRepository->findBookingsByEventId($eventId);
+        foreach ($bookings as $booking) {
+            $this->manager->remove($booking);
+        }
+        $this->manager->flush();
     }
 
     private function bookingToEvent(Booking $booking)
