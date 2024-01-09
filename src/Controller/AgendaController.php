@@ -17,6 +17,30 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AgendaController extends AbstractController
 {
+    const DAYS_SHOWS = [
+        "Monday" => [
+            ["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
+            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+        ],
+        "Thursday" => [
+            ["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
+            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+        ],
+        "Friday" => [
+            ["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
+            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+        ],
+        "Saturday" => [
+            ["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
+            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+        ],
+        "Sunday" => [
+            ["from" => "16:00", "to" => "18:15", "o_from" => "17h00", "o_to" => "18h00"],
+            ["from" => "18:15", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
+            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+        ],
+    ];
+
     #[Route('/agenda', name: 'app_agenda')]
     #[IsGranted('ROLE_ADMIN')]
     public function index(BookingRepository $bookingRepository, Request $request): Response
@@ -33,11 +57,6 @@ class AgendaController extends AbstractController
         $period->from = $period->from->setTime(0, 0);
         $period->to = $period->to->setTime(0, 0)->add(new DateInterval("P1D"));
 
-        $daysShow = [
-            "Friday" => [["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"], ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]],
-            "Saturday" => [["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"], ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]],
-            "Sunday" => [["from" => "18:00", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"], ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]],
-        ];
 
         $bookings = $bookingRepository->getEventsBetween($period->from, $period->to);
 
@@ -60,7 +79,7 @@ class AgendaController extends AbstractController
         $availables = [];
 
         $date = $period->from;
-
+        $daysShow = self::DAYS_SHOWS;
         $showDays = array_keys($daysShow);
         $days = [];
 
