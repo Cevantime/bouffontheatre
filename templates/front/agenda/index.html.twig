@@ -35,7 +35,7 @@
     {% if availables[d|date("d/m/Y")] is defined and availables[d|date("d/m/Y")] %}
         <div class="col-md-2">
             <div class="date-card">
-                <label>{{ d | date('l') | trans }} {{ d | date('d')}}</label>
+                <label>{{ d | date('l') | trans }} {{ d | date('d')}} {{ current_month | trans }}</label>
                 <ul>
                 {% for av in availables[d|date("d/m/Y")] %}
                     <li>{{ av.o_from }} à {{ av.o_to }}</li>

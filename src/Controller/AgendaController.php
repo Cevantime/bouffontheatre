@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Calendar\Service\CalendarService;
 use App\DTO\Period;
 use App\Entity\Booking;
 use App\Form\PeriodDTOType;
@@ -43,8 +44,11 @@ class AgendaController extends AbstractController
 
     #[Route('/agenda', name: 'app_agenda')]
     #[IsGranted('ROLE_ADMIN')]
-    public function index(BookingRepository $bookingRepository, Request $request): Response
+    public function index(BookingRepository $bookingRepository, CalendarService $calendarService, Request $request): Response
     {
+        $calendarService->syncEvents();
+        $calendarService->syncBookings();
+
         $period = new Period();
 
         $period->from = new DateTimeImmutable();
