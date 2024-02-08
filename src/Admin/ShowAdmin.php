@@ -18,15 +18,18 @@ use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\CollectionType;
 use Sonata\MediaBundle\Form\Type\MediaType;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class ShowAdmin extends AbstractAdmin
 {
     private EntityManagerInterface $entityManager;
+    private Security $security;
 
-    public function __construct(EntityManagerInterface $entityManager, ?string $code = null, ?string $class = null, ?string $baseControllerName = null)
+    public function __construct(EntityManagerInterface $entityManager, Security $security, ?string $code = null, ?string $class = null, ?string $baseControllerName = null)
     {
         parent::__construct($code, $class, $baseControllerName);
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     protected function configureFormFields(FormMapper $form): void
@@ -35,6 +38,11 @@ class ShowAdmin extends AbstractAdmin
             ->with('Informations', ['class' => 'col-md-8'])
             ->add('name', null, [
                 'label' => 'Nom du projet'
+            ])
+            ->add('billetreducTitle', null, [
+                'label' => 'Nom du projet sur billetreduc',
+                'required' => false,
+                'help' => 'Important pour retrouver les nombres de résas !'
             ])
             ->add('slug', null, [
                 'label' => 'Slug',
@@ -165,6 +173,14 @@ class ShowAdmin extends AbstractAdmin
                 'admin_code' => 'admin.periodItem',
             ])
             ->end();
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $form
+                ->with('Propriétaire')
+                ->add('owner',  ModelListType::class, [
+                    'label' => 'Propriétaire'
+                ])
+                ->end();
+        }
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
@@ -182,10 +198,12 @@ class ShowAdmin extends AbstractAdmin
             ->addIdentifier('name', null, [
                 'label' => "Nom"
             ])
+            ->add('billetreducTitle', null, [
+                'label' => 'Nom sur Billetreduc'
+            ])
             ->add('authors', null, [
                 'template' => 'sonata/artists_list.html.twig'
-            ])
-        ;
+            ]);
     }
 
     protected function configureShowFields(ShowMapper $show): void

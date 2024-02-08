@@ -47,6 +47,12 @@ class Show extends Project
     #[ORM\Column]
     private ?bool $bookable = false;
 
+    #[ORM\OneToMany(mappedBy: 'relatedShow', targetEntity: Insight::class)]
+    private Collection $insights;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $billetreducTitle = null;
+
     public function __construct()
     {
         parent::__construct();
@@ -58,6 +64,7 @@ class Show extends Project
         $this->authors = new ArrayCollection();
         $this->featuredDocuments = new ArrayCollection();
         $this->featuredLinks = new ArrayCollection();
+        $this->insights = new ArrayCollection();
     }
 
     public function canBeBooked(): bool
@@ -353,6 +360,48 @@ class Show extends Project
     public function setBookable(bool $bookable): static
     {
         $this->bookable = $bookable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Insight>
+     */
+    public function getInsights(): Collection
+    {
+        return $this->insights;
+    }
+
+    public function addInsight(Insight $insight): static
+    {
+        if (!$this->insights->contains($insight)) {
+            $this->insights->add($insight);
+            $insight->setRelatedShow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInsight(Insight $insight): static
+    {
+        if ($this->insights->removeElement($insight)) {
+            // set the owning side to null (unless already changed)
+            if ($insight->getRelatedShow() === $this) {
+                $insight->setRelatedShow(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBilletreducTitle(): ?string
+    {
+        return $this->billetreducTitle;
+    }
+
+    public function setBilletreducTitle(?string $billetreducTitle): static
+    {
+        $this->billetreducTitle = $billetreducTitle;
 
         return $this;
     }

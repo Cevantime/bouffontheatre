@@ -144,6 +144,10 @@
                         <dt>{{ role.artist.gender == constant('App\\Entity\\Artist::GENDER_FEMALE') ? role.job.feminin : role.job.name }}</dt>
                         <dd>{{ link(role.artist) }}</dd>
                     {% endfor %}
+                    {% if is_granted('ROLE_INSIGHT_SHOW_VIEW', show) %}
+                        <dt>Accéder aux résa billetreduc</dt>
+                        <dd><a href="{{ path('app_booking_billetreduc', {id: show.id}) }}" class="btn btn-primary">Mes résas</a></dd>
+                    {% endif %}
                 </dl>
                 {% if show.featuredLinks is not empty %}
                     <h3>Liens</h3>

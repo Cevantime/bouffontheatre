@@ -1,0 +1,32 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Notre blog
+{% endblock %}
+{% block body %}
+<style>
+.titretableau + tr
+{
+  display: none;
+}
+
+table .dispo a {
+    text-decoration: none;
+    color: green;
+}
+
+.heure a {
+  display: none;
+}
+
+.diffusion.diffusion1 {
+  display: none;
+}
+
+</style>
+<div class="container">
+{% for i in insights %}
+{{ i.html | raw }}
+{% endfor %}
+</div>
+{% endblock %}

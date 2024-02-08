@@ -10,6 +10,8 @@ parameters:
     google_calendar_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
     google_email: '%env(GOOGLE_EMAIL)%'
     maintenance_mode: '%env(MAINTENANCE_MODE)%'
+    billetreduc_login: '%env(BILLETREDUC_LOGIN)%'
+    billetreduc_password: '%env(BILLETREDUC_PASSWORD)%'
 
 services:
     # default configuration for services in *this* file

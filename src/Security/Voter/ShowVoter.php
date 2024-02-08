@@ -4,9 +4,9 @@ namespace App\Security\Voter;
 
 use App\Admin\ShowAdmin;
 use App\Entity\Show;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 
 class ShowVoter extends Voter
 {
@@ -16,6 +16,7 @@ class ShowVoter extends Voter
     public const ADMIN_EDIT = 'ROLE_ADMIN_SHOW_EDIT';
     public const ADMIN_DELETE = 'ROLE_ADMIN_SHOW_DELETE';
     public const ADMIN_VIEW = 'ROLE_ADMIN_SHOW_VIEW';
+    public const INSIGHT_VIEW = 'ROLE_INSIGHT_SHOW_VIEW';
 
     private Security $security;
 
@@ -29,9 +30,8 @@ class ShowVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && $subject instanceof ShowAdmin )
-            || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE]) && $subject instanceof Show );
-
+        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && $subject instanceof ShowAdmin)
+            || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE, self::INSIGHT_VIEW]) && $subject instanceof Show);
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -49,6 +49,11 @@ class ShowVoter extends Voter
             case self::ADMIN_DELETE:
                 /** @var Show $subject */
                 return $subject->getOwner() === $token->getUser();
+            case self::INSIGHT_VIEW:
+                if ($this->security->isGranted('ROLE_ADMIN')) {
+                    return true;
+                }
+                return $subject->getOwner() === $this->security->getUser();
         }
 
         return false;
