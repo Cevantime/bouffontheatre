@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Show;
+use App\Repository\InsightRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,10 +17,13 @@ class ShowController extends AbstractController
     }
 
     #[Route(path: '/show/{slug}', name: 'app_show_details')]
-    public function details(Show $show): Response
+    public function details(Show $show, InsightRepository $insightRepository): Response
     {
+        $insight = $insightRepository->findOneBy(['relatedShow' => $show]);
+
         return $this->render('front/show/details.html.twig', [
             'show' => $show,
+            'there_are_insights_for_this_show' => $insight !== null
         ]);
     }
 }
