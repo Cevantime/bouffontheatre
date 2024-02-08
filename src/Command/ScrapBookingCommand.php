@@ -29,10 +29,10 @@ class ScrapBookingCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-
+        $secs = time();
         $this->sourceScrapper->scrapBookings();
 
-        $io->success('Source scrapped');
+        $io->success('Source scrapped in ' . (time() - $secs) . ' secs');
 
         return Command::SUCCESS;
     }

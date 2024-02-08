@@ -60,60 +60,53 @@ class SourceScrapper
         $crawler = $client->waitFor('.evtc .g');
         $crawler = $client->refreshCrawler();
 
-        $links = $crawler->filter('.evtc .g')->links();
+        $links = $crawler->filter('.box-item.br-verysmallbtn.br-blue')->links();
         $uris = array_unique(array_map(function ($link) {
             return $link->getUri();
         }, $links));
+
         foreach ($uris as $uri) {
             /** @var Link $link */
             $crawler = $client->request('GET', $uri);
-            $client->waitFor(".br-barbtn.br-barblue");
+
+            $client->waitFor('.bigeventtitle b');
             $crawler = $client->refreshCrawler();
-            $links = $crawler->filter('.br-barbtn.br-barblue')->links();
-            foreach ($links as $l) {
-                if ($l->getElement()->getText() === "Tableau de bord") {
-                    $client->click($l);
-                    $client->waitFor('.bigeventtitle b');
-                    $crawler = $client->refreshCrawler();
-                    $showTitle = $crawler->filter('.bigeventtitle b')->getText();
-                    $show = $this->showRepository->findOneBy(['name' => $showTitle]);
+            $showTitle = $crawler->filter('.bigeventtitle b')->getText();
+            $show = $this->showRepository->findOneBy(['name' => $showTitle]);
 
-                    if (!$show) {
-                        break;
-                    }
-
-                    $table = $crawler->filter('table.xt');
-                    $html = $table->getElement(0)->getDomProperty('outerHTML');
-
-                    $insight = new Insight();
-                    $insight->setRelatedShow($show);
-                    $insight->setCreatedAt(new DateTimeImmutable());
-                    $insight->setType(Insight::TYPE_BOOKING_COUNT);
-                    $insight->setHtml($html);
-
-                    $this->entityManager->persist($insight);
-
-                    // $date = null;
-                    // $dateTime = null;
-
-                    // $table->filter('tr')->each(function ($tr) use (&$date, &$dateTime) {
-                    //     $class = $tr->getAttribute('class');
-                    //     if ($class === 'tbNewDay') {
-                    //         $date = trim($tr->getText());
-                    //         $date = DateTimeImmutable::createFromFormat('l d F Y', trim($tr->getText()));
-                    //     } else {
-                    //         if ($class == "heure") {
-                    //             $td = $tr->filter('td.heure');
-                    //             var_dump($td->getText());
-                    //             preg_match('#([0-9]{2}h[0-9]{2}).+#', trim($td->getText()), $matches);
-                    //             var_dump($matches[1]);
-                    //         }
-                    //     }
-                    // });
-
-                    break;
-                }
+            if (!$show) {
+                continue;
             }
+
+            $table = $crawler->filter('table.xt');
+            $html = $table->getElement(0)->getDomProperty('outerHTML');
+
+            $insight = new Insight();
+            $insight->setRelatedShow($show);
+            $insight->setCreatedAt(new DateTimeImmutable());
+            $insight->setType(Insight::TYPE_BOOKING_COUNT);
+            $insight->setHtml($html);
+
+            $this->entityManager->persist($insight);
+
+            // $date = null;
+            // $dateTime = null;
+
+            // $table->filter('tr')->each(function ($tr) use (&$date, &$dateTime) {
+            //     $class = $tr->getAttribute('class');
+            //     if ($class === 'tbNewDay') {
+            //         $date = trim($tr->getText());
+            //         $date = DateTimeImmutable::createFromFormat('l d F Y', trim($tr->getText()));
+            //     } else {
+            //         if ($class == "heure") {
+            //             $td = $tr->filter('td.heure');
+            //             var_dump($td->getText());
+            //             preg_match('#([0-9]{2}h[0-9]{2}).+#', trim($td->getText()), $matches);
+            //             var_dump($matches[1]);
+            //         }
+            //     }
+            // });
+
         }
 
         $is = $this->insightRepository->findAll();
@@ -161,9 +154,5 @@ class SourceScrapper
         // $this->entityManager->flush();
 
         // return $result;
-    }
-
-    public function waitForAndReturn()
-    {
     }
 }
