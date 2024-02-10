@@ -72,7 +72,7 @@ class SourceScrapper
             $client->waitFor('.bigeventtitle b');
             $crawler = $client->refreshCrawler();
             $showTitle = $crawler->filter('.bigeventtitle b')->getText();
-            $show = $this->showRepository->findOneBy(['name' => $showTitle]);
+            $show = $this->showRepository->findOneByTitleOrBilletreducTitle($showTitle);
 
             if (!$show) {
                 continue;
