@@ -127,16 +127,16 @@
                 {% endif %}
                 <h3>L'équipe</h3>
                 <dl>
-                    {% if show.authors %}
+                    {% if not (show.authors is empty) %}
                         <dt>Auteur{% if show.authors.count > 1 %}s{% endif %}</dt>
                         <dd>{{ show.authors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
                     {% endif %}
-                    {% if show.directors %}
+                    {% if not (show.directors is empty) %}
                         <dt>Metteur{% if show.directors.count > 1 %}s{% endif %} en scène</dt>
                         <dd>{{ show.directors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
                     {% endif %}
-                    {% if show.actors %}
-                        <dt>Interprète{% if show.authors.count > 1 %}s{% endif %}</dt>
+                    {% if not (show.actors is empty) %}
+                        <dt>Interprète{% if show.actors.count > 1 %}s{% endif %}</dt>
                         <dd>{{ show.actors | map((a) => link(a.artist)) | join(', ', ' et ') | raw }}</dd>
                     {% endif %}
                     {% for roleItem in show.roles | filter((r) => r.displayed) %}
