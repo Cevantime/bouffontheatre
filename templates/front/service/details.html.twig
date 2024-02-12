@@ -7,7 +7,7 @@
 {% block body %}
     <div class="banner">
         {% if service.banner is defined and service.banner %}
-            <img class="banner-image" src="{{ sonata_path(service.banner, 'banner') }}" alt="">
+            {% include 'front/incs/banner_picture.html.twig' with { banner:  service.banner, alt: service.name } %}
         {% else %}
             <img src="{{ sonata_path(get_content('service_details_default_banner'), 'banner') }}" alt="">
         {% endif %}
