@@ -15,7 +15,11 @@ table .dispo a {
     color: green;
 }
 
-.heure a {
+td.heure a:not(:nth-child(3)) {
+  display: none;
+}
+
+td:nth-child(5), .titretableau td:nth-child(8), td:nth-child(10):not(.titretableau td:nth-child(10)) {
   display: none;
 }
 
@@ -25,6 +29,7 @@ table .dispo a {
 
 </style>
 <div class="container">
+<h1>Réservations pour le spectacle "{{ show.name }}"</h1>
 {% for i in insights %}
 {{ i.html | raw }}
 {% endfor %}

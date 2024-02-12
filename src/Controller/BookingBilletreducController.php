@@ -24,6 +24,7 @@ class BookingBilletreducController extends AbstractController
 
         return $this->render('front/booking_billetreduc/view_billetreduc_booking_count.html.twig', [
             'insights' => $insights,
+            'show' => $show
         ]);
     }
 }
