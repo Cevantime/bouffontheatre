@@ -7,7 +7,7 @@
 
 
 {% block body %}
-    <div class="container" {{ stimulus_controller(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show') }}>
+    <div class="container mb-5" {{ stimulus_controller(is_granted('ROLE_ADMIN') ? 'calendar' : 'calendar_show') }}>
         <div class="row">
             <div class="col-lg-8" >
                 <h1>Le calendrier</h1>

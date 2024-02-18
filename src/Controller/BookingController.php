@@ -40,9 +40,9 @@ class BookingController extends AbstractController
             return $this->json(['status' => 'ok', 'message' => 'booking created'], Response::HTTP_CREATED);
         }
 
-        return $this->renderForm('front/booking/new.html.twig', [
+        return $this->render('front/booking/new.html.twig', [
             'booking' => $booking,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 

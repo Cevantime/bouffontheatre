@@ -30,7 +30,7 @@ class PeriodItem
         return $this->period;
     }
 
-    public function setPeriod(Period $period): self
+    public function setPeriod(?Period $period): self
     {
         $this->period = $period;
 
