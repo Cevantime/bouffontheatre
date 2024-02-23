@@ -12,6 +12,11 @@ sonata_admin:
                 items:
                     - { route: app_home, label: Accueil }
                     - { route: app_show, label: Les spectacles}
+            contract:
+                label: "Gestion des contrats"
+                items:
+                    - { route: app_contract_config, label: Configuration globale }
+                    - admin.contract
             artists:
                 label: "Les artistes"
                 items:

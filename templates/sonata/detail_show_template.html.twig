@@ -1,0 +1,10 @@
+{% extends "@SonataAdmin/CRUD/show.html.twig" %}
+
+{%- block actions -%}
+    {{ parent() }}
+    <li>
+        <a class="sonata-action-element" href="{{ path('app_contract_create_from_project', { id : object.id }) }}"><i class="fas fa-file-contract" aria-hidden="true"></i>
+            Créer un nouveau contrat
+        </a>
+    </li>
+{%- endblock -%}

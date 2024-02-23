@@ -1,0 +1,27 @@
+{% extends "front/base.html.twig" %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-offset-3 col-md-8">
+            <p>
+                Vous avez actuellement {{ contracts | length }} contrats en attente d'informations. Veuillez remplir ou confirmer vos informations
+                pour le contrat suivant :
+            </p>
+            <p>
+                {{ lastContract.relatedProject.name }}
+            </p>
+            Pour les représentations suivantes :
+            <ul>
+                {% for performance in lastContract.performances %}
+                    <li>{{ performance.performedAt | date('d/m/y H:i') }}</li>
+                {% endfor %}
+            </ul>
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit" name="submit" class="btn btn-outline-success mb-4">Envoyer au théâtre</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+<p>Cher Administrateur,</p>
+
+<p>Un formulaire d'information vient d'être rempli par {{ user.fullname }} pour le contrat n°{{ contract.id }} du projet {{ contract.relatedProject.name }}</p>
+
+<p>
+    Nous vous invitons à vérifier et à envoyer le contrat à la compagnie en vous rendant sur la page dédiée au contrat :
+    <a href="{{ absolute_url(path('admin_app_contract_show', {id : contract.id})) }}">{{ absolute_url(path('admin_app_contract_show', {id : contract.id})) }}</a>
+</p>
+
+<p>Ceci est un message automatique, merci de ne pas y répondre.</p>

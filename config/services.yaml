@@ -111,6 +111,8 @@ services:
 
     admin.show:
         class: App\Admin\ShowAdmin
+        calls:
+            - [setTemplate, ['show', 'sonata/detail_show_template.html.twig']]
         tags:
             - { name: sonata.admin, model_class: App\Entity\Show, manager_type: orm, label: 'Les spectacles' }
 
@@ -170,6 +172,13 @@ services:
         class: App\Admin\UserAdmin
         tags:
             - { name: sonata.admin, model_class: App\Entity\User, manager_type: orm, label: 'Les utilisateurs' }
+
+    admin.contract:
+        class: App\Admin\ContractAdmin
+        calls:
+            - [ setTemplate, [ 'show', 'sonata/detail_contract_template.html.twig' ] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Contract, manager_type: orm, label: 'Les contrats' }
 
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener

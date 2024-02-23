@@ -20,42 +20,49 @@ class ConfigService
     public function __construct(
         private ConfigRepository $configRepository,
         private EntityManagerInterface $manager
-    )
-    {
+    ) {
     }
 
     /**
      * @throws Exception
      */
-    public function getValue($key)
+    public function getValue(string $key)
     {
         return $this->getConfig($key)->getValue();
     }
 
-    public function getConfig($key)
+    public function tryGetValue(string $key)
     {
-        $this->loadConfig();
-        if($this->hasKey($key)){
-            return $this->configs[$key];
+        if (!$this->hasValue($key)) {
+            return null;
         }
-        throw new Exception("Trying to get a config with non existing key name");
+        return $this->getValue($key);
     }
 
-    public function hasKey($key)
+    public function getConfig(string $key)
+    {
+        $this->loadConfig();
+        if ($this->hasKey($key)) {
+            return $this->configs[$key];
+        }
+        throw new \Exception("Trying to get a config with non existing key name");
+    }
+
+    public function hasKey(string $key)
     {
         $this->loadConfig();
         return array_key_exists($key, $this->configs);
     }
 
-    public function hasValue($key)
+    public function hasValue(string $key)
     {
         $this->loadConfig();
         return $this->hasKey($key) && $this->getConfig($key)->getValue() !== null;
     }
 
-    private function setConfig($key, $value)
+    private function setConfig(string $key, string $value)
     {
-        if($this->hasKey($key)) {
+        if ($this->hasKey($key)) {
             $config = $this->getConfig($key);
         } else {
             $config = new Config();
@@ -73,7 +80,7 @@ class ConfigService
         }
     }
 
-    public function saveConfig($key, $value)
+    public function saveConfig(string $key, string $value)
     {
         $this->setConfig($key, $value);
         $this->manager->flush();
@@ -85,9 +92,22 @@ class ConfigService
         $this->manager->flush();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getConfigs()
+    {
+        return $this->configs;
+    }
+
+    public function getRawConfigs()
+    {
+        return array_map(fn($c) => $c->getValue(), $this->getConfigs());
+    }
+
     private function loadConfig()
     {
-        if($this->configs === null) {
+        if ($this->configs === null) {
             $this->configs = [];
             $allConfigs = $this->configRepository->findAll();
             foreach ($allConfigs as $config) {

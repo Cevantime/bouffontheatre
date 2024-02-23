@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLE_USER = 'ROLE_USER';
     const ROLE_PRO = 'ROLE_PRO';
@@ -111,6 +111,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function getUsername(): string
     {
         return (string) $this->email;
+    }
+
+    public function getFullname(): string
+    {
+        return $this->firstname.' '.$this->lastname;
     }
 
     /**

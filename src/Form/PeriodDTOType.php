@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\DTO\Period;
+use Sonata\Form\Type\DateTimePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -14,11 +15,11 @@ class PeriodDTOType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('from', DateTimeType::class, [
+            ->add('from', DateTimePickerType::class, [
                 'label' => 'Date de début',
                 'input' => 'datetime_immutable',
             ])
-            ->add('to', DateTimeType::class, [
+            ->add('to', DateTimeIPickerType::class, [
                 'label' => 'Date de fin',
                 'input' => 'datetime_immutable',
             ])

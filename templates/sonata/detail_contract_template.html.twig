@@ -1,0 +1,26 @@
+{% extends "@SonataAdmin/CRUD/show.html.twig" %}
+
+{%- block actions -%}
+    {{ parent() }}
+    <li>
+        <a class="sonata-action-element" href="{{ path('app_contract_edit_from_project', { idContract : object.id, id: object.relatedProject.id }) }}"><i class="fas fa-edit" aria-hidden="true"></i>
+            Éditer
+        </a>
+    </li>
+    <li>
+        <a class="sonata-action-element" href="{{ path('app_contract_invite_company', { id : object.id }) }}"><i class="fas fa-file" aria-hidden="true"></i>
+            Envoyer le formulaire
+        </a>
+    </li>
+    <li>
+        <a target="_blank" class="sonata-action-element" href="{{ path('app_contract_generate', { id : object.id }) }}"><i class="fas fa-hammer" aria-hidden="true"></i>
+            Générer
+        </a>
+    </li>
+
+    <li>
+        <a target="_blank" class="sonata-action-element" href="{{ path('app_contract_send_email', { id : object.id }) }}"><i class="fas fa-paper-plane" aria-hidden="true"></i>
+            Envoyer par mail
+        </a>
+    </li>
+{%- endblock -%}

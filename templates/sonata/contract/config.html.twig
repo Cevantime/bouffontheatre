@@ -1,0 +1,21 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('stylesheets/sonata_custom.css') }}">
+{% endblock %}
+
+{% block sonata_admin_content %}
+
+    <div class="box box-primary">
+        <div class="box-header">
+            Configuration globale des contrats
+        </div>
+        <div class="box-body">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn-primary btn" type="submit">Mettre à jour</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

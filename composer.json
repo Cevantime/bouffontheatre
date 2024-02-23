@@ -16,6 +16,7 @@
         "friendsofsymfony/jsrouting-bundle": "^3.3",
         "gregwar/captcha-bundle": "^2.2",
         "league/oauth2-google": "^4.0",
+        "phpoffice/phpword": "^1.2",
         "sensio/framework-extra-bundle": "^6.2",
         "sonata-project/admin-bundle": "^4.21",
         "sonata-project/doctrine-orm-admin-bundle": "^4.8",
@@ -34,6 +35,7 @@
         "symfony/proxy-manager-bridge": "6.3.*",
         "symfony/runtime": "6.3.*",
         "symfony/security-bundle": "^6.3",
+        "symfony/string": "6.3.*",
         "symfony/translation": "6.3.*",
         "symfony/twig-bundle": "^6.3",
         "symfony/validator": "6.3.*",
@@ -97,8 +99,12 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.18.0",
+        "symfony/browser-kit": "6.3.*",
+        "symfony/css-selector": "6.3.*",
         "symfony/panther": "^2.1",
+        "symfony/phpunit-bridge": "^7.0",
         "symfony/stopwatch": "6.3.*",
         "symfony/web-profiler-bundle": "6.3.*"
     }

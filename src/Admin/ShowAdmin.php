@@ -137,13 +137,15 @@ class ShowAdmin extends AbstractAdmin
             ->add('banner', MediaType::class, [
                 'provider' => 'sonata.media.provider.image',
                 'context' => 'default',
+                'required' => true,
                 'label' => 'Bannière',
                 'help' => 'Si définie, s\'affichera dans la bannière de la page spectacle'
             ])
             ->add('poster', MediaType::class, [
                 'provider' => 'sonata.media.provider.image',
                 'context' => 'default',
-                'label' => 'Affiche'
+                'label' => 'Affiche',
+                'required' => true
             ])
             ->add('gallery', ModelListType::class, [
                 'required' => false,

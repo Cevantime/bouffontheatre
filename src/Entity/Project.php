@@ -51,11 +51,19 @@ class Project
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
+    #[ORM\OneToMany(mappedBy: 'relatedProject', targetEntity: Performance::class)]
+    private Collection $performances;
+
+    #[ORM\OneToMany(mappedBy: 'relatedProject', targetEntity: Contract::class)]
+    private Collection $contracts;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
         $this->offers = new ArrayCollection();
         $this->views = new ArrayCollection();
+        $this->performances = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -287,6 +295,66 @@ class Project
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Performance>
+     */
+    public function getPerformances(): Collection
+    {
+        return $this->performances;
+    }
+
+    public function addPerformance(Performance $performance): static
+    {
+        if (!$this->performances->contains($performance)) {
+            $this->performances->add($performance);
+            $performance->setRelatedProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removePerformance(Performance $performance): static
+    {
+        if ($this->performances->removeElement($performance)) {
+            // set the owning side to null (unless already changed)
+            if ($performance->getRelatedProject() === $this) {
+                $performance->setRelatedProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contract>
+     */
+    public function getContracts(): Collection
+    {
+        return $this->contracts;
+    }
+
+    public function addContract(Contract $contract): static
+    {
+        if (!$this->contracts->contains($contract)) {
+            $this->contracts->add($contract);
+            $contract->setRelatedProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContract(Contract $contract): static
+    {
+        if ($this->contracts->removeElement($contract)) {
+            // set the owning side to null (unless already changed)
+            if ($contract->getRelatedProject() === $this) {
+                $contract->setRelatedProject(null);
+            }
+        }
 
         return $this;
     }

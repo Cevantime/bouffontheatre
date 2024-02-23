@@ -1,0 +1,12 @@
+<tr>
+    <th>{{ field_description.label }}</th>
+    <td>
+        {% if attribute(object,field_description.name) %}
+            {% for date in attribute(object,field_description.name) %}
+                <li>
+                    {{ date.performedAt | date('d/m/y H:i') }}
+                </li>
+            {% endfor %}
+        {% endif %}
+    </td>
+</tr>
