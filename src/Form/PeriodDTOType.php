@@ -15,11 +15,11 @@ class PeriodDTOType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('from', DateTimePickerType::class, [
+            ->add('from', DateTimeType::class, [
                 'label' => 'Date de début',
                 'input' => 'datetime_immutable',
             ])
-            ->add('to', DateTimeIPickerType::class, [
+            ->add('to', DateTimeType::class, [
                 'label' => 'Date de fin',
                 'input' => 'datetime_immutable',
             ])

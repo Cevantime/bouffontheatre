@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\DTO\ContractCompanyPart;
+use App\Entity\Artist;
+use App\Entity\ArtistItem;
 use App\Entity\Contract;
+use App\Entity\Show;
 use App\Entity\User;
 use App\Form\ContractCompanyPartType;
 use App\Repository\ContractRepository;
@@ -36,6 +39,7 @@ class ContractInformationsController extends AbstractController
         if( ! $contracts) {
             return $this->render('front/contract_informations/no_contract.html.twig');
         }
+        /** @var Contract $lastContract */
         $lastContract = $contracts[0];
         $contratCompanyPart = new ContractCompanyPart();
         $DTOService->transferDataTo($lastContract, $contratCompanyPart);
@@ -43,6 +47,12 @@ class ContractInformationsController extends AbstractController
         if($completedContract !== null) {
             $DTOService->transferDataTo($completedContract, $contratCompanyPart);
         }
+        /** @var Show $relatedProject */
+        $relatedProject = $lastContract->getRelatedProject();
+        $contratCompanyPart->showName = $relatedProject->getName();
+        $contratCompanyPart->showAuthor = twig_join_filter($relatedProject->getAuthors()->count() ? $relatedProject->getAuthors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
+        $contratCompanyPart->showDirector = twig_join_filter($relatedProject->getDirectors()->count() ? $relatedProject->getDirectors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
+
         $form = $this->createForm(ContractCompanyPartType::class, $contratCompanyPart);
 
         $form->handleRequest($request);

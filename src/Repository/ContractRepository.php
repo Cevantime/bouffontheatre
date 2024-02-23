@@ -46,6 +46,8 @@ class ContractRepository extends ServiceEntityRepository
             ->orderBy('c.contractDate', 'DESC')
             ->setParameter('status', Contract::STATUS_FILLED_BY_COMPANY)
             ->setParameter('owner', $user)
+
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
             ;

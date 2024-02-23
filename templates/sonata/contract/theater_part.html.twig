@@ -16,8 +16,6 @@
             <div class="btn-group">
                 <button class="btn btn-success mb-3" type="button" id="add_performance">Ajouter une représentation
                 </button>
-                <button class="btn btn-danger mb-3" type="button" id="remove_performance">Retirer une représentation
-                </button>
             </div>
             {{ form_row(form.showServiceSession) }}
         </div>
@@ -57,12 +55,14 @@
                 <input class="btn btn-success" name="invite" type="submit"
                        value="Mettre à jour et envoyer le formulaire">
                 <input class="btn btn-success" type="submit" name="generate" value="Mettre à jour et générer">
+                <input class="btn btn-success" type="submit" name="send" value="Mettre à jour et envoyer à la compagnie">
 
             {% else %}
                 <input class="btn btn-primary" type="submit" value="Créer">
                 <input class="btn btn-success" name="invite" type="submit"
                        value="Créer et envoyer le formulaire">
                 <input class="btn btn-success" type="submit" name="generate" value="Créer et générer">
+                <input class="btn btn-success" type="submit" name="send" value="Créer et envoyer à la compagnie">
             {% endif %}
         </div>
     </div>
@@ -75,6 +75,11 @@
     <script src="{{ asset('js/fos_js_routes.js') }}"></script>
     <script>
         $(function () {
+            function addDeletePerformanceButton(row) {
+                $('<button class="btn btn-danger">Supprimer</button>').click(function(){
+                   row.remove();
+                }).appendTo(row);
+            }
             $('#contract_theater_part_project').change(function () {
                 if ({{ edit }}) {
                     window.location = Routing.generate('app_contract_edit_from_project', {
@@ -85,7 +90,11 @@
                     window.location = Routing.generate('app_contract_create_from_project', {id: $(this).val()});
                 }
             });
+
             const $performanceList = $('#contract_theater_part_performances');
+            $performanceList.children().each(function(){
+                addDeletePerformanceButton($(this));
+            });
             const performanceRowPrototype = $performanceList.data('prototype');
             $performanceList.each(function () {
                 $(this).find('label').text('Représentation n°' + ($(this).index()));
@@ -97,12 +106,7 @@
                     .replace(/__name__/g, newIndex)
                 ;
                 $performanceList.append(newRow);
-            });
-            $('#remove_performance').click(function () {
-                if ($performanceList.children().length <= 1) {
-                    return;
-                }
-                $performanceList.children().last().remove();
+                addDeletePerformanceButton(newRow);
             });
         });
     </script>

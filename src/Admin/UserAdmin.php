@@ -46,7 +46,7 @@ class UserAdmin extends AbstractAdmin
             ->add('newsletter')
             ->add('roles', ChoiceType::class, [
                 'label' => 'Roles',
-                'choices' => User::ROLES,
+                'choices' => $roles,
                 'multiple' => true,
                 'expanded' => true
             ]);

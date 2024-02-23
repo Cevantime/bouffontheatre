@@ -78,9 +78,9 @@ class ContractController extends AbstractController
             if(!$contract){
                 throw $this->createNotFoundException();
             }
-            $DTOService->transferDataTo($contract, $contractTheaterPart);
-            $DTOService->transferDataTo($contract, $contractCompanyPart);
-            $DTOService->transferDataTo($contract, $contractConfig);
+            foreach ([$contractTheaterPart, $contractConfig, $contractCompanyPart] as $form) {
+                $DTOService->transferDataTo($contract, $form);
+            }
         } else {
             $contract = new Contract();
         }
@@ -105,19 +105,20 @@ class ContractController extends AbstractController
             $contract->setContractSignatureDate($contractSignatureDate);
             foreach ($contractTheaterPart->performances as $performance) {
                 $performance->setRelatedProject($contractTheaterPart->project);
-                $contract->addPerformance($performance);
                 $entityManager->persist($performance);
             }
             $contract->setRelatedProject($contractTheaterPart->project);
-            $DTOService->transferDataTo($contractCompanyPart, $contract);
-            $DTOService->transferDataTo($contractTheaterPart, $contract);
-            $DTOService->transferDataTo($contractConfig, $contract);
+            foreach ([$contractTheaterPart, $contractConfig, $contractCompanyPart] as $form) {
+                $DTOService->transferDataTo($form, $contract);
+            }
             $entityManager->persist($contract);
             $entityManager->flush();
             if($request->request->get('invite')) {
                 return $this->redirectToRoute('app_contract_invite_company', ['id' => $contract->getId()]);
             } elseif ($request->request->get('generate')) {
                 return $contractService->createGeneratedContractResponse($contract);
+            } elseif ($request->request->get('send')) {
+                return $this->redirectToRoute('app_contract_send_email', ['id' => $contract->getId()]);
             } else {
                 return $this->redirectToRoute('app_contract_edit_from_project', [
                     'id' => $contract->getRelatedProject()->getId(),

@@ -60,7 +60,7 @@ class ConfigService
         return $this->hasKey($key) && $this->getConfig($key)->getValue() !== null;
     }
 
-    private function setConfig(string $key, string $value)
+    private function setConfig(string $key, ?string $value)
     {
         if ($this->hasKey($key)) {
             $config = $this->getConfig($key);
@@ -80,7 +80,7 @@ class ConfigService
         }
     }
 
-    public function saveConfig(string $key, string $value)
+    public function saveConfig(string $key, ?string $value)
     {
         $this->setConfig($key, $value);
         $this->manager->flush();

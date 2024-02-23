@@ -135,7 +135,7 @@ class Contract
     #[ORM\Column(length: 20)]
     private ?string $status = self::STATUS_DRAFT;
 
-    #[ORM\OneToMany(mappedBy: 'contract', targetEntity: Performance::class)]
+    #[ORM\OneToMany(mappedBy: 'contract', targetEntity: Performance::class, orphanRemoval: true)]
     private Collection $performances;
 
     #[ORM\ManyToOne(inversedBy: 'contracts')]
