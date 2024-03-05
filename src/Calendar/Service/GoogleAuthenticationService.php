@@ -83,7 +83,7 @@ class GoogleAuthenticationService
         $this->getSession()->remove(self::OAUTH2_STATE);
     }
 
-    public function getAccessToken($code)
+    public function grabAccessToken($code)
     {
         $token = $this->google->getAccessToken('authorization_code', [
             'code' => $code

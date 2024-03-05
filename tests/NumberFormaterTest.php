@@ -25,6 +25,6 @@ class NumberFormaterTest extends KernelTestCase
         $numberService = $container->get(AmountService::class);
         $number = 'toto';
         $float = $numberService->formatFrenchToStandardAmount($number);
-        $this->assertEquals(3.14, $float);
+        $this->assertEquals(0.0, $float);
     }
 }

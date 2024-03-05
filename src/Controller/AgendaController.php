@@ -46,8 +46,7 @@ class AgendaController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function index(BookingRepository $bookingRepository, CalendarService $calendarService, Request $request): Response
     {
-        $calendarService->syncEvents();
-        $calendarService->syncBookings();
+        $calendarService->sync();
 
         $period = new Period();
 
@@ -89,31 +88,31 @@ class AgendaController extends AbstractController
 
         while ($date < $period->to) {
             $dayName = $date->format("l");
-            $day = $date->format("d/m/Y");
-            $days[] = $date;
             if (!in_array($dayName, $showDays)) {
                 $date = $date->add(new DateInterval("P1D"));
                 continue;
             }
+            $days[] = $date;
+            $day = $date->format("d/m/Y");
             $dayBookings = $bookingsGroupedByDay[$day] ?? [];
             $showIntervals = $daysShow[$dayName];
             $availables[$day] = [];
-            foreach ($showIntervals as $si) {
-                $dateStartInterval = DateTimeImmutable::createFromFormat("d/m/Y H:i", $day . ' ' . $si['from']);
-                $dateEndInterval = DateTimeImmutable::createFromFormat("d/m/Y H:i", $day . ' ' . $si['to']);
+            foreach ($showIntervals as $showInterval) {
+                $dateStartInterval = DateTimeImmutable::createFromFormat("d/m/Y H:i", $day . ' ' . $showInterval['from']);
+                $dateEndInterval = DateTimeImmutable::createFromFormat("d/m/Y H:i", $day . ' ' . $showInterval['to']);
                 $bookingFound = false;
-                foreach ($dayBookings as $db) {
+                foreach ($dayBookings as $dayBooking) {
                     if (
-                        (($db->getBeginAt() >= $dateStartInterval) && ($db->getBeginAt() <= $dateEndInterval)
-                            || (($db->getEndAt() >= $dateStartInterval) && ($db->getEndAt() <= $dateEndInterval)))
-                        || (($db->getBeginAt() <= $dateStartInterval) && ($db->getEndAt() >= $dateEndInterval))
+                        (($dayBooking->getBeginAt() >= $dateStartInterval) && ($dayBooking->getBeginAt() <= $dateEndInterval)
+                            || (($dayBooking->getEndAt() >= $dateStartInterval) && ($dayBooking->getEndAt() <= $dateEndInterval)))
+                        || (($dayBooking->getBeginAt() <= $dateStartInterval) && ($dayBooking->getEndAt() >= $dateEndInterval))
                     ) {
                         $bookingFound = true;
                         break;
                     }
                 }
                 if (!$bookingFound) {
-                    $availables[$day][] = $si;
+                    $availables[$day][] = $showInterval;
                 }
             }
             $date = $date->add(new DateInterval("P1D"));

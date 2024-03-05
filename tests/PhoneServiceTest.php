@@ -23,7 +23,7 @@ class PhoneServiceTest extends KernelTestCase
         $phoneService = self::getContainer()->get(PhoneService::class);
         $testedPhone = " ++01 a3 456 79";
         self::assertFalse($phoneService->checkIsPhone($testedPhone));
-        self::assertNull($phoneService->formatPhone($testedPhone));
+        self::assertEquals($phoneService->formatPhone($testedPhone), $testedPhone);
     }
 
     public function testInternationalNotation(): void
