@@ -1,37 +1,38 @@
 <?php
 
-namespace App\Service;
+namespace App\Contract;
 
 use App\Entity\Contract;
 use App\Entity\Performance;
-use PhpOffice\PhpWord\TemplateProcessor;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 use function Symfony\Component\String\u;
 
-class ContractService
+class ContractGenerator
 {
 
     public function __construct(
         private KernelInterface           $kernel,
         private PropertyAccessorInterface $propertyAccessor,
+        private Environment               $twig,
         private TranslatorInterface       $translator
     )
     {
     }
 
-    private function setRawContractValue(Contract $contract, TemplateProcessor $templateProcessor, $key)
+    private function setRawContractValue(Contract $contract, array &$twigContext, $key)
     {
-        $templateProcessor->setValue($key, $this->propertyAccessor->getValue($contract, $key));
+        $twigContext[$key] = $this->propertyAccessor->getValue($contract, $key);
     }
 
-    private function setRawContractValues(Contract $contract, TemplateProcessor $templateProcessor, $keys)
+    private function setRawContractValues(Contract $contract, array &$twigContext, $keys)
     {
         foreach ($keys as $key) {
-            $this->setRawContractValue($contract, $templateProcessor, $key);
+            $this->setRawContractValue($contract, $twigContext, $key);
         }
     }
 
@@ -49,9 +50,9 @@ class ContractService
     public function generateContractFile(Contract $contract): array
     {
 
-        $templateProcessor = new TemplateProcessor($this->kernel->getProjectDir() . "/assets/docx/contract_template.docx");
-
-        $this->setRawContractValues($contract, $templateProcessor, [
+        $templateProcessor = new HackyTemplateProcessor($this->kernel->getProjectDir() . "/assets/docx/contract_template.docx", $this->twig);
+        $twigContext = [];
+        $this->setRawContractValues($contract, $twigContext, [
             'theaterAddress',
             'theaterSiret',
             'theaterAddress',
@@ -88,27 +89,30 @@ class ContractService
             'tva',
         ]);
         $perfCount = $contract->getPerformances()->count();
-        $templateProcessor->setValue('showCount', $contract->getPerformances()->count());
+        $twigContext['showCount'] = $contract->getPerformances()->count();
         $self = $this;
 
-        $templateProcessor->cloneBlock('showDates', 0, true, false, array_map(
+        $twigContext['showDates'] = array_map(
             function (Performance $p) use ($self) {
-                return ["showDate" => $self->formatDate($p->getPerformedAt())];
+                return $self->formatDate($p->getPerformedAt());
             },
             $contract->getPerformances()->toArray()
-        ));
-        $templateProcessor->setValue('showTheaterShare', $perfCount * $contract->getShowTheaterShare());
-        $templateProcessor->setValue('showCompanyShare', $perfCount * $contract->getShowCompanyShare());
-        $templateProcessor->setValue('contractDate', $this->formatSimpleDate($contract->getContractDate()));
-        $templateProcessor->setValue('contractSignatureDate', $this->formatSimpleDate($contract->getContractSignatureDate()));
+        );
 
-        $exportName = 'contrat_'.u($contract->getShowName())->snake()->lower().'_'.($contract->getContractDate()->format('d_m_y')).'.docx';
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'bouffon_contract'.DIRECTORY_SEPARATOR;
-        if( ! file_exists($dir)) {
+
+        $twigContext['showTheaterShare'] = $perfCount * $contract->getShowTheaterShare();
+        $twigContext['showCompanyShare'] = $perfCount * $contract->getShowCompanyShare();
+        $twigContext['contractDate'] = $this->formatSimpleDate($contract->getContractDate());
+        $twigContext['contractSignatureDate'] = $this->formatSimpleDate($contract->getContractSignatureDate());
+
+        $exportName = 'contrat_' . u($contract->getShowName())->snake()->lower() . '_' . ($contract->getContractDate()->format('d_m_y')) . '.docx';
+        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bouffon_contract' ;
+        if (!file_exists($dir)) {
             mkdir($dir);
         }
-        $path = $dir.$exportName;
-        $templateProcessor->saveAs($path);
+        $path = $dir .DIRECTORY_SEPARATOR. $exportName;
+        $i = 0;
+        $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
         return [
             'path' => $path,
             'name' => $exportName

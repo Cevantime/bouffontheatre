@@ -25,6 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ContractInformationsController extends AbstractController
 {
     #[Route('/contract/informations', name: 'app_contract_informations')]
+    #[IsGranted('ROLE_ARTIST')]
     public function form(
         DTOService $DTOService,
         ContractRepository $contractRepository,
@@ -50,8 +51,8 @@ class ContractInformationsController extends AbstractController
         /** @var Show $relatedProject */
         $relatedProject = $lastContract->getRelatedProject();
         $contratCompanyPart->showName = $relatedProject->getName();
-        $contratCompanyPart->showAuthor = twig_join_filter($relatedProject->getAuthors()->count() ? $relatedProject->getAuthors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
-        $contratCompanyPart->showDirector = twig_join_filter($relatedProject->getDirectors()->count() ? $relatedProject->getDirectors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
+        $contratCompanyPart->showAuthor = $this->twig_join_filter($relatedProject->getAuthors()->count() ? $relatedProject->getAuthors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
+        $contratCompanyPart->showDirector = $this->twig_join_filter($relatedProject->getDirectors()->count() ? $relatedProject->getDirectors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
 
         $form = $this->createForm(ContractCompanyPartType::class, $contratCompanyPart);
 
@@ -76,4 +77,41 @@ class ContractInformationsController extends AbstractController
             'lastContract' => $lastContract
         ]);
     }
+
+    private function twig_join_filter($value, $glue = '', $and = null)
+    {
+        if (!($value instanceof \Traversable || \is_array($value))) {
+            $value = (array) $value;
+        }
+
+        $value = $this->twig_to_array($value, false);
+
+        if (0 === \count($value)) {
+            return '';
+        }
+
+        if (null === $and || $and === $glue) {
+            return implode($glue, $value);
+        }
+
+        if (1 === \count($value)) {
+            return $value[0];
+        }
+
+        return implode($glue, \array_slice($value, 0, -1)).$and.$value[\count($value) - 1];
+    }
+
+    function twig_to_array($seq, $preserveKeys = true)
+    {
+        if ($seq instanceof \Traversable) {
+            return iterator_to_array($seq, $preserveKeys);
+        }
+
+        if (!\is_array($seq)) {
+            return $seq;
+        }
+
+        return $preserveKeys ? $seq : array_values($seq);
+    }
+
 }

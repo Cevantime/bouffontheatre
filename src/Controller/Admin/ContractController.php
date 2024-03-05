@@ -2,34 +2,27 @@
 
 namespace App\Controller\Admin;
 
+use App\Contract\ContractGenerator;
 use App\DTO\ContractCompanyPart;
 use App\DTO\ContractGlobalConfig;
 use App\DTO\ContractTheaterPart;
 use App\Entity\Contract;
 use App\Entity\Project;
-use App\Entity\Show;
 use App\Form\ContractGlobalConfigType;
 use App\Form\ContractTheaterPartType;
 use App\Repository\ContractRepository;
-use App\Service\ContractService;
-use App\Service\DTOService;
 use App\Service\ConfigService;
+use App\Service\DTOService;
 use App\Service\StringCallbacks;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Phalcon\Forms\Element\Date;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use function Symfony\Component\String\u;
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/admin')]
@@ -60,14 +53,14 @@ class ContractController extends AbstractController
     #[Route(path: '/contract/from-project/{id}', name: 'app_contract_create_from_project', options: ['expose' => true])]
     #[Route(path: '/contract/from-project/{id}/edit/{idContract}', name: 'app_contract_edit_from_project', options: ['expose' => true])]
     public function createContractForProject(
-        ConfigService $configService,
-        DTOService $DTOService,
-        Request $request,
+        ConfigService          $configService,
+        DTOService             $DTOService,
+        Request                $request,
         EntityManagerInterface $entityManager,
-        ContractRepository $contractRepository,
-        ContractService $contractService,
-        ?Project $project = null,
-        $idContract = null
+        ContractRepository     $contractRepository,
+        ContractGenerator      $contractService,
+        ?Project               $project = null,
+                               $idContract = null
     )
     {
         $contractTheaterPart = new ContractTheaterPart();
@@ -157,13 +150,13 @@ class ContractController extends AbstractController
     }
 
     #[Route('/contract/generate/{id}', name: 'app_contract_generate')]
-    public function generateContract(Contract $contract, ContractService $contractService)
+    public function generateContract(Contract $contract, ContractGenerator $contractService)
     {
         return $contractService->createGeneratedContractResponse($contract);
     }
 
     #[Route('/contract/send-email/{id}', name: 'app_contract_send_email')]
-    public function sendByEmail(Contract $contract, MailerInterface $mailer, ContractService $contractService)
+    public function sendByEmail(Contract $contract, MailerInterface $mailer, ContractGenerator $contractService)
     {
         $user = $contract->getRelatedProject()->getOwner();
 

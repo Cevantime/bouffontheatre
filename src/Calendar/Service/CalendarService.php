@@ -147,6 +147,12 @@ class CalendarService
         return $this->guzzleClient->send($request);
     }
 
+    public function sync()
+    {
+        $this->syncEvents();
+        $this->syncBookings();
+    }
+
     public function syncEvents()
     {
         $nextSyncToken = $this->config->hasKey(ConfigService::EVENT_NEXT_SYNC_TOKEN)

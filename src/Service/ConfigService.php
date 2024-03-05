@@ -86,7 +86,7 @@ class ConfigService
         $this->manager->flush();
     }
 
-    public function saveConfigs(array $configs)
+    public function saveConfigs(array $configs = [])
     {
         $this->setConfigs($configs);
         $this->manager->flush();
