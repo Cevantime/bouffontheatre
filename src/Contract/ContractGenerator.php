@@ -4,6 +4,7 @@ namespace App\Contract;
 
 use App\Entity\Contract;
 use App\Entity\Performance;
+use PhpOffice\PhpWord\Settings;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -38,6 +39,7 @@ class ContractGenerator
 
     public function createGeneratedContractResponse(Contract $contract)
     {
+        dd(Settings::getTempDir());
         $export = $this->generateContractFile($contract);
         $response = new BinaryFileResponse($export['path']);
         $response->setContentDisposition(
