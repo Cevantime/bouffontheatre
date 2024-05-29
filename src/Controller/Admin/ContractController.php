@@ -34,15 +34,14 @@ class ContractController extends AbstractController
         Request                   $request,
         ConfigService             $configService,
         DTOService $DTOService
-    ): Response
-    {
+    ): Response {
         $contractConfig = new ContractGlobalConfig();
         $configs = $configService->getRawConfigs();
-        $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class.'::camelize');
+        $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class . '::camelize');
         $form = $this->createForm(ContractGlobalConfigType::class, $contractConfig);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $DTOService->transferDataTo($contractConfig, $configs, StringCallbacks::class.'::snakify');
+            $DTOService->transferDataTo($contractConfig, $configs, StringCallbacks::class . '::snakify');
             $configService->saveConfigs($configs);
         }
         return $this->render('sonata/contract/config.html.twig', [
@@ -60,15 +59,14 @@ class ContractController extends AbstractController
         ContractRepository     $contractRepository,
         ContractGenerator      $contractService,
         ?Project               $project = null,
-                               $idContract = null
-    )
-    {
+        $idContract = null
+    ) {
         $contractTheaterPart = new ContractTheaterPart();
         $contractCompanyPart = new ContractCompanyPart();
         $contractConfig = new ContractGlobalConfig();
-        if($idContract) {
+        if ($idContract) {
             $contract = $contractRepository->find($idContract);
-            if(!$contract){
+            if (!$contract) {
                 throw $this->createNotFoundException();
             }
             foreach ([$contractTheaterPart, $contractConfig, $contractCompanyPart] as $form) {
@@ -82,22 +80,23 @@ class ContractController extends AbstractController
         $contractTheaterPart->contractConfig = $contractConfig;
         $contractTheaterPart->contractCompanyPart = $contractCompanyPart;
         $lastContract = $contractRepository->getUserLastCompletedContract($project->getOwner());
-        if($lastContract && !$idContract) {
+        if ($lastContract && !$idContract) {
             $DTOService->transferDataTo($lastContract, $contractCompanyPart);
             $DTOService->transferDataTo($lastContract, $contractConfig);
-        } elseif(!$idContract) {
+        } elseif (!$idContract) {
             $configs = $configService->getRawConfigs();
-            $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class.'::camelize');
+            $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class . '::camelize');
         }
         $form = $this->createForm(ContractTheaterPartType::class, $contractTheaterPart);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $contractDate = new \DateTimeImmutable();
             $contract->setContractDate($contractDate);
             $contractSignatureDate = $contractDate->add(\DateInterval::createFromDateString('14 day'));
             $contract->setContractSignatureDate($contractSignatureDate);
-            foreach ($contractTheaterPart->performances as $performance) {
+            foreach ($contractTheaterPart->getPerformances() as $performance) {
                 $performance->setRelatedProject($contractTheaterPart->project);
+                $performance->setContract($contract);
                 $entityManager->persist($performance);
             }
             $contract->setRelatedProject($contractTheaterPart->project);
@@ -106,7 +105,7 @@ class ContractController extends AbstractController
             }
             $entityManager->persist($contract);
             $entityManager->flush();
-            if($request->request->get('invite')) {
+            if ($request->request->get('invite')) {
                 return $this->redirectToRoute('app_contract_invite_company', ['id' => $contract->getId()]);
             } elseif ($request->request->get('generate')) {
                 return $contractService->createGeneratedContractResponse($contract);
@@ -126,13 +125,12 @@ class ContractController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/contract/invite-company/{id}', name:'app_contract_invite_company')]
+    #[Route(path: '/contract/invite-company/{id}', name: 'app_contract_invite_company')]
     public function inviteCompany(
         Contract $contract,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer
-    )
-    {
+    ) {
         $contract->setStatus(Contract::STATUS_SENT_TO_COMPANY);
         $entityManager->persist($contract);
         $entityManager->flush();
@@ -172,6 +170,4 @@ class ContractController extends AbstractController
         $this->addFlash('success', 'Contrat envoyé avec succès');
         return $this->redirectToRoute('admin_app_contract_show', ['id' => $contract->getId()]);
     }
-
-
 }

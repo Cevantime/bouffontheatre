@@ -21,8 +21,7 @@ class ContractGenerator
         private PropertyAccessorInterface $propertyAccessor,
         private Environment               $twig,
         private TranslatorInterface       $translator
-    )
-    {
+    ) {
     }
 
     private function setRawContractValue(Contract $contract, array &$twigContext, $key)
@@ -39,7 +38,6 @@ class ContractGenerator
 
     public function createGeneratedContractResponse(Contract $contract)
     {
-        dd(Settings::getTempDir());
         $export = $this->generateContractFile($contract);
         $response = new BinaryFileResponse($export['path']);
         $response->setContentDisposition(
@@ -108,11 +106,11 @@ class ContractGenerator
         $twigContext['contractSignatureDate'] = $this->formatSimpleDate($contract->getContractSignatureDate());
 
         $exportName = 'contrat_' . u($contract->getShowName())->snake()->lower() . '_' . ($contract->getContractDate()->format('d_m_y')) . '.docx';
-        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bouffon_contract' ;
+        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'bouffon_contract';
         if (!file_exists($dir)) {
             mkdir($dir);
         }
-        $path = $dir .DIRECTORY_SEPARATOR. $exportName;
+        $path = $dir . DIRECTORY_SEPARATOR . $exportName;
         $i = 0;
         $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
         return [
@@ -123,7 +121,8 @@ class ContractGenerator
 
     private function formatDate(\DateTimeInterface $dateTime)
     {
-        return sprintf("%s %s %s %s à %sh",
+        return sprintf(
+            "%s %s %s %s à %sh",
             $this->translator->trans($dateTime->format('l')),
             $dateTime->format('d'),
             $this->translator->trans($dateTime->format('F')),
@@ -134,7 +133,8 @@ class ContractGenerator
 
     private function formatSimpleDate(\DateTimeInterface $dateTime)
     {
-        return sprintf("%s %s %s %s",
+        return sprintf(
+            "%s %s %s %s",
             $this->translator->trans($dateTime->format('l')),
             $dateTime->format('d'),
             $this->translator->trans($dateTime->format('F')),

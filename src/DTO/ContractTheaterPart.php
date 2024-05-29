@@ -12,10 +12,20 @@ class ContractTheaterPart
     /**
      * @var Performance[]
      */
-    public $performances;
+    private $performances;
 
     public $showServiceSession;
 
     public $contractCompanyPart;
     public $contractConfig;
+
+    public function getPerformances()
+    {
+        return $this->performances;
+    }
+
+    public function setPerformances($performances)
+    {
+        $this->performances = $performances;
+    }
 }

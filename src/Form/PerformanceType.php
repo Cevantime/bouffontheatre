@@ -16,8 +16,8 @@ class PerformanceType extends AbstractType
             ->add('performedAt', DateTimePickerType::class, [
                 'label' => 'Date et heure',
                 'input' => 'datetime_immutable',
-            ])
-        ;
+                'required' => true
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
