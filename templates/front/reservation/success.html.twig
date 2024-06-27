@@ -1,0 +1,21 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Réservation pour le spectacle {{ performance.relatedProject.name }}
+{% endblock %}
+{% block body %}
+    <section class="container">
+        <div class="alert alert-success">
+            {% set p = performance %}
+            Votre de réservation de {{ reservation.sumTarifs }} place(s) a bien été effectuée au nom de <em>{{reservation.name}}</em> pour le spectacle {{ performance.relatedProject.name }}
+            le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}}
+        </div>
+
+        <div class="alert alert-info">
+            Si vous souhaitez modifier ou annuler votre réservation, vous pouvez passer par notre <a href="{{ path('app_contact') }}" title="formulaire de contact">formulaire de contact</a>
+            en précisant bien le nom de la réservation et l'action que vous souhaitez effectuer
+        </div>
+
+        <a href="{{ path('app_reservation', {'slug':p.relatedProject.slug}) }}">Revenir aux réservations</a>
+    </section>
+{% endblock %}
