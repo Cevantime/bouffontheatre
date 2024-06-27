@@ -1,0 +1,51 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Réservation pour le spectacle {{ show.name }}
+{% endblock %}
+{% block body %}
+    <div class="banner">
+        {% if show.banner is defined and show.banner %}
+            {% include 'front/incs/banner_picture.html.twig' with { banner:  show.banner, alt: show.name } %}
+        {% else %}
+            <img src="{{ sonata_path(get_content('show_details_default_banner'), 'banner') }}" alt="">
+        {% endif %}
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h2 class="banner-title">{{ show.name }}</h2>
+                {% if show.punchline %}
+                    <h3 class="mb-4">{{ show.punchline }}</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <section id="show-profile" class="container">
+        <h1>{{ show.name }}</h1>
+        <h2 class="mb-4">Dates disponibles</h2>
+        <div class="row">
+        {% for p in available_performances %}
+        <div class="col md-3">
+        <div class="card">
+        <div class="card-header">
+        {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}}
+        </div>
+        <div class="card-body">
+            {% if p.isAvailableForReservation %}
+            <p class="card-text">Réservez dès à présent pour cette date en cliquant sur le bouton ci-dessous</p>
+            <a href="{{ path("app_reservation_form", {id: p.id}) }}" class="btn btn-primary btn-disabled">Réserver</a>
+            {% else %}
+            <p class="card-text">Cette représentation n'est plus disponible à la réservation</p>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path("app_reservation_view", {id: p.id}) }}">Voir les réservations</a>
+            {% endif %}
+        </div>
+        <div class="card-footer text-muted">
+            {{ p.availableReservationsSum }} place(s) restante(s)
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+    </section>
+{% endblock %}

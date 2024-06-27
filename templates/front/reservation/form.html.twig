@@ -1,0 +1,13 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Réservation pour le spectacle {{ performance.relatedProject.name }}
+{% endblock %}
+{% block body %}
+<div class="container">
+    {% set p = performance %}
+    <h1>Réservation pour {{ performance.relatedProject.name }} le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}} </h1>
+    <p>{{ p.availableReservationsSum }} place(s) restante(s)</p>
+    {{ form(form) }}
+</div>
+{% endblock %}
