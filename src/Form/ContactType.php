@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\DTO\Contact;
 use Gregwar\CaptchaBundle\Type\CaptchaType;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -28,10 +30,11 @@ class ContactType extends AbstractType
             ->add('message', TextareaType::class, [
                 'label' => 'Votre message'
             ])
-            ->add('captcha', CaptchaType::class, [
+            ->add('captcha', Recaptcha3Type::class, [
+                'constraints' => new Recaptcha3(),
                 'mapped' => false,
-                'label' => 'Vérification',
-                'help' => 'Veuillez saisir les caractères affiché dans l\'image dans le champs ci-dessus'
+                'action_name' => 'contactpage',
+                'locale' => 'fr',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Envoyer'

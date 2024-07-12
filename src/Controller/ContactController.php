@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\Contact;
 use App\Entity\User;
 use App\Form\ContactType;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +17,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends AbstractController
 {
     #[Route(path: '/contact', name: 'app_contact')]
-    public function index(Request $request, MailerInterface $mailer): Response
+    public function index(Request $request, MailerInterface $mailer, Recaptcha3Validator $recaptcha3Validator): Response
     {
         $contact = new Contact();
 
-        if($this->getUser()) {
+        if ($this->getUser()) {
             /** @var User $user */
             $user = $this->getUser();
             $contact->lastname = $user->getLastname();
@@ -32,14 +33,14 @@ class ContactController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $captchaScore = $recaptcha3Validator->getLastResponse()->getScore();
             $mail = (new TemplatedEmail())
-                ->from(new Address($contact->email, $contact->firstname.' '.$contact->lastname))
+                ->from(new Address($contact->email, $contact->firstname . ' ' . $contact->lastname))
                 ->to('contactbouffon@gmail.com',)
-                ->subject($contact->firstname.' '.$contact->lastname.' vous a contacté via bouffontheatre.fr')
+                ->subject($contact->firstname . ' ' . $contact->lastname . ' vous a contacté via bouffontheatre.fr')
                 ->htmlTemplate('front/contact/email_contact.html.twig')
-                ->context(['contact' => $contact])
-            ;
+                ->context(['contact' => $contact, 'captcha_score' => $captchaScore]);
 
             $mailer->send($mail);
             $this->addFlash('success', 'Votre message a bien été envoyé');
