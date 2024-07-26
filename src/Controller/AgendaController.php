@@ -38,7 +38,7 @@ class AgendaController extends AbstractController
         "Sunday" => [
             ["from" => "16:00", "to" => "18:15", "o_from" => "17h00", "o_to" => "18h00"],
             ["from" => "18:15", "to" => "20:15", "o_from" => "19h00", "o_to" => "20h00"],
-            ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
+            // ["from" => "20:15", "to" => "23:30", "o_from" => "21h00", "o_to" => "22h00"]
         ],
     ];
 
