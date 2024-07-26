@@ -17,6 +17,7 @@ use Sonata\AdminBundle\Form\Type\ModelListType;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\CollectionType;
+use Sonata\FormatterBundle\Form\Type\FormatterType;
 use Sonata\MediaBundle\Form\Type\MediaType;
 
 class BlogPostAdmin extends AbstractAdmin
@@ -45,9 +46,24 @@ class BlogPostAdmin extends AbstractAdmin
                 'label' => 'Présentation de l\'article',
                 'help' => 'Une courte description accrocheuse du contenu du post. Apparaît dans certaines galeries.'
             ])
-            ->add('content', CKEditorType::class, [
+            ->add('content', FormatterType::class, [
                 'label' => 'Description',
-                'config_name' => 'article_config'
+                // 'config_name' => 'article_config',
+                'format_field'   => 'contentFormatter',
+                // 'format_field_options' => [
+                //     'choices' => [
+                //         'text' => 'Text',
+                //         'markdown' => 'Markdown',
+                //     ],
+                //     'empty_data' => 'markdown',
+                // ],
+                'source_field' => 'rawContent',
+                // 'source_field_options' => [
+                //     'attr' => ['class' => 'span10', 'rows' => 20],
+                // ],
+                'listener' => true,
+                'target_field' => 'content',
+                'ckeditor_context' => 'article_config'
             ])
             ->add('image', MediaType::class, [
                 'provider' => 'sonata.media.provider.image',

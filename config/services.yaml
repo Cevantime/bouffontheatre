@@ -38,6 +38,10 @@ services:
         arguments:
             $pool: '@sonata.media.pool'
 
+    App\Admin\Extension\MediaBrowserAdminExtension:
+        tags: 
+            - { name: sonata.admin.extension, attributes: { target: sonata.media.admin.media } }
+
     admin.artist:
         class: App\Admin\ArtistAdmin
         tags:

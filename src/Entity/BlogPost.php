@@ -39,6 +39,12 @@ class BlogPost
     #[ORM\ManyToOne(cascade: ['all'])]
     private ?Media $image = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $rawContent = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $contentFormatter = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,5 +149,29 @@ class BlogPost
     public function __toString()
     {
         return $this->title;
+    }
+
+    public function getRawContent(): ?string
+    {
+        return $this->rawContent;
+    }
+
+    public function setRawContent(string $rawContent): static
+    {
+        $this->rawContent = $rawContent;
+
+        return $this;
+    }
+
+    public function getContentFormatter(): ?string
+    {
+        return $this->contentFormatter;
+    }
+
+    public function setContentFormatter(string $contentFormatter): static
+    {
+        $this->contentFormatter = $contentFormatter;
+
+        return $this;
     }
 }

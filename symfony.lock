@@ -210,6 +210,9 @@
             "config/packages/sonata_form.yaml"
         ]
     },
+    "sonata-project/formatter-bundle": {
+        "version": "5.4.1"
+    },
     "sonata-project/media-bundle": {
         "version": "4.5",
         "recipe": {

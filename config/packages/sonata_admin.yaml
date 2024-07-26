@@ -62,3 +62,5 @@ sonata_admin:
     assets:
         extra_stylesheets:
             - sonata/styles/main.css
+        extra_javascripts:
+            - bundles/fosckeditor/ckeditor.js
