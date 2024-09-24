@@ -67,7 +67,7 @@
     </section>
 
     <section id="featured-shows" class="container-fluid dark">
-        <h1 class="section-title">Nos spectacles</h1>
+        <h1 class="section-title">Notre programmation</h1>
         <hr>
         <div role="group" aria-label="Gallerie des spectacles"
              class="splide" {{ stimulus_controller('splide_slider') }}>
@@ -120,7 +120,35 @@
             </div>
         </div>
     </section>
-
+    {% if not get_content('home_other_shows') is empty %}
+    <section id="featured-shows" class="container-fluid dark">
+        <h1 class="section-title">À voir aussi</h1>
+        <hr>
+        <div role="group" aria-label="Autres spectacles à voir"
+             class="splide" {{ stimulus_controller('splide_slider') }}>
+            <div class="splide__track">
+                <div class="splide__list">
+                    {% for showItem in get_content('home_other_shows') | filter(si => si.project is instanceof('App\\Entity\\Show')) %}
+                        {% set show = showItem.project %}
+                        <div class="gallery-show-item splide__slide text-center pb-3">
+                            <img src="{{ sonata_path(show.banner, 'big') }}"
+                                 alt="Un extrait de {{ show.name }}">
+                            <h4>{{ show.name }}</h4>
+                            <div>
+                                {{ show.description | strip_and_truncate(150, '...') }}
+                            </div>
+                            <div>
+                                <a href="{{ path('app_project_view', { slug: show.slug }) }}"
+                                   class="btn btn-primary btn-light">En
+                                    savoir plus</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
     <section class="container">
         <h1 class="section-title">Nous contacter</h1>
         <hr>

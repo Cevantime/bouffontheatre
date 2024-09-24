@@ -1,0 +1,52 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Nos spectacles
+{% endblock %}
+{% block body %}
+    <div class="banner">
+        {% include 'front/incs/banner_picture.html.twig' with { banner: get_content('other_shows_banner'), alt: 'À voir aussi' } %}
+        <div class="banner-content container-fluid">
+            <div class="row flex-column align-items-center justify-content-center">
+                <h3 class="banner-title">À voir aussi</h3>
+                <p>
+                    Ils jouent aussi chez nous !
+                </p>
+            </div>
+        </div>
+    </div>
+    <section class="container">
+        <h2 class="section-title">Nous louons aussi notre salle</h2>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+            {{ get_content('other_shows_description') | raw }}
+            </div>
+        </div>
+    </section>
+    <section class="container-fluid dark">
+        <h1 class="text-center">Ils jouent chez nous</h1>
+        <hr>
+        <div class="container">
+            <div class="row gallery-mosaic">
+                {% for showItem in get_content('other_shows_gallery') %}
+                    {% set show = showItem.project %}
+                    {% if show is instanceof('App\\Entity\\Show') %}
+                        <a class="col-md-6" href="{{ path('app_project_view', {slug: show.slug}) }}">
+                            <div class="mosaic-item">
+                                <h2 class="mosaic-title">{{ show.name }}</h2>
+                                <img class="mosaic-image" src="{{ sonata_path(show.banner, 'very_big') }}" alt="">
+                                <div class="mosaic-text">
+                                    {{ show.description | strip_and_truncate(250, '...') }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <p class="text-center">Aucun spectacle pour l'instant</p>
+                {% endfor %}
+                
+            </div>
+        </div>
+    </section>
+{% endblock %}

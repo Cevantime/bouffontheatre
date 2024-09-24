@@ -16,6 +16,12 @@ class ShowController extends AbstractController
         return $this->render('front/show/index.html.twig');
     }
 
+    #[Route(path: '/other', name: 'app_other')]
+    public function otherShows(): Response
+    {
+        return $this->render('front/show/other.html.twig');
+    }
+
     #[Route(path: '/show/{slug}', name: 'app_show_details')]
     public function details(Show $show, InsightRepository $insightRepository): Response
     {
