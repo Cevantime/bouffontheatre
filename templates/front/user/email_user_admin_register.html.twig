@@ -5,9 +5,11 @@ Vous avez été ajouté à la plateforme bouffontheatre.fr. Un mot de passe a é
 <br>
 <em>{{ plain_password }}</em>
 <br>
+{% if user.hasRole('ROLE_ADMIN') %}
 <br>
 Vous pouvez dès à présent accéder à notre interface d'administration via ce lien : <a href="{{ absolute_url(path('sonata_admin_dashboard')) }}">interface d'administration</a>.
 <br>
+{% endif %}
 <br>
 Vous pouvez réinitialiser votre mot de passe en cliquant sur ce lien : <a href="{{ absolute_url(path('app_forgot_password_request')) }}">réinitialiser mon mot de passe</a>
 <br>
