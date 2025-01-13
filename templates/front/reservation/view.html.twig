@@ -10,15 +10,16 @@
     <table class="table">
     <tr>
     <th>Nom</th>
-    <th>17€</th>
-    <th>12€</th>
+    {# <th>17€</th> #}
+    {# <th>12€</th> #}
+    <th>Nombre de places</th>
     <th>Actions</th>
     </tr>
         {% for r in performance.reservations %}
         <tr>
             <td>{{ r.name }}</td>
+            {# <td>{{r.tarif2}}</td> #}
             <td>{{r.tarif1}}</td>
-            <td>{{r.tarif2}}</td>
             <td>
             <div class="btn-group">
                 <a href="{{ path("app_reservation_edit", {id: r.id}) }}" class="btn btn-success">Modifier</a>

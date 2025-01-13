@@ -38,6 +38,17 @@ class PerformanceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function availablePerformancesQueryBuilder()
+    {
+        $dateLimit = new DateTime();
+        $dateLimit->modify("-1 hours");
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.performedAt', 'ASC')
+            ->where("p.performedAt > :dateLimit")
+            ->setParameter('dateLimit', $dateLimit)
+        ;
+    }
+
     //    /**
     //     * @return Performance[] Returns an array of Performance objects
     //     */

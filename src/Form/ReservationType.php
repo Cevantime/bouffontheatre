@@ -16,12 +16,13 @@ class ReservationType extends AbstractType
             ->add('name', null, [
                 'label' => 'Nom de la réservation'
             ])
-            ->add('tarif2', null, [
-                "label" => "Nombre de places en tarifs plein (17€)"
-            ])
+            // ->add('tarif2', null, [
+            //     "label" => "Nombre de places en tarifs plein (17€)"
+            // ])
             ->add('tarif1', null, [
-                "label" => "Nombre de place au tarif réduit (12€)",
-                "help" => "Chômeur, RSA, intermittents, étudiants ou -26 ans"
+                // "label" => "Nombre de place au tarif réduit (12€)",
+                "label" => "Nombre de places",
+                // "help" => "Chômeur, RSA, intermittents, étudiants ou -26 ans"
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Valider la réservation'
