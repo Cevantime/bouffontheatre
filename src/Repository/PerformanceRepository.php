@@ -31,8 +31,9 @@ class PerformanceRepository extends ServiceEntityRepository
             ->orderBy('p.performedAt', 'ASC')
             ->leftJoin('p.reservations', 'r')
             ->addSelect('r')
-            ->where("p.performedAt > :dateLimit")
+            ->where("p.performedAt > :dateLimit and p.relatedProject = :show")
             ->setParameter('dateLimit', $dateLimit)
+            ->setParameter('show', $show)
             ->getQuery()
             ->getResult();
     }
