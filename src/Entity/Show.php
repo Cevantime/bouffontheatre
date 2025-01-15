@@ -53,6 +53,9 @@ class Show extends Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $billetreducTitle = null;
 
+    #[ORM\Column]
+    private bool $bookableOnline = false;
+
     public function __construct()
     {
         parent::__construct();
@@ -75,7 +78,7 @@ class Show extends Project
     public function getLastSession(): ?PeriodItem
     {
         $sessionsAsArray = $this->sessions->toArray();
-        usort($sessionsAsArray, function(PeriodItem $periodItem1, PeriodItem $periodItem2) {
+        usort($sessionsAsArray, function (PeriodItem $periodItem1, PeriodItem $periodItem2) {
             return $periodItem1->getPeriod()->getDateEnd() <=> $periodItem2->getPeriod()->getDateEnd();
         });
         return $sessionsAsArray ? $sessionsAsArray[count($sessionsAsArray) - 1] : null;
@@ -245,8 +248,8 @@ class Show extends Project
 
     public function getCurrentSessions()
     {
-        return $this->sessions->filter(function(PeriodItem $periodItem) {
-           return $periodItem->getPeriod()->getDateEnd() > new \DateTime();
+        return $this->sessions->filter(function (PeriodItem $periodItem) {
+            return $periodItem->getPeriod()->getDateEnd() > new \DateTime();
         });
     }
 
@@ -402,6 +405,18 @@ class Show extends Project
     public function setBilletreducTitle(?string $billetreducTitle): static
     {
         $this->billetreducTitle = $billetreducTitle;
+
+        return $this;
+    }
+
+    public function isBookableOnline(): bool
+    {
+        return $this->bookableOnline;
+    }
+
+    public function setBookableOnline(bool $bookableOnline): static
+    {
+        $this->bookableOnline = $bookableOnline;
 
         return $this;
     }

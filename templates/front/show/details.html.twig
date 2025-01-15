@@ -95,7 +95,11 @@
                                 <a href="{{ link.url }}" class="btn btn-outline-primary"
                                    title="Accédez à la billeterie {{ link.title }}">{{ link.title }}</a>
                             {% endfor %}
+                            
                         {% endif %}
+                        {% if is_granted("SHOW_BOOK_ONLINE", show) %}
+                            <p class="mt-4">Vous pouvez réserver directement <a href="{{ path('app_reservation', {slug: show.slug}) }}">sur le site</a></p>
+                        {% endif  %}
                     </div>
                 {% endif %}
                 {% if show.offers is not empty %}
@@ -160,6 +164,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+                    <p>Réserver directement <a href="{{ path('app_reservation', {slug: show.slug}) }}">sur le site</a></p>
                     {% set social_links = show.featuredLinks | filter((l) => l.link.siteName != null) %}
                     {% if social_links %}
                         <p>

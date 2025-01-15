@@ -19,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route("/reservation")]
 class ReservationController extends AbstractController
 {
+    #[IsGranted('SHOW_BOOK_ONLINE', subject: 'show')]
     #[Route('/{slug}', name: 'app_reservation')]
     public function index(Show $show, PerformanceRepository $performanceRepository): Response
     {
@@ -29,6 +30,7 @@ class ReservationController extends AbstractController
         ]);
     }
 
+    #[IsGranted('RESERVATION_ADD_TO_PERFORMANCE', subject: 'performance')]
     #[Route('/form/{id}', name: 'app_reservation_form')]
     public function form(Performance $performance, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -48,8 +50,7 @@ class ReservationController extends AbstractController
             $entityManager->persist($reservation);
             $entityManager->flush();
             return $this->redirectToRoute("app_reservation_success", [
-                'id' => $performance->getId(),
-                'idReservation' => $reservation->getId()
+                'id' => $reservation->getId()
             ]);
         }
 
@@ -59,7 +60,7 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    #[IsGranted("ROLE_ADMIN")]
+    #[IsGranted("RESERVATION_EDIT", subject: 'reservation')]
     #[Route('/edit/{id}', name: 'app_reservation_edit')]
     public function edit(Reservation $reservation, Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -77,8 +78,7 @@ class ReservationController extends AbstractController
             $entityManager->persist($reservation);
             $entityManager->flush();
             return $this->redirectToRoute("app_reservation_success", [
-                'id' => $performance->getId(),
-                'idReservation' => $reservation->getId()
+                'id' => $reservation->getId()
             ]);
         }
 
@@ -88,7 +88,7 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    #[IsGranted("ROLE_ADMIN")]
+    #[IsGranted("RESERVATION_DELETE", subject: 'reservation')]
     #[Route('/delete/{id}', name: 'app_reservation_delete')]
     public function delete(Reservation $reservation, EntityManagerInterface $entityManager)
     {
@@ -97,7 +97,7 @@ class ReservationController extends AbstractController
         return $this->redirectToRoute('app_reservation_view', ['id' => $reservation->getPerformance()->getId()]);
     }
 
-    #[IsGranted("ROLE_ADMIN")]
+    #[IsGranted("RESERVATION_LIST")]
     #[Route('/view/{id}', name: 'app_reservation_view')]
     public function view(Performance $performance): Response
     {
@@ -106,13 +106,11 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    #[Route('/reservation-success/{id}/{idReservation}', name: 'app_reservation_success')]
-    public function success(Performance $performance, ReservationRepository $reservationRepository, $idReservation): Response
+    #[Route('/reservation-success/{id}', name: 'app_reservation_success')]
+    public function success(Reservation $reservation, ReservationRepository $reservationRepository): Response
     {
-        $reservation = $reservationRepository->find($idReservation);
-
         return $this->render('front/reservation/success.html.twig', [
-            'performance' => $performance,
+            'performance' => $reservation->getPerformance(),
             'reservation' => $reservation
         ]);
     }

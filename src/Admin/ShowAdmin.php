@@ -166,6 +166,11 @@ class ShowAdmin extends AbstractAdmin
                 'required' => false,
                 'help' => 'Indique si le site doit afficher les liens de réservations du spectacle'
             ])
+            ->add('bookableOnline', null, [
+                'label' => 'Réservable sur le site',
+                'required' => false,
+                'help' => 'Indique si le spectacle est réservable directement sur le site'
+            ])
             ->add('sessions', CollectionType::class, [
                 'label' => 'Sessions',
                 'help' => 'Renseignez ici les périodes durant lesquelles le spectacle se joue (ou s\'est joué)',
@@ -270,6 +275,11 @@ class ShowAdmin extends AbstractAdmin
             ->with('Sessions')
             ->add('bookable', null, [
                 'label' => 'Réservable'
+            ])
+            ->add('bookableOnline', null, [
+                'label' => 'Réservable sur le site',
+                'required' => false,
+                'help' => 'Indique si le spectacle est réservable directement sur le site'
             ])
             ->add('sessions', CollectionType::class, [
                 'label' => 'Sessions',
