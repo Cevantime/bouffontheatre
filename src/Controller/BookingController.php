@@ -31,6 +31,8 @@ class BookingController extends AbstractController
             $booking->setEndAt($dateEnd);
         }
 
+        $booking->setIsInstance(false);
+
         $form = $this->createForm(BookingType::class, $booking);
         $form->handleRequest($request);
 
