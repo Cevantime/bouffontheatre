@@ -155,10 +155,10 @@
                 </dl>
                 {% if show.featuredLinks is not empty %}
                     <h3>Liens</h3>
-                    Retrouvez-nous sur :
+                    Autres liens :
                     {% set standard_links = show.featuredLinks | filter((l) => l.link.siteName == null) %}
                     {% if standard_links %}
-                        <ul>
+                        <ul class="list-unstyled">
                             {% for linkItem in standard_links %}
                                 <li>{{ link(linkItem) }}</li>
                             {% endfor %}
