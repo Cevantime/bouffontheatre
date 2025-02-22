@@ -49,11 +49,13 @@ class ArtistItemVoter extends Voter
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_CREATE:
+                return false;
             case self::ADMIN_EDIT:
             case self::ADMIN_DELETE:
                 /** @var User $user */
                 $user = $token->getUser();
                 /** @var ArtistItem $subject */
+
                 $project = null;
                 if($subject->getActedProject() !== null) {
                     $project = $subject->getActedProject();
