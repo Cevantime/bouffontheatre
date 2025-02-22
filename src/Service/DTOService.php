@@ -27,7 +27,7 @@ class DTOService
         $destinationFields = $this->getFieldNames($destination);
         foreach ($originFields as $of) {
             $orFieldTransformed = call_user_func($callbackFieldName, $of);
-            if(is_array($destination) || in_array($orFieldTransformed, $destinationFields)){
+            if(in_array($orFieldTransformed, $destinationFields)){
                 $this->propertyAccessor->setValue(
                     $destination,
                     $openingBracketDest.$orFieldTransformed.$closingBracketDest,

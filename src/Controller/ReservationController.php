@@ -101,8 +101,13 @@ class ReservationController extends AbstractController
     #[Route('/view/{id}', name: 'app_reservation_view')]
     public function view(Performance $performance): Response
     {
+        $sortedReservation = $performance->getReservations()->toArray();
+        usort($sortedReservation, function(Reservation $r1, Reservation $r2){
+            return $r1->getLastName() <=> $r2->getLastName();
+        });
         return $this->render('front/reservation/view.html.twig', [
-            'performance' => $performance
+            'performance' => $performance,
+            'reservations' => $sortedReservation
         ]);
     }
 

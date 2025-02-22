@@ -4,6 +4,7 @@ namespace App\Twig;
 
 use App\Entity\Artist;
 use App\Entity\Link;
+use App\Entity\LinkItem;
 use App\Entity\Media;
 use App\Security\Voter\ArtistVoter;
 use Symfony\Component\Routing\RouterInterface;
@@ -32,6 +33,9 @@ class LinkExtension extends AbstractExtension
 
     public function link($value)
     {
+        if($value instanceof  LinkItem) {
+            $value = $value->getLink();
+        }
         if($value instanceof Link) {
             return $this->generateLinkLinkTag($value);
         } elseif ($value instanceof Artist) {

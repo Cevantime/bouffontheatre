@@ -7,7 +7,7 @@
     <section class="container">
         <div class="alert alert-success">
             {% set p = performance %}
-            Votre de réservation de {{ reservation.sumTarifs }} place(s) a bien été effectuée au nom de <em>{{reservation.name}}</em> pour le spectacle {{ performance.relatedProject.name }}
+            Votre de réservation de {{ reservation.sumTarifs }} place(s) a bien été effectuée au nom de <em>{{ reservation }}</em> pour le spectacle {{ performance.relatedProject.name }}
             le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}}
         </div>
 

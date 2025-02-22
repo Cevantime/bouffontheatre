@@ -136,6 +136,7 @@ class Contract
     private ?string $status = self::STATUS_DRAFT;
 
     #[ORM\OneToMany(mappedBy: 'contract', targetEntity: Performance::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['performedAt' => 'ASC'])]
     private Collection $performances;
 
     #[ORM\ManyToOne(inversedBy: 'contracts')]

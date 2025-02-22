@@ -13,8 +13,11 @@ class ReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', null, [
-                'label' => 'Nom de la réservation'
+            ->add('lastName', null, [
+                'label' => 'Nom'
+            ])
+            ->add('firstName', null, [
+                'label' => 'Prénom'
             ])
             // ->add('tarif2', null, [
             //     "label" => "Nombre de places en tarifs plein (17€)"

@@ -20,7 +20,7 @@ class Reservation
     private ?Performance $performance = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $lastName = null;
 
     #[Positive()]
     #[ORM\Column(nullable: true)]
@@ -37,6 +37,9 @@ class Reservation
     #[Positive()]
     #[ORM\Column(nullable: true)]
     private ?int $tarif4 = null;
+
+    #[ORM\Column(length: 60)]
+    private ?string $firstName = null;
 
     public function getId(): ?int
     {
@@ -55,14 +58,14 @@ class Reservation
         return $this;
     }
 
-    public function getName(): ?string
+    public function getLastName(): ?string
     {
-        return $this->name;
+        return $this->lastName;
     }
 
-    public function setName(string $name): static
+    public function setLastName(string $lastName): static
     {
-        $this->name = $name;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -118,5 +121,22 @@ class Reservation
     public function getSumTarifs()
     {
         return $this->tarif1 + $this->tarif2 + $this->tarif3 + $this->tarif4;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->firstName .' '.$this->lastName;
     }
 }

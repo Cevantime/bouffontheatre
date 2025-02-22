@@ -5,29 +5,34 @@
 {% endblock %}
 {% block body %}
     <section class="container">
-    {% set p = performance %}
-    Réservation pour {{ performance.relatedProject.name }} le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}}
-    <table class="table">
-    <tr>
-    <th>Nom</th>
-    {# <th>17€</th> #}
-    {# <th>12€</th> #}
-    <th>Nombre de places</th>
-    <th>Actions</th>
-    </tr>
-        {% for r in performance.reservations %}
-        <tr>
-            <td>{{ r.name }}</td>
-            {# <td>{{r.tarif2}}</td> #}
-            <td>{{r.tarif1}}</td>
-            <td>
-            <div class="btn-group">
-                <a href="{{ path("app_reservation_edit", {id: r.id}) }}" class="btn btn-success">Modifier</a>
-                <a href="{{ path("app_reservation_delete", {id: r.id}) }}" class="btn btn-danger">Supprimer</a>
-            </div>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+        {% set p = performance %}
+        Réservation pour {{ performance.relatedProject.name }}
+        le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i') }}
+        <table class="table">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                {# <th>17€</th> #}
+                {# <th>12€</th> #}
+                <th>Nombre de places</th>
+                <th>Actions</th>
+            </tr>
+            {% for r in reservations %}
+                <tr>
+                    <td>{{ r.lastName }}</td>
+                    <td>{{ r.firstName }}</td>
+                    {# <td>{{r.tarif2}}</td> #}
+                    <td>{{ r.tarif1 }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ path("app_reservation_edit", {id: r.id}) }}"
+                               class="btn btn-success">Modifier</a>
+                            <a href="{{ path("app_reservation_delete", {id: r.id}) }}"
+                               class="btn btn-danger">Supprimer</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     </section>
 {% endblock %}
