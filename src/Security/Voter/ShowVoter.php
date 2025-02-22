@@ -43,8 +43,9 @@ class ShowVoter extends Voter
         }
 
         switch ($attribute) {
-            case self::ADMIN_LIST:
             case self::ADMIN_CREATE:
+                return false;
+            case self::ADMIN_LIST:
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_EDIT:

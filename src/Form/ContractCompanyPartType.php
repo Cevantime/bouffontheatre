@@ -68,7 +68,7 @@ class ContractCompanyPartType extends AbstractType
                 'label' => 'Nom du ou des metteur(s) en scène',
                 'attr' => ['placeholder' => 'Robert Hossein']
             ])
-            ->add('showArtistCount', TextType::class, [
+            ->add('showArtistCount', IntegerType::class, [
                 'label' => 'Nombre d\'artistes'
             ])
             ->add('showRib', TextType::class, [
