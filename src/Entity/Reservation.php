@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use App\Validator\Reservation as ValidatorReservation;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Positive;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
@@ -40,6 +41,10 @@ class Reservation
 
     #[ORM\Column(length: 60)]
     private ?string $firstName = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\Email()]
+    private ?string $email = null;
 
     public function getId(): ?int
     {
@@ -138,5 +143,17 @@ class Reservation
     public function __toString(): string
     {
         return $this->firstName .' '.$this->lastName;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 }

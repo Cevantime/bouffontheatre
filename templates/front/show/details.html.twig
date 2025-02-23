@@ -164,7 +164,6 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    <p>Réserver directement <a href="{{ path('app_reservation', {slug: show.slug}) }}">sur le site</a></p>
                     {% set social_links = show.featuredLinks | filter((l) => l.link.siteName != null) %}
                     {% if social_links %}
                         <p>

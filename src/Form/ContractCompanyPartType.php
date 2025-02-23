@@ -3,10 +3,13 @@
 namespace App\Form;
 
 use App\DTO\ContractCompanyPart;
+use App\Entity\Artist;
 use App\Form\DataTransformer\PhoneTransformer;
 use App\Form\DataTransformer\SiretTransformer;
 use Phalcon\Text;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,9 +71,7 @@ class ContractCompanyPartType extends AbstractType
                 'label' => 'Nom du ou des metteur(s) en scène',
                 'attr' => ['placeholder' => 'Robert Hossein']
             ])
-            ->add('showArtistCount', IntegerType::class, [
-                'label' => 'Nombre d\'artistes'
-            ])
+            ->add('showArtists', ArtistAutocompleteField::class)
             ->add('showRib', TextType::class, [
                 'label' => 'IBAN de la compagnie'
             ])

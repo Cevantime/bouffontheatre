@@ -23,31 +23,33 @@
         <h1>{{ show.name }}</h1>
         <h2 class="mb-4">Dates disponibles</h2>
         <div class="row">
-        {% for p in available_performances %}
-        <div class="col md-3">
-        <div class="card">
-        <div class="card-header">
-        {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}}
-        </div>
-        <div class="card-body">
-            {% if p.isAvailableForReservation %}
-            <p class="card-text">Réservez dès à présent pour cette date en cliquant sur le bouton ci-dessous</p>
-            <a href="{{ path("app_reservation_form", {id: p.id}) }}" class="btn btn-primary me-2">Réserver</a>
+            {% for p in available_performances %}
+                <div class="col md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }}
+                            à {{ p.performedAt | date('H:i') }}
+                        </div>
+                        <div class="card-body">
+                            {% if p.isAvailableForReservation %}
+                                <p class="card-text">Réservez dès à présent pour cette date en cliquant sur le bouton
+                                    ci-dessous</p>
+                                <a href="{{ path("app_reservation_form", {id: p.id}) }}" class="btn btn-primary me-2">Réserver</a>
+                            {% else %}
+                                <p class="card-text">Cette représentation n'est plus disponible à la réservation</p>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path("app_reservation_view", {id: p.id}) }}">Voir les réservations</a>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-muted">
+                            {{ p.availableReservationsSum }} place(s) restante(s)
+                        </div>
+                    </div>
+                </div>
             {% else %}
-            <p class="card-text">Cette représentation n'est plus disponible à la réservation</p>
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path("app_reservation_view", {id: p.id}) }}">Voir les réservations</a>
-            {% endif %}
-        </div>
-        <div class="card-footer text-muted">
-            {{ p.availableReservationsSum }} place(s) restante(s)
-        </div>
-        </div>
-        </div>
-        {% else %}
-            <p>Aucune date n'est disponible pour l'instant</p>
-        {% endfor %}
+                <p>Aucune date n'est disponible pour l'instant</p>
+            {% endfor %}
         </div>
     </section>
 {% endblock %}

@@ -4,6 +4,7 @@ namespace App\DTO;
 
 use App\Validator\Phone;
 use App\Validator\Siret;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ContractCompanyPart
@@ -40,8 +41,7 @@ class ContractCompanyPart
     #[Assert\Length(max: 150)]
     public ?string $showDirector = null;
 
-    #[Assert\Type("int")]
-    public ?int $showArtistCount = null;
+    public $showArtists = null;
     #[Assert\Iban]
     public ?string $showRib = null;
 }

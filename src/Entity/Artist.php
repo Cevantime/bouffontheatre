@@ -34,7 +34,7 @@ class Artist
     private $stageName;
 
     #[ORM\Column(type: 'boolean')]
-    private $hasFile;
+    private $hasFile = false;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'associatedArtist', cascade: ['persist', 'remove'])]
     private $associatedUser;

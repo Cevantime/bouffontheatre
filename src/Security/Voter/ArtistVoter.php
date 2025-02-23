@@ -5,9 +5,9 @@ namespace App\Security\Voter;
 use App\Admin\ArtistAdmin;
 use App\Entity\Artist;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ArtistVoter extends Voter
@@ -19,6 +19,7 @@ class ArtistVoter extends Voter
     public const ADMIN_CREATE = 'ROLE_ADMIN_ARTIST_CREATE';
     public const ADMIN_DELETE = 'ROLE_ADMIN_ARTIST_DELETE';
     public const ADMIN_VIEW = 'ROLE_ADMIN_ARTIST_VIEW';
+    public const CREATE = 'ARTIST_CREATE';
 
     private Security $security;
 
@@ -34,7 +35,9 @@ class ArtistVoter extends Voter
     {
         return ($attribute == self::VIEW_PROFILE && $subject instanceof Artist)
             || (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && $subject instanceof ArtistAdmin)
-            || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE]) && $subject instanceof Artist);
+            || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE]) && $subject instanceof Artist)
+            || (in_array($attribute, [self::CREATE]))
+            ;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -54,6 +57,7 @@ class ArtistVoter extends Voter
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_CREATE:
+            case self::CREATE:
                 return $user->getOwnedProjects()->count() > 0;
             case self::ADMIN_EDIT:
                 /** @var Artist $subject */

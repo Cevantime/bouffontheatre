@@ -9,6 +9,7 @@ use App\Form\ReservationEditType;
 use App\Form\ReservationType;
 use App\Repository\PerformanceRepository;
 use App\Repository\ReservationRepository;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,7 +33,7 @@ class ReservationController extends AbstractController
 
     #[IsGranted('RESERVATION_ADD_TO_PERFORMANCE', subject: 'performance')]
     #[Route('/form/{id}', name: 'app_reservation_form')]
-    public function form(Performance $performance, Request $request, EntityManagerInterface $entityManager): Response
+    public function form(Performance $performance, Request $request, EntityManagerInterface $entityManager, EmailService $emailService): Response
     {
         if (!$performance->isAvailableForReservation()) {
             $this->addFlash("danger", "Cette représentation n'est plus disponible à la réservation");
@@ -47,6 +48,12 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() and $form->isValid()) {
+            $emailService->sendMailTo(
+                $reservation->getEmail(),
+                'Votre réservation a bien été enregistrée',
+                'front/reservation/email_reservation_done.html.twig',
+                ['reservation' => $reservation]
+            );
             $entityManager->persist($reservation);
             $entityManager->flush();
             return $this->redirectToRoute("app_reservation_success", [

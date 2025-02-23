@@ -26,4 +26,17 @@ class EmailService
 
         $this->mailer->send($email);
     }
+
+    public function sendMailTo($address, $subject, $template, $params = [])
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('contactbouffon@gmail.com', 'Le Bouffon Théâtre'))
+            ->to($address)
+            ->subject($subject)
+            ->htmlTemplate($template)
+            ->context($params)
+        ;
+
+        $this->mailer->send($email);
+    }
 }
