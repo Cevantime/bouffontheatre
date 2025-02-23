@@ -35,11 +35,9 @@ class ContractCompanyPart
     #[Assert\Length(max: 150)]
     public ?string $showName = null;
 
-    #[Assert\Length(max: 150)]
-    public ?string $showAuthor = null;
+    public $showAuthors = null;
 
-    #[Assert\Length(max: 150)]
-    public ?string $showDirector = null;
+    public $showDirectors = null;
 
     public $showArtists = null;
     #[Assert\Iban]

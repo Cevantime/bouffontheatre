@@ -63,15 +63,17 @@ class ContractCompanyPartType extends AbstractType
                 'label' => 'Nom du spectacle',
                 'attr' => ['placeholder' => 'Ruy Blas']
             ])
-            ->add('showAuthor', TextType::class, [
+            ->add('showAuthors', ArtistMultipleAutocompleteField::class, [
                 'label' => 'Nom de l\'auteur',
                 'attr' => ['placeholder' => 'Victor Hugo']
             ])
-            ->add('showDirector', TextType::class, [
+            ->add('showDirectors', ArtistMultipleAutocompleteField::class, [
                 'label' => 'Nom du ou des metteur(s) en scène',
                 'attr' => ['placeholder' => 'Robert Hossein']
             ])
-            ->add('showArtists', ArtistAutocompleteField::class)
+            ->add('showArtists', ArtistMultipleAutocompleteField::class, [
+                'label' => 'Artistes présents en scène'
+            ])
             ->add('showRib', TextType::class, [
                 'label' => 'IBAN de la compagnie'
             ])

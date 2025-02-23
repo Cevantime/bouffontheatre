@@ -4,13 +4,14 @@ namespace App\Security\Voter;
 
 use App\Admin\MediaItemAdmin;
 use App\Entity\Media;
+use App\Entity\MediaGallery;
 use App\Entity\MediaItem;
-use Proxies\__CG__\App\Entity\MediaGallery;
+use App\Repository\ShowRepository;
 use Sonata\MediaBundle\Admin\GalleryAdmin;
 use Sonata\MediaBundle\Admin\ORM\MediaAdmin;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 
 class MediaGalleryVoter extends Voter
 {
@@ -22,10 +23,12 @@ class MediaGalleryVoter extends Voter
     public const ADMIN_VIEW = 'ROLE_SONATA_MEDIA_ADMIN_GALLERY_VIEW';
 
     private Security $security;
+    private ShowRepository $showRepository;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, ShowRepository $showRepository)
     {
         $this->security = $security;
+        $this->showRepository = $showRepository;
     }
 
     protected function supports(string $attribute, $subject): bool
@@ -37,19 +40,17 @@ class MediaGalleryVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
+        /** @var MediaGallery $subject */
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
         switch ($attribute) {
-            case self::ADMIN_LIST:
-            case self::ADMIN_CREATE:
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_EDIT:
-            case self::ADMIN_DELETE:
-                /** @var MediaGallery $subject */
-                return $subject->getArtist()->getAssociatedUser() === $token->getUser();
+                $shows = $this->showRepository->findBy(['gallery' => $subject]);
+                return count($shows) == 1 && $shows[0]->getOwner() === $token->getUser();
         }
 
         return false;

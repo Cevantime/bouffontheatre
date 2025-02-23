@@ -4,17 +4,16 @@ namespace App\Security\Voter;
 
 use App\Admin\MediaItemAdmin;
 use App\Entity\Media;
-use App\Entity\MediaGALLERY_ITEM;
 use App\Entity\MediaGalleryItem;
 use App\Entity\MediaItem;
+use App\Repository\ShowRepository;
 use Proxies\__CG__\App\Entity\MediaGallery;
 use Sonata\MediaBundle\Admin\GalleryAdmin;
-use Sonata\MediaBundle\Admin\GALLERY_ITEMAdmin;
 use Sonata\MediaBundle\Admin\GalleryItemAdmin;
 use Sonata\MediaBundle\Admin\ORM\MediaAdmin;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 
 class MediaGalleryItemVoter extends Voter
 {
@@ -26,10 +25,12 @@ class MediaGalleryItemVoter extends Voter
     public const ADMIN_VIEW = 'ROLE_SONATA_MEDIA_ADMIN_GALLERY_ITEM_VIEW';
 
     private Security $security;
+    private ShowRepository $showRepository;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, ShowRepository $showRepository)
     {
         $this->security = $security;
+        $this->showRepository = $showRepository;
     }
 
     protected function supports(string $attribute, $subject): bool
@@ -41,6 +42,7 @@ class MediaGalleryItemVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
+        /** @var MediaGalleryItem $subject */
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
@@ -52,8 +54,8 @@ class MediaGalleryItemVoter extends Voter
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_EDIT:
             case self::ADMIN_DELETE:
-                /** @var MediaGALLERY_ITEM $subject */
-                return $subject->getGallery()->getArtist()->getAssociatedUser() === $token->getUser();
+                $relatedShows = $this->showRepository->findBy(['gallery' => $subject->getGallery()]);
+                return count($relatedShows) === 1 && $relatedShows[0]->getOwner() == $token->getUser();
         }
 
         return false;

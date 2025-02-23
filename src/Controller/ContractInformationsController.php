@@ -51,8 +51,9 @@ class ContractInformationsController extends AbstractController
         /** @var Show $relatedProject */
         $relatedProject = $lastContract->getRelatedProject();
         $contratCompanyPart->showName = $relatedProject->getName();
-        $contratCompanyPart->showAuthor = $this->twig_join_filter($relatedProject->getAuthors()->count() ? $relatedProject->getAuthors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
-        $contratCompanyPart->showDirector = $this->twig_join_filter($relatedProject->getDirectors()->count() ? $relatedProject->getDirectors()->map(fn(ArtistItem $a) => $a->getArtist()->getFullname())->toArray() : '', ', ', ' et ');
+        $contratCompanyPart->showAuthors = $relatedProject->getAuthors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
+        $contratCompanyPart->showDirectors = $relatedProject->getDirectors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
+        $contratCompanyPart->showArtists = $relatedProject->getActors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
 
         $form = $this->createForm(ContractCompanyPartType::class, $contratCompanyPart);
 
@@ -60,6 +61,46 @@ class ContractInformationsController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) {
             $DTOService->transferDataTo($contratCompanyPart, $lastContract);
+            $relatedProject->setName($contratCompanyPart->showName);
+            foreach ($relatedProject->getActors() as $actorItem) {
+                $entityManager->remove($actorItem);
+            }
+            $relatedProject->getActors()->clear();
+            $i = 0;
+            foreach ($contratCompanyPart->showArtists as $artist) {
+                $artistItem = new ArtistItem();
+                $artistItem->setArtist($artist);
+                $artistItem->setActedProject($relatedProject);
+                $artistItem->setPosition($i++);
+                $entityManager->persist($artistItem);
+                $relatedProject->getActors()->add($artistItem);
+            }
+            foreach ($relatedProject->getAuthors() as $authorItem) {
+                $entityManager->remove($authorItem);
+            }
+            $relatedProject->getAuthors()->clear();
+            $i = 0;
+            foreach ($contratCompanyPart->showAuthors as $artist) {
+                $artistItem = new ArtistItem();
+                $artistItem->setArtist($artist);
+                $artistItem->setAuthoredShow($relatedProject);
+                $artistItem->setPosition($i++);
+                $entityManager->persist($artistItem);
+                $relatedProject->getAuthors()->add($artistItem);
+            }
+            foreach ($relatedProject->getDirectors() as $directorItem) {
+                $entityManager->remove($directorItem);
+            }
+            $relatedProject->getDirectors()->clear();
+            $i = 0;
+            foreach ($contratCompanyPart->showDirectors as $artist) {
+                $artistItem = new ArtistItem();
+                $artistItem->setArtist($artist);
+                $artistItem->setDirectedProject($relatedProject);
+                $artistItem->setPosition($i++);
+                $entityManager->persist($artistItem);
+                $relatedProject->getDirectors()->add($artistItem);
+            }
             $emailService->sendEmailToAdmins('Un formulaire d\'information contractuel a été rempli', 'emails/contract_informations_filled.html.twig', [
                 'user' => $user,
                 'contract' => $lastContract

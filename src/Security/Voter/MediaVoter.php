@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Media;
+use App\Entity\User;
 use Sonata\MediaBundle\Admin\ORM\MediaAdmin;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -44,7 +45,9 @@ class MediaVoter extends Voter
             case self::ADMIN_LIST:
             case self::ADMIN_CREATE:
             case self::ADMIN_VIEW:
-                return $this->security->isGranted('ROLE_ARTIST');
+                /** @var User $user */
+                $user = $token->getUser();
+                return ! $user->getOwnedProjects()->isEmpty();
         }
 
         return false;
