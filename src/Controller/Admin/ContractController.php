@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Contract\ContractGenerator;
 use App\DTO\ContractCompanyPart;
+use App\DTO\ContractCompanyPartAdmin;
 use App\DTO\ContractGlobalConfig;
 use App\DTO\ContractTheaterPart;
 use App\Entity\Contract;
@@ -62,7 +63,7 @@ class ContractController extends AbstractController
         $idContract = null
     ) {
         $contractTheaterPart = new ContractTheaterPart();
-        $contractCompanyPart = new ContractCompanyPart();
+        $contractCompanyPart = new ContractCompanyPartAdmin();
         $contractConfig = new ContractGlobalConfig();
         if ($idContract) {
             $contract = $contractRepository->find($idContract);

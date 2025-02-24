@@ -9,12 +9,12 @@
                 pour le contrat suivant :
             </p>
             <p>
-                {{ lastContract.relatedProject.name }}
+                <em>{{ lastContract.relatedProject.name }}</em>
             </p>
             Pour les représentations suivantes :
             <ul>
                 {% for performance in lastContract.performances %}
-                    <li>{{ performance.performedAt | date('d/m/y H:i') }}</li>
+                    <li><strong>{{ performance.performedAt | date('d/m/y H:i') }}</strong></li>
                 {% endfor %}
             </ul>
             {{ form_start(form) }}

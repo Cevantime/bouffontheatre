@@ -33,7 +33,7 @@ class MediaGalleryVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && $subject instanceof GalleryAdmin)
+        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE, self::ADMIN_EDIT]) && $subject instanceof GalleryAdmin)
             || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE]) && $subject instanceof MediaGallery);
 
     }
@@ -49,8 +49,12 @@ class MediaGalleryVoter extends Voter
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_EDIT:
-                $shows = $this->showRepository->findBy(['gallery' => $subject]);
-                return count($shows) == 1 && $shows[0]->getOwner() === $token->getUser();
+                if($subject instanceof MediaGallery) {
+                    $shows = $this->showRepository->findBy(['gallery' => $subject]);
+                    return count($shows) == 1 && $shows[0]->getOwner() === $token->getUser();
+                } else {
+                    return $this->security->isGranted('ROLE_ARTIST');
+                }
         }
 
         return false;

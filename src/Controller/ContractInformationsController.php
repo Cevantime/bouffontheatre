@@ -6,6 +6,8 @@ use App\DTO\ContractCompanyPart;
 use App\Entity\Artist;
 use App\Entity\ArtistItem;
 use App\Entity\Contract;
+use App\Entity\Media;
+use App\Entity\MediaGalleryItem;
 use App\Entity\Show;
 use App\Entity\User;
 use App\Form\ContractCompanyPartType;
@@ -16,6 +18,7 @@ use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -42,32 +45,38 @@ class ContractInformationsController extends AbstractController
         }
         /** @var Contract $lastContract */
         $lastContract = $contracts[0];
-        $contratCompanyPart = new ContractCompanyPart();
-        $DTOService->transferDataTo($lastContract, $contratCompanyPart);
+        $contractCompanyPart = new ContractCompanyPart();
+        $DTOService->transferDataTo($lastContract, $contractCompanyPart);
         $completedContract = $contractRepository->getUserLastCompletedContract($user);
         if($completedContract !== null) {
-            $DTOService->transferDataTo($completedContract, $contratCompanyPart);
+            $DTOService->transferDataTo($completedContract, $contractCompanyPart);
         }
         /** @var Show $relatedProject */
         $relatedProject = $lastContract->getRelatedProject();
-        $contratCompanyPart->showName = $relatedProject->getName();
-        $contratCompanyPart->showAuthors = $relatedProject->getAuthors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
-        $contratCompanyPart->showDirectors = $relatedProject->getDirectors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
-        $contratCompanyPart->showArtists = $relatedProject->getActors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
-
-        $form = $this->createForm(ContractCompanyPartType::class, $contratCompanyPart);
+        $contractCompanyPart->showName = $relatedProject->getName();
+        $contractCompanyPart->showAuthors = $relatedProject->getAuthors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
+        $contractCompanyPart->showDirectors = $relatedProject->getDirectors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
+        $contractCompanyPart->showArtists = $relatedProject->getActors()->map(fn(ArtistItem $artistItem) => $artistItem->getArtist())->toArray();
+        $contractCompanyPart->showPunchline = $relatedProject->getPunchline();
+        $contractCompanyPart->showDescription = $relatedProject->getDescription();
+        $form = $this->createForm(ContractCompanyPartType::class, $contractCompanyPart);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
-            $DTOService->transferDataTo($contratCompanyPart, $lastContract);
-            $relatedProject->setName($contratCompanyPart->showName);
+            $DTOService->transferDataTo($contractCompanyPart, $lastContract);
+            $lastContract->setShowArtistCount(count($contractCompanyPart->showArtists));
+            $lastContract->setShowDirector($this->twig_join_filter($contractCompanyPart->showDirectors, ', ', ' et '));
+            $lastContract->setShowAuthor($this->twig_join_filter($contractCompanyPart->showAuthors, ', ', ' et '));
+            $relatedProject->setPunchline($contractCompanyPart->showPunchline);
+            $relatedProject->setDescription($contractCompanyPart->showDescription);
+            $relatedProject->setName($contractCompanyPart->showName);
             foreach ($relatedProject->getActors() as $actorItem) {
                 $entityManager->remove($actorItem);
             }
             $relatedProject->getActors()->clear();
             $i = 0;
-            foreach ($contratCompanyPart->showArtists as $artist) {
+            foreach ($contractCompanyPart->showArtists as $artist) {
                 $artistItem = new ArtistItem();
                 $artistItem->setArtist($artist);
                 $artistItem->setActedProject($relatedProject);
@@ -80,7 +89,7 @@ class ContractInformationsController extends AbstractController
             }
             $relatedProject->getAuthors()->clear();
             $i = 0;
-            foreach ($contratCompanyPart->showAuthors as $artist) {
+            foreach ($contractCompanyPart->showAuthors as $artist) {
                 $artistItem = new ArtistItem();
                 $artistItem->setArtist($artist);
                 $artistItem->setAuthoredShow($relatedProject);
@@ -93,7 +102,7 @@ class ContractInformationsController extends AbstractController
             }
             $relatedProject->getDirectors()->clear();
             $i = 0;
-            foreach ($contratCompanyPart->showDirectors as $artist) {
+            foreach ($contractCompanyPart->showDirectors as $artist) {
                 $artistItem = new ArtistItem();
                 $artistItem->setArtist($artist);
                 $artistItem->setDirectedProject($relatedProject);
@@ -101,6 +110,47 @@ class ContractInformationsController extends AbstractController
                 $entityManager->persist($artistItem);
                 $relatedProject->getDirectors()->add($artistItem);
             }
+
+            /** @var File $file */
+            $gallery = $relatedProject->getGallery();
+            $i = $gallery->getGalleryItems()->count();
+            foreach ($contractCompanyPart->showMedia as $file) {
+                $media = new Media();
+                $media->setProviderName('sonata.media.provider.image');
+                $media->setContext('default');
+                $media->setName('Element n°'.$i);
+                $media->setBinaryContent($file->getRealPath());
+                $galleryItem = new MediaGalleryItem();
+                $galleryItem->setPosition($i++);
+                $galleryItem->setMedia($media);
+                $gallery->addGalleryItem($galleryItem);
+                $entityManager->persist($media);
+                $entityManager->persist($galleryItem);
+            }
+
+            $bannerMedia = new Media();
+            $bannerMedia->setProviderName('sonata.media.provider.image');
+            $bannerMedia->setName('Bannière de '.$relatedProject->getName());
+            $bannerMedia->setContext('default');
+            $bannerMedia->setBinaryContent($contractCompanyPart->showBanner->getRealPath());
+
+            $entityManager->persist($bannerMedia);
+
+            $relatedProject->setBanner($bannerMedia);
+
+            $posterMedia = new Media();
+            $posterMedia->setProviderName('sonata.media.provider.image');
+            $posterMedia->setName('Affiche de '.$relatedProject->getName());
+            $posterMedia->setContext('default');
+            $posterMedia->setBinaryContent($contractCompanyPart->showPoster->getRealPath());
+
+            $entityManager->persist($posterMedia);
+
+            $relatedProject->setPoster($posterMedia);
+
+            $emailService->sendMailTo($relatedProject->getOwner()->getEmail(), 'Fiche infos remplie', 'emails/contract_informations_filled_user.html.twig', [
+                'contract' => $lastContract
+            ]);
             $emailService->sendEmailToAdmins('Un formulaire d\'information contractuel a été rempli', 'emails/contract_informations_filled.html.twig', [
                 'user' => $user,
                 'contract' => $lastContract

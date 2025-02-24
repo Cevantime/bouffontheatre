@@ -1,0 +1,16 @@
+<p>Cher {{ contract.relatedProject.owner.fullName }},</p>
+
+<p>Vous venez de remplir le formulaire d'information pour le contrat n°{{ contract.id }} du projet <em>{{ contract.relatedProject.name }}</em></p>
+
+<p>
+    Vous pouvez dès à présent modifier les informations et visuels liés au spectacle depuis votre <a
+            href="{{ absolute_url(path('admin_app_show_edit', {id: contract.relatedProject.id})) }}">Interface d'administration</a>
+</p>
+
+<p>
+    <strong>Attention !</strong> Vous ne pouvez accéder à cet espace que si vous êtes connecté à la plateforme.
+</p>
+
+<p>Toute l'équipe du Bouffon Théâtre</p>
+
+<p>Ceci est un message automatique, merci de ne pas y répondre.</p>

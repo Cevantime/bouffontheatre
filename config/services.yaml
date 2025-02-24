@@ -160,7 +160,7 @@ services:
     admin.mediaItem:
         class: App\Admin\MediaItemAdmin
         tags:
-            - { name: sonata.admin, model_class: App\Entity\MediaItem, manager_type: orm, label: 'Les documents' }
+            - { name: sonata.admin, model_class: App\Entity\MediaItem, manager_type: orm, label: 'Les média' }
 
     admin.projectItem:
         class: App\Admin\ProjectItemAdmin

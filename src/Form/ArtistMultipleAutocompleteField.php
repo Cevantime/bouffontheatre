@@ -18,8 +18,6 @@ class ArtistMultipleAutocompleteField extends AbstractType
             'placeholder' => 'Sélectionner un artiste',
             'choice_label' => 'fullName',
             'multiple' => true,
-            // choose which fields to use in the search
-            // if not passed, *all* fields are used
             'searchable_fields' => ['firstname', 'lastname'],
             'attr' => [
                 'data-controller' => 'contract-artist-autocomplete',

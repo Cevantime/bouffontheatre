@@ -31,7 +31,7 @@ class ContractTheaterPartType extends AbstractType
                 'attr' => ['placeholder' => 'le 15 mai 2024 de 14h à 18h']
             ])
 
-            ->add('contractCompanyPart', ContractCompanyPartType::class, [
+            ->add('contractCompanyPart', ContractCompanyPartAdminType::class, [
                 'label' => 'Information de la compagnie'
             ])
             ->add('contractConfig', ContractGlobalConfigType::class, [

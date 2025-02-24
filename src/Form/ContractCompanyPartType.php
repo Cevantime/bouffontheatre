@@ -3,17 +3,16 @@
 namespace App\Form;
 
 use App\DTO\ContractCompanyPart;
-use App\Entity\Artist;
 use App\Form\DataTransformer\PhoneTransformer;
 use App\Form\DataTransformer\SiretTransformer;
-use Phalcon\Text;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ContractCompanyPartType extends AbstractType
 {
@@ -59,25 +58,93 @@ class ContractCompanyPartType extends AbstractType
                 'label' => 'Numéro de téléphone',
                 'attr' => ['placeholder' => '01 23 45 67 89']
             ])
+            ->add('showRib', TextType::class, [
+                'label' => 'IBAN de la compagnie'
+            ])
             ->add('showName', TextType::class, [
                 'label' => 'Nom du spectacle',
                 'attr' => ['placeholder' => 'Ruy Blas']
             ])
             ->add('showAuthors', ArtistMultipleAutocompleteField::class, [
-                'label' => 'Nom de l\'auteur',
-                'attr' => ['placeholder' => 'Victor Hugo']
+                'label' => 'Nom du ou des auteur(s)',
+                'attr' => [
+                    'placeholder' => 'Victor Hugo',
+                    'data-controller' => 'contract-artist-autocomplete',
+                ]
             ])
             ->add('showDirectors', ArtistMultipleAutocompleteField::class, [
                 'label' => 'Nom du ou des metteur(s) en scène',
-                'attr' => ['placeholder' => 'Robert Hossein']
+                'attr' => [
+                    'placeholder' => 'Robert Hossein',
+                    'data-controller' => 'contract-artist-autocomplete',
+                ]
             ])
             ->add('showArtists', ArtistMultipleAutocompleteField::class, [
                 'label' => 'Artistes présents en scène'
             ])
-            ->add('showRib', TextType::class, [
-                'label' => 'IBAN de la compagnie'
+            ->add('showPunchline', TextType::class, [
+                'label' => 'Phrase d\'accroche',
+                'help' => 'Une très courte phrase destinée à introduire votre spectacle'
             ])
-        ;
+            ->add('showDescription', CKEditorType::class, [
+                'label' => 'Résumé',
+                'help' => 'Le résumé qui apparaîtra dans la fiche du spectacle'
+            ])
+            ->add('showBanner', FileType::class, [
+                'constraints' => [
+                    new Assert\Image([
+                        'minRatio' => 1.65,
+                        'maxRatio' => 1.85,
+                        'minRatioMessage' => 'Le ratio de l\'image est trop faible (elle n\'est pas assez large). Il doit être proche de 16/9.',
+                        'maxRatioMessage' => 'Le ratio de l\'image est trop élevé (elle est trop large). Il doit être proche de 16/9.',
+                        'mimeTypes' => ['image/jpeg', 'image/png'],
+                        'mimeTypesMessage' => 'Veuillez fournir une image valide (formats acceptés : JPG, PNG).',
+                        'maxSize' => '4M',
+                        'maxSizeMessage' => 'La taille de l\'image ne doit pas dépasser 4 Mo.',
+                    ]),
+                ],
+                'label' => 'Bannière affichée sur le site',
+                'help' => 'Format 16/9. Ne doit pas excéder 4Mo'
+            ])
+            ->add('showPoster', FileType::class, [
+                'constraints' => [
+                    new Assert\Image([
+                        'minRatio' => 0.65,
+                        'maxRatio' => 0.8,
+                        'minRatioMessage' => 'Le ratio de l\'image est trop faible (elle n\'est pas assez large). Il doit être proche de 16/9.',
+                        'maxRatioMessage' => 'Le ratio de l\'image est trop élevé (elle est trop large). Il doit être proche de 16/9.',
+                        'mimeTypes' => ['image/jpeg', 'image/png'],
+                        'mimeTypesMessage' => 'Veuillez fournir une image valide (formats acceptés : JPG, PNG).',
+                        'maxSize' => '4M',
+                        'maxSizeMessage' => 'La taille de l\'image ne doit pas dépasser 4 Mo.',
+                    ]),
+                ],
+                'label' => 'Votre affiche',
+                'help' => 'Votre affiche doit être conforme à notre charte graphique et ne pas excéder 4Mo'
+            ])
+            ->add('showMedia', CollectionType::class, [
+                'label' => 'Vos photos',
+                'entry_type' => FileType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'entry_options' => [
+                    'constraints' => [
+                        new Assert\Image([
+                            // Le ratio 16/9 ≈ 1.78. Ici, on autorise un ratio entre 1.7 et 1.8.
+                            'minRatio' => 1,
+                            'maxRatio' => 1.85,
+                            'minRatioMessage' => 'Le ratio de l\'image est trop faible (elle n\'est pas assez large). Il doit être proche de 16/9.',
+                            'maxRatioMessage' => 'Le ratio de l\'image est trop élevé (elle est trop large). Il doit être proche de 16/9.',
+                            'mimeTypes' => ['image/jpeg', 'image/png'],
+                            'mimeTypesMessage' => 'Veuillez fournir une image valide (formats acceptés : JPG, PNG).',
+                            'maxSize' => '4M',
+                            'maxSizeMessage' => 'La taille de l\'image ne doit pas dépasser 4 Mo.',
+                        ]),
+                    ],
+                ],
+                'attr' => ['data-controller' => 'form-collection'],
+                'help' => 'Vos photos doivent être dans un format paysage et ne pas excéder 4Mo'
+            ]);
 
         $builder->get('companySiret')->addViewTransformer($this->siretTransformer);
 

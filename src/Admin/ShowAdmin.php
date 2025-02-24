@@ -151,7 +151,8 @@ class ShowAdmin extends AbstractAdmin
                 'required' => false,
                 'label' => 'Galerie photo',
                 'help' => 'S\'affichera dans la gallerie photo de la page spectacle',
-                'btn_list' => false
+                'btn_list' => false,
+                'btn_delete' => false,
             ], [
                 'edit' => 'inline',
                 'inline' => 'table',

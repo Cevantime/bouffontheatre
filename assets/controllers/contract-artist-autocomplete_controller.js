@@ -22,7 +22,6 @@ export default class extends Controller {
     }
 
     _onPreConnect(event) {
-
         event.detail.options.create = (input) => {
             const parts = input.trim().split(' ');
             if (parts.length < 2) {
