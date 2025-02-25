@@ -23,6 +23,6 @@ class IconExtension extends AbstractExtension
     }
     public function generateLinkIconTag(Link $link)
     {
-        return '<a class="social-link" href="'.$link->getUrl().'" title="'.$link->getTitle().'">' .$this->generateIconTag($link->getSiteName()).'</a>';
+        return '<a class="social-link" target="_blank" href="'.$link->getUrl().'" title="'.$link->getTitle().'">' .$this->generateIconTag($link->getSiteName()).'</a>';
     }
 }
