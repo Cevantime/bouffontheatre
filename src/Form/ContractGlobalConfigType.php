@@ -8,6 +8,7 @@ use App\Form\DataTransformer\PhoneTransformer;
 use App\Form\DataTransformer\SiretTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -71,14 +72,6 @@ class ContractGlobalConfigType extends AbstractType
                 'attr' => ['placeholder' => '12'],
                 'label' => 'Prix des places en tarif réduit (€)'
             ])
-            ->add('showDuration', TextType::class, [
-                'attr' => ['placeholder' => '70'],
-                'label' => 'Durée moyenne du spectacle (en min)'
-            ])
-            ->add('showMaxDuration', TextType::class, [
-                'attr' => ['placeholder' => '80'],
-                'label' => 'Durée maximale du spectacle (en min)'
-            ])
             ->add('showInvitations', TextareaType::class, [
                 'attr' => ['placeholder' => 'Les invitations sont strictement limitées aux professionnels : Journalistes et Programmateurs.'],
                 'label' => 'À qui s\'adressent les invitations ?',
@@ -96,6 +89,10 @@ class ContractGlobalConfigType extends AbstractType
                 'attr' => ['placeholder' => '100'],
                 'label' => 'Minimum garanti (en €)'
             ])
+            ->add('rentPrice', TextType::class, [
+                'attr' => ['placeholder' => '100'],
+                'label' => 'Tarif horaire de la location'
+            ])
             ->add('showCompanySharePercent', TextType::class, [
                 'attr' => ['placeholder' => '50'],
                 'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
@@ -112,6 +109,21 @@ class ContractGlobalConfigType extends AbstractType
                 'attr' => ['placeholder' => '20'],
                 'label' => 'Pourcentage TVA (en %)'
             ])
+            ->add('stageManagementInstallHourCount', null, [
+                'label' => 'Nombre d\'heures de régie d\'installation'
+            ])
+            ->add('stageManagementShowHourCount', null, [
+                'label' => 'Nombre d\'heures de régie spectacle'
+            ])
+            ->add('stageManagementInstallPrice', TextType::class, [
+                'attr' => ['placeholder' => '20'],
+                'label' => 'Tarif horaire du service de régie d\'installation dans le cas d\'un contrat avec régisseur'
+            ])
+            ->add('stageManagementShowPrice', TextType::class, [
+                'attr' => ['placeholder' => '60'],
+                'label' => 'Tarif horaire pour le service de régie spectacle dans le cas d\'un contrat avec régisseur'
+            ])
+
             ;
 
         $builder->get('theaterSiret')->addViewTransformer($this->siretTransformer);
@@ -128,7 +140,9 @@ class ContractGlobalConfigType extends AbstractType
                      'showCompanySharePercent',
                      'showTheaterSharePercent',
                      'showMinimumShare',
-                     'tva'
+                     'tva',
+                    'stageManagementInstallPrice',
+                    'stageManagementShowPrice'
                  ] as $amountField) {
             $builder->get($amountField)->addViewTransformer($this->amountTransformer);
         }

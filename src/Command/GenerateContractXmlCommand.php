@@ -36,7 +36,7 @@ class GenerateContractXmlCommand extends Command
 
         $docxPath = $io->ask('Please give the path of the contract docx (relative to the project).', 'assets/docx/contract_template.docx');
 
-        $path = $io->ask('Please give the path you want your xml to be saved to (relative to the project) ?', 'raw.xml');
+        $path = $io->ask('Please give the path you want your xml to be saved to (relative to the project) ?', 'templates/sonata/contract/contract_main_part_raw.xml.twig');
 
         $docxPath = $this->kernel->getProjectDir().'/'.$docxPath;
 

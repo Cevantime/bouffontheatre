@@ -66,9 +66,9 @@ class CandidatureAdmin extends AbstractAdmin
             ]);
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->add('offer', ModelType::class, [
                 'label' => 'Annonce associée'
             ])

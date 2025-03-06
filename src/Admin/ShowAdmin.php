@@ -214,9 +214,9 @@ class ShowAdmin extends AbstractAdmin
             ]);
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->with('Informations', ['class' => 'col-md-8'])
             ->add('name', null, [
                 'label' => 'Nom du projet'

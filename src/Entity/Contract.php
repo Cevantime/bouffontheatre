@@ -19,6 +19,19 @@ class Contract
         self::STATUS_SENT_TO_COMPANY,
         self::STATUS_FILLED_BY_COMPANY
     ];
+
+    const TYPE_RENT_WITH_STAGE_MANAGER = 'RENT_WITH_STAGE_MANAGER';
+    const TYPE_RENT_WITHOUT_STAGE_MANAGER = 'RENT_WITHOUT_STAGE_MANAGER';
+    const TYPE_CO_PRODUCTION = 'CO_PRODUCTION';
+    const TYPE_CO_PRODUCTION_WITHOUT_MINIMUM = 'CO_PRODUCTION_WITHOUT_MINIMUM';
+
+    const TYPES = [
+        self::TYPE_CO_PRODUCTION,
+        self::TYPE_RENT_WITHOUT_STAGE_MANAGER,
+        self::TYPE_RENT_WITH_STAGE_MANAGER,
+        self::TYPE_CO_PRODUCTION_WITHOUT_MINIMUM
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(nullable: true)]
@@ -141,6 +154,27 @@ class Contract
 
     #[ORM\ManyToOne(inversedBy: 'contracts')]
     private ?Project $relatedProject = null;
+
+    #[ORM\Column(length: 150)]
+    private ?string $contractType = self::TYPE_CO_PRODUCTION;
+
+    #[ORM\Column]
+    private ?bool $minimumShare = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $stageManagementInstallHourCount = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $stageManagementShowHourCount = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $stageManagementShowPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $stageManagementInstallPrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $rentPrice = null;
 
     public function __construct()
     {
@@ -641,5 +675,99 @@ class Contract
     public function __toString()
     {
         return sprintf('Contrat n°%s du projet %s', $this->id, $this->relatedProject->getName());
+    }
+
+    public function getContractType(): ?string
+    {
+        return $this->contractType;
+    }
+
+    public function setContractType(string $contractType): static
+    {
+        $this->contractType = $contractType;
+
+        return $this;
+    }
+
+    public function isMinimumShare(): ?bool
+    {
+        return $this->minimumShare;
+    }
+
+    public function setMinimumShare(bool $minimumShare): static
+    {
+        $this->minimumShare = $minimumShare;
+
+        return $this;
+    }
+
+    public function getStageManagementInstallHourCount(): ?int
+    {
+        return $this->stageManagementInstallHourCount;
+    }
+
+    public function setStageManagementInstallHourCount(?int $stageManagementInstallHourCount): static
+    {
+        $this->stageManagementInstallHourCount = $stageManagementInstallHourCount;
+
+        return $this;
+    }
+
+    public function getStageManagementShowHourCount(): ?int
+    {
+        return $this->stageManagementShowHourCount;
+    }
+
+    public function setStageManagementShowHourCount(?int $stageManagementShowHourCount): static
+    {
+        $this->stageManagementShowHourCount = $stageManagementShowHourCount;
+
+        return $this;
+    }
+
+    public function getStageManagementShowPrice(): ?string
+    {
+        return $this->stageManagementShowPrice;
+    }
+
+    public function setStageManagementShowPrice(string $stageManagementShowPrice): static
+    {
+        $this->stageManagementShowPrice = $stageManagementShowPrice;
+
+        return $this;
+    }
+
+    public function getStageManagementInstallPrice(): ?string
+    {
+        return $this->stageManagementInstallPrice;
+    }
+
+    public function setStageManagementInstallPrice(string $stageManagementInstallPrice): static
+    {
+        $this->stageManagementInstallPrice = $stageManagementInstallPrice;
+
+        return $this;
+    }
+
+    public function isRent()
+    {
+        return in_array($this->contractType, [self::TYPE_RENT_WITH_STAGE_MANAGER, self::TYPE_RENT_WITHOUT_STAGE_MANAGER]);
+    }
+
+    public function isRentWithStageManager()
+    {
+        return $this->contractType == self::TYPE_RENT_WITH_STAGE_MANAGER;
+    }
+
+    public function getRentPrice(): ?string
+    {
+        return $this->rentPrice;
+    }
+
+    public function setRentPrice(?string $rentPrice): static
+    {
+        $this->rentPrice = $rentPrice;
+
+        return $this;
     }
 }

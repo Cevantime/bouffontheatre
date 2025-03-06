@@ -87,9 +87,9 @@ class BlogPostAdmin extends AbstractAdmin
             ->add('author');
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->with('Informations', ['class' => 'col-md-8'])
             ->add('title', null, [
                 'label' => 'Titre du post'

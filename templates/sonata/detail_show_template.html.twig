@@ -2,9 +2,11 @@
 
 {%- block actions -%}
     {{ parent() }}
+    {% if is_granted('ROLE_ADMIN_CONTRACT_CREATE') %}
     <li>
         <a class="sonata-action-element" href="{{ path('app_contract_create_from_project', { id : object.id }) }}"><i class="fas fa-file-contract" aria-hidden="true"></i>
             Créer un nouveau contrat
         </a>
     </li>
+    {% endif %}
 {%- endblock -%}

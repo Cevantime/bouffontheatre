@@ -60,9 +60,9 @@ class OfferAdmin extends AbstractAdmin
         ;
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->add('project')
             ->add('title', null, [
                 'label' => 'Titre de l\'annonce'

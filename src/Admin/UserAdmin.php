@@ -80,9 +80,9 @@ class UserAdmin extends AbstractAdmin
             ]);
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->add('firstname', null, [
                 'label' => 'Prénom'
             ])

@@ -29,7 +29,7 @@ class ContractVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && $subject instanceof ContractAdmin)
+        return (in_array($attribute, [self::ADMIN_ALL, self::ADMIN_LIST, self::ADMIN_CREATE]) && ($subject instanceof ContractAdmin or $subject == null))
         || (in_array($attribute, [self::ADMIN_VIEW, self::ADMIN_EDIT, self::ADMIN_DELETE]) && $subject instanceof Contract);
     }
 

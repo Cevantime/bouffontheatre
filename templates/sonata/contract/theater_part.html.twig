@@ -17,6 +17,10 @@
                 <button class="btn btn-success mb-3" type="button" id="add_performance">Ajouter une représentation</button>
             </div>
             {{ form_row(form.showServiceSession) }}
+
+            {{ form_row(form.contractType) }}
+
+{#            {{ form_row(form.minimumShare) }}#}
         </div>
     </div>
     <div class="row">
@@ -27,7 +31,7 @@
                     Informations du théâtre
                 </div>
                 <div class="box-body">
-                    {{ form_widget(form.contractConfig) }}
+                    {{ form_widget(form.contractTheaterConfig) }}
                 </div>
             </div>
         </div>

@@ -1,17 +1,4 @@
-{% set producer = contractType == constant('App\\Entity\\Contract::TYPE_RENT_WITHOUT_STAGE_MANAGER') ? 'Preneur' : 'Producteur' %}
-{% set director = 'Directeur' %}
-{% set corea = contractType in [constant('App\\Entity\\Contract::TYPE_CO_PRODUCTION'), constant('App\\Entity\\Contract::TYPE_CO_PRODUCTION_WITHOUT_MINIMUM')] %}
-{% set location = contractType in [constant('App\\Entity\\Contract::TYPE_RENT_WITHOUT_STAGE_MANAGER'), constant('App\\Entity\\Contract::TYPE_RENT_WITH_STAGE_MANAGER')] %}
 {% set article_index = 1 %}
-{% set location_without_stage_manager = contractType == constant('App\\Entity\\Contract::TYPE_RENT_WITHOUT_STAGE_MANAGER') %}
-{% set location_with_stage_manager = contractType == constant('App\\Entity\\Contract::TYPE_RENT_WITH_STAGE_MANAGER') %}
-{% set stage_manager = contractType == constant('App\\Entity\\Contract::TYPE_RENT_WITH_STAGE_MANAGER') ? director : producer %}
-{% set corea_without_minimum_share = contractType == constant('App\\Entity\\Contract::TYPE_CO_PRODUCTION_WITHOUT_MINIMUM') %}
-{% set host = location ? producer : director %}
-{% set minimum_share = minimumShare %}
-{% set showTaxesPercent = tva / 100 %}
-{% set article_index = 1 %}
-{% set article_sub_index = 1 %}
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:o="urn:schemas-microsoft-com:office:office"
             xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -53,7 +40,7 @@
                     <w:color w:val="800080"/>
                     <w:szCs w:val="24"/>
                 </w:rPr>
-                <w:t>{{ contractType | label }}</w:t>
+                <w:t>Contrat ancien modèle</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -120,7 +107,7 @@
                     <w:caps/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t></w:t></w:r><w:r><w:rPr><w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/><w:b/><w:bCs/><w:caps/><w:sz w:val="20"/></w:rPr><w:t>{{ theaterName }}</w:t></w:r><w:r><w:rPr><w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/><w:b/><w:bCs/><w:caps/><w:sz w:val="20"/></w:rPr><w:t></w:t>
+                <w:t>{{ theaterName }}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -557,6 +544,15 @@
                 <w:t>Siège social/adresse :{{ companyAddress }}....................................................................................................
                 </w:t>
             </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:w w:val="95"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> </w:t>
+            </w:r>
         </w:p>
         <w:p>
             <w:pPr>
@@ -722,7 +718,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">LE {{ producer }}</w:t>
+                <w:t xml:space="preserve">LE PRODUCTEUR </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -805,9 +801,9 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
-        </w:p>{% if corea %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -824,70 +820,9 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
+                <w:t>A- Le producteur dispose du droit de représentation en France du spectacle suivant, pour lequel il s’est assuré le concours des artistes nécessaires à sa représentation :</w:t>
             </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- Le {{producer}} dispose du droit de représentation en France du spectacle suivant, pour lequel il
-                    s’est assuré le concours des artistes nécessaire à sa représentation :
-                </w:t>
-            </w:r>
-        </w:p>{% endif %}{% if location %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:color w:val="000000"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- Le {{ producer }} représentera au Bouffon Théâtre </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:eastAsia="Times New Roman" w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:kern w:val="0"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                    <w:lang w:val="fr-CA" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
-                </w:rPr>
-                <w:t>le</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> spectacle suivant, pour lequel il s’est assuré le concours des artistes
-                    nécessaire à sa représentation :</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:r>
-        </w:p>{% endif %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -924,7 +859,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>TITRE DE L’OUVRAGE : {{ showName }}....................................................</w:t>
+                <w:t>TITRE DE L’OUVRAGE : {{ showName }}....................................................</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -961,7 +896,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>AUTEUR : {{ showAuthor }}.........................................................................
+                <w:t>AUTEUR : {{ showAuthor }}......................................................................................................
                 </w:t>
             </w:r>
         </w:p>
@@ -998,7 +933,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>METTEUR EN SCÈNE : {{ showDirector }} .................................................................…
+                <w:t>METTEUR EN SCÈNE : {{ showDirector }}.................................................................…
                 </w:t>
             </w:r>
         </w:p>
@@ -1092,16 +1027,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:w w:val="95"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                <w:t>- Le Directeur met à la disposition du {{ producer }}</w:t>
+                <w:t>B- Le Directeur met à la disposition du Producteur</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1155,9 +1081,42 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>{{ theaterAddress }}</w:t>
+                <w:t>26/28 rue de Meaux,</w:t>
             </w:r>
-
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:spacing w:val="-3"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> </w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t>75019</w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:spacing w:val="5"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> </w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t>Paris,</w:t>
+            </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
@@ -1258,109 +1217,94 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>places. (En cas de réduction de jauge décrétée par le gouvernement, la jauge sera modulée en fonction des exigences sanitaires.)
-                </w:t>
+                <w:t>places. (En cas de réduction de jauge décrétée par le gouvernement, la jauge sera modulée en fonction des</w:t>
             </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
+            <w:r>
                 <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:spacing w:val="1"/>
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- DATES ET HORAIRES DES REPRÉSENTATIONS</w:t>
-            </w:r>
-        </w:p>{%if corea%}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:color w:val="000000"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">Le Directeur et le {{producer}} collaborent pour </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:i/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{showCount}}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
                 </w:rPr>
                 <w:t xml:space="preserve"> </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t>exigences</w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:spacing w:val="20"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> </w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t>sanitaires.)</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>représentations du spectacle aux dates suivantes :</w:t>
-            </w:r>
-        </w:p>{%endif%}{% if location %}
-        <w:p>
+            </w:pPr>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le Directeur met la salle du Bouffon Théâtre à la disposition
-                    du {{ producer }} pour </w:t>
+                <w:t>C- DATES ET HORAIRES DES REPRÉSENTATIONS</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr></w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve">Le Directeur et le Producteur collaborent pour </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1375,45 +1319,55 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:b/>
+                    <w:color w:val="0000FF"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> </w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> représentations aux dates suivantes :</w:t>
+                <w:t xml:space="preserve">représentations du spectacle aux dates suivantes : </w:t>
             </w:r>
-        </w:p>{% endif %}{% for showDate in showDates %}
-            <w:p>
-                <w:pPr>
-                    <w:pStyle w:val="Normal"/>
-                    <w:pBdr>
-                        <w:top w:val="single" w:sz="4" w:space="1" w:color="000000"/>
-                        <w:left w:val="single" w:sz="4" w:space="4" w:color="000000"/>
-                        <w:bottom w:val="single" w:sz="4" w:space="1" w:color="000000"/>
-                        <w:right w:val="single" w:sz="4" w:space="4" w:color="000000"/>
-                    </w:pBdr>
-                    <w:shd w:val="clear" w:fill="FFFFFF"/>
-                    <w:overflowPunct w:val="false"/>
-                    <w:jc w:val="center"/>
-                    <w:textAlignment w:val="auto"/>
-                    <w:rPr>
-                        <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                        <w:i/>
-                        <w:i/>
-                        <w:color w:val="0000FF"/>
-                        <w:szCs w:val="24"/>
-                        <w:lang w:val="fr-FR"/>
-                    </w:rPr>
-                </w:pPr>
-                <w:r>
-                    <w:rPr>
-                        <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                        <w:i/>
-                        <w:color w:val="0000FF"/>
-                        <w:szCs w:val="24"/>
-                        <w:lang w:val="fr-FR"/>
-                    </w:rPr>
-                    <w:t>{{ showDate }}</w:t>
-                </w:r>
-            </w:p>
+        </w:p>
+        {%  for showDate in showDates %}
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:pBdr>
+                    <w:top w:val="single" w:sz="4" w:space="1" w:color="000000"/>
+                    <w:left w:val="single" w:sz="4" w:space="4" w:color="000000"/>
+                    <w:bottom w:val="single" w:sz="4" w:space="1" w:color="000000"/>
+                    <w:right w:val="single" w:sz="4" w:space="4" w:color="000000"/>
+                </w:pBdr>
+                <w:shd w:val="clear" w:fill="FFFFFF"/>
+                <w:overflowPunct w:val="false"/>
+                <w:jc w:val="center"/>
+                <w:textAlignment w:val="auto"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:i/>
+                    <w:i/>
+                    <w:color w:val="0000FF"/>
+                    <w:szCs w:val="24"/>
+                    <w:lang w:val="fr-FR"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:i/>
+                    <w:color w:val="0000FF"/>
+                    <w:szCs w:val="24"/>
+                    <w:lang w:val="fr-FR"/>
+                </w:rPr>
+                <w:t>{{ showDate }}</w:t>
+            </w:r>
+        </w:p>
         {% endfor %}
         <w:p>
             <w:pPr>
@@ -1480,7 +1434,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1508,15 +1462,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- RÈGLEMENT INTÉRIEUR/REGLES DE COMPORTEMENT</w:t>
+                <w:t>A- RÈGLEMENT INTÉRIEUR/REGLES DE COMPORTEMENT</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -1533,7 +1479,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le {{ producer }} assure la responsabilité des représentations et/ou des activités exercées par lui au Bouffon Théâtre. </w:t>
+                <w:t xml:space="preserve">Le Producteur assure la responsabilité des représentations et/ou des activités exercées par lui au Bouffon Théâtre. </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1542,7 +1488,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Le {{ producer }} accepte le règlement intérieur du théâtre</w:t>
+                <w:t>Le producteur accepte le règlement intérieur du théâtre</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1567,7 +1513,8 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">, de boire ou de manger dans la salle ou la loge, les compagnies ne doivent pas laisser dans les loges ou le théâtre des détritus (bouteilles d’eau, boissons ou nourriture). L’interdiction d’inviter dans les loges des personnes extérieures au spectacle avant et après le spectacle; par ailleurs, les loges étant utilisées par plusieurs compagnies à la fois, il est donc obligatoire, de ranger les costumes, les accessoires et maquillage. L’obligation de présenter le spectacle sans prétendre enlever ou modifier la décoration du théâtre, ainsi que de prévoir un décor ou des aménagements techniques facilement démontables et qui puissent être rangés rapidement, en tenant compte des possibilités réelles de la salle; l’obligation de commencer le spectacle à l’horaire prévu, la fermeture des portes après le début du spectacle, </w:t></w:r>
+                <w:t xml:space="preserve">, de boire ou de manger dans la salle ou la loge, les compagnies ne doivent pas laisser dans les loges ou le théâtre des détritus (bouteilles d’eau, boissons ou nourriture). L’interdiction d’inviter dans les loges des personnes extérieures au spectacle avant et après le spectacle; par ailleurs, les loges étant utilisées par plusieurs compagnies à la fois, il est donc obligatoire, de ranger les costumes, les accessoires et maquillage. L’obligation de présenter le spectacle sans prétendre enlever ou modifier la décoration du théâtre, ainsi que de prévoir un décor ou des aménagements techniques facilement démontables et qui puissent être rangés rapidement, en tenant compte des possibilités réelles de la salle; l’obligation de commencer le spectacle à l’horaire prévu, la fermeture des portes après le début du spectacle, </w:t>
+            </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
@@ -1575,7 +1522,8 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>l’obligation de se conformer aux prescriptions du Directeur quant au niveau sonore des représentations
+                <w:t>l’obligation de se conformer aux prescriptions du Directeur quant au niveau sonore des
+                    représentations
                 </w:t>
             </w:r>
             <w:r>
@@ -1645,7 +1593,7 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
             </w:r>
-        </w:p>{%if corea %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -1663,19 +1611,11 @@
             </w:r>
             <w:r>
                 <w:rPr>
-                    <w:rFonts w:eastAsia="Garamond" w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-DROITS D’AUTEURS</w:t>
+                <w:t>B-DROITS D’AUTEURS</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -1688,46 +1628,22 @@
                 <w:spacing w:lineRule="auto" w:line="252"/>
                 <w:ind w:right="1063" w:hanging="0"/>
                 <w:rPr>
-                    <w:color w:val="000000"/>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
                 </w:rPr>
             </w:pPr>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
+                    <w:color w:val="181818"/>
                     <w:w w:val="105"/>
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>Le {{producer}} affirme disposer des droits de représentation en France du spectacle susnommé pendant la période indiquée. Il fournit, au moment de la signature de ce contrat, une copie de l&apos;autorisation délivrée par la SACD, l&apos;auteur ou ses représentants.
-                </w:t>
+                <w:t>Le Producteur affirme disposer des droits de représentation en France du spectacle susnommé pendant la période indiquée. Il fournit, au moment de la signature de ce contrat, une copie de l&apos;autorisation délivrée par la SACD, l&apos;auteur ou ses représentants.</w:t>
             </w:r>
-        </w:p>{%endif%}{% if location %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:tabs>
-                    <w:tab w:val="clear" w:pos="708"/>
-                    <w:tab w:val="left" w:pos="833" w:leader="none"/>
-                </w:tabs>
-                <w:spacing w:lineRule="auto" w:line="252"/>
-                <w:ind w:right="1063" w:hanging="0"/>
-                <w:rPr>
-                    <w:color w:val="000000"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:w w:val="105"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">Le Preneur fait son affaire de l’obtention des droits de représentation du spectacle et de l’information du directeur sur les auteurs de l’œuvre présentée au public. Il reverse, le cas échéant, aux sociétés d’auteurs (SACD) et/ou d’interprètes (SACEM, SPEDIDAM) les droits et taxes qu’elles doivent percevoir.</w:t>
-            </w:r>
-
-        </w:p>{% endif %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -1761,22 +1677,7 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
                 <w:tab/>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-LE {{ producer | upper }} PREND A SA CHARGE :</w:t>
+                <w:t>C-LE PRODUCTEUR PREND A SA CHARGE :</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -1795,24 +1696,7 @@
                     Directeur
                 </w:t>
             </w:r>
-        </w:p>{% if location_without_stage_manager or corea %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:color w:val="000000"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- la régie son et lumière du spectacle</w:t>
-            </w:r>
-        </w:p>{%endif%}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -1882,141 +1766,9 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>- la promotion du spectacle. Le {{ producer }} prend en charge le paiement des pavés publicitaires s’il y a lieu; le paiement de son attaché de presse, le paiement de ses communications et envois (POSTE, téléphone, achat d’enveloppes, etc.); l’envoi et la relance de son fichier spectateurs payant et/ou professionnels.</w:t>
+                <w:t>- la promotion du spectacle. Le producteur prend en charge le paiement des pavés publicitaires s’il y a lieu; le paiement de son attaché de presse, le paiement de ses communications et envois (POSTE, téléphone, achat d’enveloppes, etc.); l’envoi et la relance de son fichier spectateurs payant et/ou professionnels.</w:t>
             </w:r>
-        </w:p>{% if location %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- le {{ producer }} fait siennes les invitations et/ou les réductions de tarifs que peut accorder le théâtre à ses adhérents ou à des catégories spécifiques de spectateurs. (Prix des places habituellement pratiqué</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ showFullPrice }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>et</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ showHalfPrice }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="0000FF"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>euro)</w:t>
-            </w:r>
-        </w:p>{% endif %}{%if corea %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">- la déclaration et le paiement de l’ensemble des droits musicaux : SACEM et/ou SPEDIDAM ou tout autre organisme de perception musical. </w:t>
-            </w:r>
-        </w:p>{%endif%}{% if location %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">- la déclaration et le paiement, </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>le cas échéant,</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> de l’ensemble des droits d’auteur, SACD ou autres : maison d’édition etc.)</w:t>
-            </w:r>
-        </w:p>{% endif %}{% if location %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- l’accordement du piano du théâtre si besoin (Environ 100 euro)</w:t>
-            </w:r>
-        </w:p>{% endif %}{% if location %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>- la gestion des retardataires après le début du spectacle s’il y a lieu</w:t>
-            </w:r>
-        </w:p>{% endif %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -2028,8 +1780,47 @@
             </w:pPr>
             <w:r>
                 <w:rPr>
-                    <w:color w:val="0000FF"/>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
                 </w:rPr>
+                <w:t>- la déclaration et le paiement de l’ensemble des droits musicaux : SACEM et/ou SPEDIDAM ou tout autre organisme de perception musical.</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>- la déclaration et le paiement de l’ensemble des droits d’auteur, SACD ou autres : maison d’édition etc.)</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>- La régie son et lumière du spectacle.</w:t>
+                <w:tab/>
             </w:r>
         </w:p>
         <w:p>
@@ -2062,14 +1853,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-MONTAGE-DEMONTAGE</w:t>
+                <w:t>D-MONTAGE-DEMONTAGE</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -2094,14 +1878,14 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ producer }}</w:t>
+                <w:t>Producteur</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> déclare bien connaître pour l’avoir vue, la salle où s’effectuera l’activité tant en ce qui concerne les structures techniques et d’accueil du public qu’en ce qui concerne les loges des artistes. Il ne pourra donc prétendre obtenir plus que ce qui peut lui être fourni. Si le {{ producer }} estimait nécessaire d’utiliser des matériels et équipements autres que ce dont disposent le directeur, il devrait lui-même et à ses frais, en effectuer la location ou l’achat, le transport, l’assurance, la mise en place et l’enlèvement. Le {{ producer }} assure le montage, le démontage et le rangement de son décor chaque fois qu’il est nécessaire à la bonne marche du théâtre. La mise en place du décor devra exclure tous moyens de fixation générateurs de dégradations tels que vis, clous, chevilles, pitons, agrafes, scotch double face, et tout autre moyen jugé comme tel par le directeur; dans le plancher, le plafond ou les murs du théâtre. L’utilisation de « peintures », de « sable », de  « paille », de « viande », de « liquides inflammables », d’ « eau », de « bière », de « sang », de « farine », de « craie » ou de « verres brisés » est strictement interdite dans le théâtre. </w:t>
+                <w:t xml:space="preserve"> déclare bien connaître pour l’avoir vue, la salle où s’effectuera l’activité tant en ce qui concerne les structures techniques et d’accueil du  public qu’en ce qui concerne les loges des artistes. Il ne pourra donc prétendre obtenir plus que ce qui peut lui être fourni. Si le producteur estimait nécessaire d’utiliser des matériels et équipements autres que ce dont disposent le directeur, il devrait lui-même et à ses frais, en effectuer la location ou l’achat, le transport, l’assurance, la mise en place et l’enlèvement. Le Producteur assure le montage, le démontage et le rangement de son décor chaque fois qu’il est nécessaire à la bonne marche du théâtre. La mise en place du décor devra exclure tous moyens de fixation générateurs de dégradations tels que vis, clous, chevilles, pitons, agrafes, scotch double face, et tout autre moyen jugé comme tel  par le directeur; dans le plancher, le plafond ou les murs du théâtre. L’utilisation de « peintures », de « sable », de  « paille », de « viande », de « liquides inflammables », d’ « eau », de « bière », de « sang », de « farine », de « craie » ou de « verres brisés » est strictement interdite dans le théâtre. </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -2109,15 +1893,14 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Gestion des pendrions : à la fin des représentations, s’il y a lieu, la compagnie devra remettre ou descendre les pendrions qu’elle aura utilisé ainsi que les rideaux utilisés.
-                </w:t>
+                <w:t>Gestion des pendrions : à la fin des représentations, s’il y a lieu, la compagnie devra remettre ou descendre les pendrions qu’elle aura utilisé ainsi que les rideaux utilisés.</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> Le {{ producer }} procédera à l’enlèvement de ses décors, costumes, accessoires et bande sonore </w:t>
+                <w:t xml:space="preserve"> Le producteur procédera à l’enlèvement de ses décors, costumes, accessoires et bande sonore </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -2172,7 +1955,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -2192,17 +1975,9 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-LA SALLE</w:t>
+                <w:t>A-LA SALLE</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -2266,24 +2041,14 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-LA BILLETTERIE</w:t>
+                <w:t>B-LA BILLETTERIE</w:t>
             </w:r>
         </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
                 <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:color w:val="000000"/>
-                </w:rPr>
+                <w:rPr></w:rPr>
             </w:pPr>
             <w:r>
                 <w:rPr>
@@ -2291,48 +2056,8 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le </w:t>
+                <w:t>Le Directeur assure la billetterie, les réservations et l’accueil du public. Il tient une comptabilité journalière des recettes à la disposition du producteur et de tout organisme habilité à contrôler la billetterie. Il conserve les souches de cette billetterie six années après la dernière représentation du spectacle ainsi que les contrôles des billets pendant une année.</w:t>
             </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ host }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> assure la billetterie, les réservations et l’accueil du public. Il tient une comptabilité journalière des recettes à la disposition </w:t>
-            </w:r>{% if corea %}
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>du {{producer}} et</w:t>
-            </w:r>{% endif %}
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">de tout organisme habilité à contrôler la billetterie. Il conserve les souches de cette billetterie six années après la dernière représentation du spectacle ainsi que les contrôles des billets pendant une année. </w:t>
-            </w:r>{% if location %}
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>Il reverse toute taxe afférente à sa billetterie (TVA, Taxe Parafiscale).</w:t>
-            </w:r>{% endif %}
         </w:p>
         <w:p>
             <w:pPr>
@@ -2368,14 +2093,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">-RESERVATIONS </w:t>
+                <w:t xml:space="preserve">C-RESERVATIONS </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -2402,7 +2120,7 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
             </w:r>
-        </w:p>{% if corea %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -2418,21 +2136,14 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">-REPETITIONS, FILAGE ET INSTALLATION LUMIERE </w:t>
+                <w:t xml:space="preserve">D-REPETITIONS, FILAGE ET INSTALLATION LUMIERE </w:t>
             </w:r>
         </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
                 <w:shd w:val="clear" w:fill="FFFFFF"/>
-                <w:overflowPunct w:val="true"/>
+                <w:overflowPunct w:val="false"/>
                 <w:textAlignment w:val="auto"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
@@ -2447,14 +2158,14 @@
                     <w:b/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le Directeur met la salle à la disposition du {{ producer }} pour un service d’une durée de 4 heures :</w:t>
+                <w:t>Le Directeur met la salle à la disposition du Producteur pour un service d’une durée de 4 heures :</w:t>
             </w:r>
         </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
                 <w:shd w:val="clear" w:fill="FFFFFF"/>
-                <w:overflowPunct w:val="true"/>
+                <w:overflowPunct w:val="false"/>
                 <w:textAlignment w:val="auto"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Arial"/>
@@ -2472,29 +2183,18 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:b/>
                     <w:i/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:lang w:val="fr-FR"/>
-                </w:rPr>
-                <w:t xml:space="preserve">Date et horaire du service installation : </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:i/>
                     <w:color w:val="0000FF"/>
                     <w:sz w:val="20"/>
                     <w:lang w:val="fr-FR"/>
                 </w:rPr>
-                <w:t>{{ showServiceSession }}</w:t>
+                <w:t>Date et horaire du service installation : {{ showServiceSession }}</w:t>
             </w:r>
         </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
                 <w:shd w:val="clear" w:fill="FFFFFF"/>
-                <w:overflowPunct w:val="true"/>
+                <w:overflowPunct w:val="false"/>
                 <w:textAlignment w:val="auto"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Arial"/>
@@ -2511,6 +2211,48 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
                 <w:t>Chaque heure supplémentaire sera facturée 15€ TTC. Les heures supplémentaires seront comptabilisées dans le décompte final</w:t>
+            </w:r>
+            <w:r>
+                <w:rPr></w:rPr>
+                <w:drawing>
+                    <wp:inline distT="0" distB="0" distL="0" distR="0">
+                        <wp:extent cx="2540" cy="2540"/>
+                        <wp:effectExtent l="0" t="0" r="0" b="0"/>
+                        <wp:docPr id="1" name="Picture 3268" descr=""></wp:docPr>
+                        <wp:cNvGraphicFramePr>
+                            <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+                                                 noChangeAspect="1"/>
+                        </wp:cNvGraphicFramePr>
+                        <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                            <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                                <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                                    <pic:nvPicPr>
+                                        <pic:cNvPr id="1" name="Picture 3268" descr=""></pic:cNvPr>
+                                        <pic:cNvPicPr>
+                                            <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+                                        </pic:cNvPicPr>
+                                    </pic:nvPicPr>
+                                    <pic:blipFill>
+                                        <a:blip r:embed="rId2"></a:blip>
+                                        <a:srcRect l="-7692" t="-7692" r="-7692" b="-7692"/>
+                                        <a:stretch>
+                                            <a:fillRect/>
+                                        </a:stretch>
+                                    </pic:blipFill>
+                                    <pic:spPr bwMode="auto">
+                                        <a:xfrm>
+                                            <a:off x="0" y="0"/>
+                                            <a:ext cx="2540" cy="2540"/>
+                                        </a:xfrm>
+                                        <a:prstGeom prst="rect">
+                                            <a:avLst/>
+                                        </a:prstGeom>
+                                    </pic:spPr>
+                                </pic:pic>
+                            </a:graphicData>
+                        </a:graphic>
+                    </wp:inline>
+                </w:drawing>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -2543,7 +2285,7 @@
                     <w:lang w:val="fr-FR"/>
                 </w:rPr>
             </w:r>
-        </w:p>{% endif %}
+        </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -2556,14 +2298,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-REGIE</w:t>
+                <w:t>E-REGIE</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -2591,7 +2326,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ stage_manager }}</w:t>
+                <w:t>Producteur</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -2601,40 +2336,17 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
                 <w:t xml:space="preserve"> assure l’éclairage et le son du spectacle pendant les représentations</w:t>
-            </w:r>{% if corea or location_without_stage_manager %}
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">. Le directeur met son matériel à la disposition du </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
-                    <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ stage_manager }}</w:t>
+                <w:t xml:space="preserve">. Le directeur met son matériel à la disposition du Producteur. Tout régisseur de compagnie ne se conformant pas à une utilisation correcte du matériel et ne respectant pas les consignes de sécurité en vigueur dans le théâtre pourra être déclaré incompétent par le régisseur général ou le directeur et se voir interdire l’accès à la régie. Le régisseur de la Compagnie est tenu de vérifier son implantation lumière et les réglages de ses projecteurs avant chaque représentation. </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">. Tout régisseur de compagnie ne se conformant pas à une utilisation correcte du matériel et ne respectant pas les consignes de sécurité en vigueur dans le théâtre pourra être déclaré incompétent par le régisseur général ou le directeur et se voir interdire l’accès à la régie. Le régisseur de la Compagnie est tenu de vérifier son implantation lumière et les réglages de ses projecteurs avant chaque représentation. </w:t>
-            </w:r>{% endif %}
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2643,8 +2355,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="33"/>
                     <w:sz w:val="20"/>
@@ -2654,19 +2364,14 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
-                    <w:color w:val="000000"/>
-                    <w:spacing w:val="33"/>
+                    <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ stage_manager }}</w:t>
+                <w:t>producteur</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -2676,8 +2381,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2686,8 +2389,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="414141"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2696,8 +2397,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2706,8 +2405,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -2717,8 +2414,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2727,8 +2422,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -2738,8 +2431,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2748,8 +2439,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -2759,8 +2448,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2769,8 +2456,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
@@ -2780,8 +2465,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2790,8 +2473,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="414141"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2800,8 +2481,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2810,8 +2489,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="16"/>
                     <w:sz w:val="20"/>
@@ -2821,8 +2498,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2831,8 +2506,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="15"/>
                     <w:sz w:val="20"/>
@@ -2842,8 +2515,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2852,8 +2523,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="16"/>
                     <w:sz w:val="20"/>
@@ -2863,8 +2532,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2873,8 +2540,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="17"/>
                     <w:sz w:val="20"/>
@@ -2884,8 +2549,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2894,8 +2557,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="-15"/>
                     <w:sz w:val="20"/>
@@ -2905,8 +2566,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2915,8 +2574,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="18"/>
                     <w:sz w:val="20"/>
@@ -2926,8 +2583,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2936,8 +2591,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="25"/>
                     <w:sz w:val="20"/>
@@ -2947,8 +2600,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2957,8 +2608,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="29"/>
                     <w:sz w:val="20"/>
@@ -2968,8 +2617,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2978,8 +2625,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="23"/>
                     <w:sz w:val="20"/>
@@ -2989,8 +2634,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -2999,8 +2642,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="21"/>
                     <w:sz w:val="20"/>
@@ -3010,8 +2651,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3020,8 +2659,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="22"/>
                     <w:sz w:val="20"/>
@@ -3031,8 +2668,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3041,8 +2676,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="32"/>
                     <w:sz w:val="20"/>
@@ -3052,8 +2685,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3062,8 +2693,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="17"/>
                     <w:sz w:val="20"/>
@@ -3073,8 +2702,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3083,8 +2710,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3094,8 +2719,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3104,8 +2727,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3115,8 +2736,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3125,8 +2744,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="414141"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3135,8 +2752,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="414141"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3146,8 +2761,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3156,8 +2769,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3167,8 +2778,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3177,8 +2786,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3188,8 +2795,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3198,8 +2803,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3209,8 +2812,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3219,8 +2820,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3230,8 +2829,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3240,8 +2837,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3251,8 +2846,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3261,8 +2854,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="-12"/>
                     <w:sz w:val="20"/>
@@ -3272,8 +2863,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3282,8 +2871,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3293,8 +2880,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3303,8 +2888,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3314,8 +2897,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3324,8 +2905,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3335,8 +2914,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3345,8 +2922,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3356,8 +2931,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3366,8 +2939,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:spacing w:val="40"/>
                     <w:sz w:val="20"/>
@@ -3377,8 +2948,6 @@
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
                     <w:color w:val="181818"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
@@ -3419,7 +2988,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3454,15 +3023,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-PRIX DES PLACES</w:t>
+                <w:t>A-PRIX DES PLACES</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3525,19 +3086,11 @@
             </w:r>
             <w:r>
                 <w:rPr>
-                    <w:rFonts w:eastAsia="Garamond" w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-INVITATIONS</w:t>
+                <w:t>B-INVITATIONS</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3591,15 +3144,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-DURÉE DU SPECTACLE</w:t>
+                <w:t>C-DURÉE DU SPECTACLE</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3638,8 +3183,17 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
             </w:r>
-        </w:p>{% if corea %}
+        </w:p>
         <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
@@ -3647,15 +3201,7 @@
                     <w:sz w:val="20"/>
                 </w:rPr>
                 <w:tab/>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-REPARTITION DE LA RECETTE</w:t>
+                <w:t>D-REPARTITION DE LA RECETTE</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3706,7 +3252,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> des entrées sera partagée de la façon suivante                 </w:t>
+                <w:t xml:space="preserve"> des entrées sera partagée de la façon suivante :                 </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3740,7 +3286,7 @@
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{showTheaterShare}}</w:t>
+                <w:t>{{ showTheaterShare }}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -3791,7 +3337,7 @@
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{showCompanyShare}}</w:t>
+                <w:t>{{ showCompanyShare }}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -3801,7 +3347,7 @@
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> euros au profit du {{producer}}</w:t>
+                <w:t xml:space="preserve"> euros au profit du Producteur</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3831,7 +3377,8 @@
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le reste des recettes : {{showCompanySharePercent}}% au profit du {{producer}}et {{showTheaterSharePercent}}% au profit du Directeur</w:t>
+                <w:t>Le reste des recettes : {{ showCompanySharePercent }}% au profit du Preneur et {{ showTheaterSharePercent }}% au profit du Directeur
+                </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3840,36 +3387,27 @@
                 <w:jc w:val="both"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:b w:val="false"/>
-                    <w:b w:val="false"/>
-                    <w:bCs w:val="false"/>
+                    <w:b/>
+                    <w:b/>
                     <w:color w:val="000000"/>
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
             </w:pPr>
-        </w:p>{% endif %}{% if location %}
-        <w:p>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:b/>
                     <w:color w:val="000000"/>
+                    <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>Recette au {{ producer }}</w:t>
             </w:r>
         </w:p>
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
+                <w:ind w:firstLine="708"/>
                 <w:jc w:val="both"/>
                 <w:rPr></w:rPr>
             </w:pPr>
@@ -3879,40 +3417,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ producer }} conserve la totalité des diverses recettes, honoraires, émoluments découlant de son activité au Bouffon Théâtre, à charge pour lui d’assurer sur la recette de billetterie, le versement de la TVA 2,10%, des sommes duesaux sociétés d’auteurs (SACD) ou d&apos;interprètes (SACEM) et de la taxe parafiscale calculée à 3,50 % sur la recette hors TVA, cette taxe a été instaurée par le décret du 6 mai 1995.</w:t>
-            </w:r>
-        </w:p>{% endif %}{% if minimumShare %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr></w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:tab/>
-                {% set article_index_share = article_index ~ ' ' ~ article_sub_index %}
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-MINIMUM GARANTI AU DIRECTEUR</w:t>
+                <w:t>E-MINIMUM GARANTI AU DIRECTEUR</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3927,24 +3432,7 @@
                     <w:b/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le minimum garanti est de </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:sz w:val="20"/>
-                    <w:shd w:fill="0000FF" w:val="clear"/>
-                </w:rPr>
-                <w:t>{{showMinimumShare}}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> euro hors taxes par représentation, </w:t>
+                <w:t xml:space="preserve">Le minimum garanti est de {{ showMinimumShare }} euro hors taxes par représentation, </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -3969,14 +3457,14 @@
                     <w:color w:val="0000FF"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{showCount}}</w:t>
+                <w:t>{{ showCount }}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> représentations à {{showMinimumShare}} euro HT. </w:t>
+                <w:t xml:space="preserve"> représentations à {{ showMinimumShare }} euro HT. </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4001,20 +3489,10 @@
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:b/>
-                    <w:bCs/>
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{ article_index_share }} - </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-</w:t>
+                <w:t>4 E-</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4032,7 +3510,7 @@
                     <w:color w:val="0000FF"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>{{showTheaterShare}}</w:t>
+                <w:t>{{ showTheaterShare }}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4047,17 +3525,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">euros HT, considéré par LE DIRECTEUR comme un minimum nécessaire à la couverture de ses dépenses, LE {{producer}} verse un complément de recette égal à la différence entre le chiffre précité et celui correspondant au pourcentage de recette lui revenant au terme de l’article </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:bCs/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ article_index_share }}</w:t>
+                <w:t xml:space="preserve">euros HT, considéré par LE DIRECTEUR comme un minimum nécessaire à la couverture de ses dépenses, LE PRODUCTEUR verse un complément de recette égal à la différence entre le chiffre précité et celui correspondant au pourcentage de recette lui revenant au terme de l’article </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4066,7 +3534,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-</w:t>
+                <w:t>4 E-</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4074,8 +3542,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">. La TVA s’applique alors sur le complément de recette au taux de {{tva}}
-                    %. </w:t>
+                <w:t xml:space="preserve">. La TVA s’applique alors sur le complément de recette au taux de {{ tva }}%. </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4089,7 +3556,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Pour bloquer la réservation du Théâtre, le {{producer}} versera au Directeur le dépôt de garanti à la signature du présent contrat, soit la somme de </w:t>
+                <w:t xml:space="preserve">Pour bloquer la réservation du Théâtre, le Producteur versera au Directeur le dépôt de garanti à la signature du présent contrat, soit la somme de </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4100,7 +3567,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">{{showTheaterShare}} </w:t>
+                <w:t>{{ showTheaterShare }}</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4144,445 +3611,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>. Ce chèque sera restitué à la fin des représentations si les recettes étaient suffisantes pour couvrir le minimum garanti, dans le cas contraire il sera remplacé par un chèque du montant restant dû</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                <w:t>.</w:t>
-            </w:r>
-        </w:p>{% endif %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-            </w:r>
-        </w:p>{%if corea %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:tab/>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-Paiement</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>Le règlement, conforme au décompte de coréalisation sera réglé 30 jours au plus tard après la dernière représentation par chèque ou virement établi à l’ordre de {{showRib}}………………….
-                </w:t>
-            </w:r>
-        </w:p>{% endif %}{% if location_with_stage_manager %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:tab/>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-Paiement</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>Le Directeur met la salle du Bouffon Théâtre à la disposition du {{ producer }} au tarif de :
-                </w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr></w:rPr>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showRentTotalPrice = (showCount * rentPrice) %}
-                <w:t>{{ rentPrice | euro }} HT par représentation, soit {{ showCount }}x{{ rentPrice }} HT : {{ showRentTotalPrice | euro }}
-                </w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set stageManagementInstallTotalPrice = stageManagementInstallHourCount * stageManagementInstallPrice %}
-                <w:t>{{ stageManagementInstallHourCount }} Heures régie installation à {{ stageManagementInstallPrice | euro }} HT : {{ stageManagementInstallTotalPrice | euro }}</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set stageManagementShowTotalPrice = stageManagementInstallHourCount * stageManagementShowPrice %}
-                <w:t>{{ stageManagementInstallHourCount}} Régies à {{ stageManagementShowPrice | euro }} HT : {{ stageManagementShowTotalPrice | euro }}
-                </w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTotalPrice = stageManagementShowTotalPrice + stageManagementInstallTotalPrice + showRentTotalPrice %}
-                <w:t>Total HT : {{ showTotalPrice | euro }}</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTaxesPrice = showTaxesPercent * showTotalPrice %}
-                <w:t>TVA (20%) : {{ showTaxesPrice | euro }}</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTotalPriceWithTaxes = showTotalPrice + showTaxesPrice %}
-                <w:t>SOIT TTC : {{ showTotalPriceWithTaxes | euro }}
-                </w:t>
-            </w:r>
-        </w:p>{% endif %}{% if location_without_stage_manager %}
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:tab/>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-Paiement</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                <w:t>Le Directeur met la salle du Bouffon Théâtre à la disposition du {{ producer }} au tarif de</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                <w:t>{{ rentPrice }} euro TTC par représentation :</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTotalPrice = showCount * rentPrice %}
-                <w:t>{{ showCount }} Représentations x {{ rentPrice | euro }} TTC : {{ showRentTotalPrice | euro }}</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTaxesPrice = showTaxesPercent * showRentTotalPrice %}
-                <w:t>TVA (20%): {{ showTaxesPrice | euro }}
-                </w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                </w:rPr>
-                {% set showTotalPriceWithTaxes = showTaxesPrice + showRentTotalPrice %}
-                <w:t>TOTAL HT: {{ showTotalPriceWithTaxes | euro }}</w:t>
-            </w:r>
-        </w:p>{% endif %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:ind w:firstLine="708"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:tab/>
-                <w:t>{{ article_sub_index | letter }} - {% set article_sub_index = article_sub_index + 1 %}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>-Désistement</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">En cas de désistement du </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ producer }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>, les divers dépôts effectués par ce dernier resteront la propriété du Directeur.</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>En cas de désistement du Directeur, celui-ci rembourserait au {{ producer }} ses divers dépôts.
+                <w:t>. Ce chèque sera restitué à la fin des représentations si les recettes étaient suffisantes pour couvrir le minimum garanti, dans le cas contraire il sera remplacé par un chèque du montant restant dû.
                 </w:t>
             </w:r>
         </w:p>
@@ -4592,6 +3621,104 @@
                 <w:jc w:val="both"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:ind w:firstLine="708"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve">F-Paiement : Le règlement, conforme au décompte de coréalisation sera réglé 30 jours au plus tard après la dernière </w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>représentation par chèque ou virement établi à l’ordre de FR76 4255 9100 0004 0201 7924 506………………….</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:ind w:firstLine="708"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:ind w:firstLine="708"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>G-Désistement :</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
             </w:pPr>
@@ -4600,7 +3727,41 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le {{ producer }} comme le Directeur ne pourront prétendre à aucun autre dommage et intérêt.</w:t>
+                <w:t>En cas de désistement du Preneur, les divers dépôts effectués par ce dernier resteront la propriété du Directeur.</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>En cas de désistement du Directeur, celui-ci rembourserait au Preneur ses divers dépôts.</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+                <w:t>Le Producteur comme le Directeur ne pourront prétendre à aucun autre dommage et intérêt.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4639,7 +3800,16 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %} /ASSURANCES</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t> /ASSURANCES</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4661,8 +3831,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le {{ producer }} est tenu d’assurer contre tous les risques ses comédiens, son personnel ainsi que les objets lui appartenant ou appartenant à son personnel (assurance « Responsabilité Civile »). A fournir au théâtre le jour de la signature du contrat.
-                </w:t>
+                <w:t>Le Preneur est tenu d’assurer contre tous les risques ses comédiens, son personnel ainsi que les objets lui appartenant ou appartenant à son personnel (assurance « Responsabilité Civile »). A fournir au théâtre le jour de la signature du contrat.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4683,8 +3852,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le directeur déclare avoir souscrit les assurances nécessaires à la couverture des risques liés aux représentations de spectacles dans son théâtre, notamment la responsabilité civile.
-                </w:t>
+                <w:t>Le directeur déclare avoir souscrit les assurances nécessaires à la couverture des risques liés aux représentations de spectacles dans son théâtre, notamment la responsabilité civile.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4708,8 +3876,16 @@
                 </w:rPr>
             </w:r>
         </w:p>
-        {% if corea %}
         <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                </w:rPr>
+            </w:pPr>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
@@ -4717,16 +3893,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}/</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:u w:val="single"/>
-                </w:rPr>
-                <w:t>DIFFUSION</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4745,28 +3912,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>En dehors des émissions radiophoniques ou hertziennes d’une durée inférieure à 5 minutes destinées à la promotion du spectacle, tout enregistrement ou diffusion du spectacle devra faire l’objet d’un accord particulier protégeant notamment les droits des auteurs et des interprètes.
-                </w:t>
-            </w:r>
-        </w:p>{% endif %}
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:jc w:val="both"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:u w:val="single"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:u w:val="single"/>
-                </w:rPr>
+                <w:t>En dehors des émissions radiophoniques ou hertziennes d’une durée inférieure à 5 minutes destinées à la promotion du spectacle, tout enregistrement ou diffusion du spectacle devra faire l’objet d’un accord particulier protégeant notamment les droits des auteurs et des interprètes.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4787,7 +3933,36 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}/</w:t>
+            </w:r>
+        </w:p>
+        <w:p>
+            <w:pPr>
+                <w:pStyle w:val="Normal"/>
+                <w:jc w:val="both"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
+            </w:r>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
+                    <w:color w:val="000000"/>
+                    <w:sz w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>/</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4800,7 +3975,7 @@
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
-                <w:overflowPunct w:val="true"/>
+                <w:overflowPunct w:val="false"/>
                 <w:textAlignment w:val="auto"/>
                 <w:rPr>
                     <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="BellGothic-Light"/>
@@ -4814,8 +3989,7 @@
                     <w:sz w:val="20"/>
                     <w:lang w:val="fr-FR"/>
                 </w:rPr>
-                <w:t>Le présent contrat se trouverait suspendu ou annulé de plein droit et sans indemnité d’aucune sorte, dans tous les cas reconnus de force majeure par la loi et la jurisprudence.
-                </w:t>
+                <w:t>Le présent contrat se trouverait suspendu ou annulé de plein droit et sans indemnité d’aucune sorte, dans tous les cas reconnus de force majeure par la loi et la jurisprudence.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4829,8 +4003,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Si pour quelques raisons que ce soit, les relations entre les membres de l’équipe productrice et les membres de l’équipe de direction venaient à s’envenimer dans des proportions nuisant au bon déroulement des représentations, le Directeur pourra annuler aussitôt les représentations prévues.
-                </w:t>
+                <w:t>Si pour quelques raisons que ce soit, les relations entre les membres de l’équipe productrice et les membres de l’équipe de direction venaient à s’envenimer dans des proportions nuisant au bon déroulement des représentations, le Directeur pourra annuler aussitôt les représentations prévues.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4847,35 +4020,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Au cas où le </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ producer }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve"> ne respecterait pas une ou plusieurs clauses du </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>{{ contractType | label }}</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t xml:space="preserve">, le Directeur se réserve le droit de résilier immédiatement le contrat, sans que le {{ producer }} ne puisse prétendre à un dédommagement quelconque.</w:t>
+                <w:t>Au cas où le Preneur ne respecterait pas une ou plusieurs clauses du contrat de coréalisation, le Directeur se réserve le droit de résilier immédiatement le contrat, sans que le Preneur ne puisse prétendre à un dédommagement quelconque.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4917,16 +4062,7 @@
                     <w:sz w:val="20"/>
                     <w:u w:val="single"/>
                 </w:rPr>
-                <w:t>Article {{ article_index }}{% set article_index = article_index + 1 %}{% set article_sub_index = 1 %}/</w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                    <w:u w:val="single"/>
-                </w:rPr>
-                <w:t>SIGNATURE</w:t>
+                <w:t>Article {{ article_index }}{% set article_index = article_index +1 %}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4987,11 +4123,7 @@
                 </w:rPr>
             </w:pPr>
             <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
+                <w:rPr></w:rPr>
             </w:r>
         </w:p>
         <w:p>
@@ -5172,7 +4304,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>LE {{ producer }}</w:t>
+                <w:t>LE PRODUCTEUR</w:t>
                 <w:tab/>
                 <w:tab/>
                 <w:tab/>

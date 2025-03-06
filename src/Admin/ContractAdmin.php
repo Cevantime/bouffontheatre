@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Entity\Contract;
 use Doctrine\DBAL\Types\DateType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -28,9 +29,11 @@ class ContractAdmin extends AbstractAdmin
             ]);
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        /** @var Contract $contract */
+        $contract = $this->getSubject();
+        $showMapper
             ->with('Le projet')
             ->add('relatedProject', ModelType::class, [
                 'label' => 'Projet associé'
@@ -41,6 +44,10 @@ class ContractAdmin extends AbstractAdmin
             ])
             ->add('showServiceSession', null, [
                 'label' => 'Date et heure de la session de service'
+            ])
+            ->add('contractType', null, [
+                'label' => 'Type de contrat',
+                'template' => 'sonata/contract_type_show.html.twig'
             ])
             ->add('status', null, [
                 'label' => 'Statut',
@@ -57,7 +64,6 @@ class ContractAdmin extends AbstractAdmin
                 'attr' => ['placeholder' => '26/28 rue de Meaux 75019 Paris '],
                 'label' => 'Adresse du théâtre',
             ])
-
             ->add('showTheaterAvailability', null, [
                 'label' => 'Heure de mise à disposition du théâtre',
             ])
@@ -110,23 +116,45 @@ class ContractAdmin extends AbstractAdmin
             ->add('showCompanyShare', null, [
                 'attr' => ['placeholder' => '100'],
                 'label' => 'Part des recettes revenant à la compagnie (en €)'
-            ])
-            ->add('showMinimumShare', null, [
+            ]);
+
+        if ( ! $contract->isRent()) {
+            $showMapper->add('showMinimumShare', null, [
                 'attr' => ['placeholder' => '100'],
                 'label' => 'Minimum garanti (en €)'
             ])
-            ->add('showCompanySharePercent', null, [
-                'attr' => ['placeholder' => '50'],
-                'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
-            ])
-            ->add('showTheaterSharePercent', null, [
-                'attr' => ['placeholder' => '50'],
-                'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
-            ])
-            ->add('contractCity', null, [
-                'attr' => ['placeholder' => 'Paris'],
-                'label' => 'Ville où est rédigée le contrat'
-            ])
+                ->add('showCompanySharePercent', null, [
+                    'attr' => ['placeholder' => '50'],
+                    'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
+                ])
+                ->add('showTheaterSharePercent', null, [
+                    'attr' => ['placeholder' => '50'],
+                    'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
+                ]);
+        } else {
+            if($contract->isRentWithStageManager()) {
+                $showMapper->add('stageManagementInstallHourCount', null, [
+                    'label' => 'Nombre d\'heures de régie d\'installation'
+                ])
+                ->add('stageManagementInstallPrice', null, [
+                    'label' => 'Tarif horaire de la régie d\'installation'
+                ])
+                ->add('stageManagementShowHourCount', null, [
+                    'label' => 'Nombre d\'heures de régie spectacle'
+                ])
+                ->add('stageManagementShowPrice', null, [
+                    'label' => 'Tarif horaire de la régie spectacle'
+                ]);
+            }
+            $showMapper->add('rentPrice', null, [
+                'label' => 'Prix de la location pour un spectacle (en €)'
+            ]);
+        }
+
+        $showMapper->add('contractCity', null, [
+            'attr' => ['placeholder' => 'Paris'],
+            'label' => 'Ville où est rédigée le contrat'
+        ])
             ->add('tva', null, [
                 'attr' => ['placeholder' => '20'],
                 'label' => 'Pourcentage TVA (en %)'

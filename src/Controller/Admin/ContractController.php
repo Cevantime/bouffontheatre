@@ -6,11 +6,11 @@ use App\Contract\ContractGenerator;
 use App\DTO\ContractCompanyPart;
 use App\DTO\ContractCompanyPartAdmin;
 use App\DTO\ContractGlobalConfig;
-use App\DTO\ContractTheaterPart;
+use App\DTO\ContractAdminPart;
 use App\Entity\Contract;
 use App\Entity\Project;
 use App\Form\ContractGlobalConfigType;
-use App\Form\ContractTheaterPartType;
+use App\Form\ContractAdminPartType;
 use App\Repository\ContractRepository;
 use App\Service\ConfigService;
 use App\Service\DTOService;
@@ -52,7 +52,7 @@ class ContractController extends AbstractController
 
     #[Route(path: '/contract/from-project/{id}', name: 'app_contract_create_from_project', options: ['expose' => true])]
     #[Route(path: '/contract/from-project/{id}/edit/{idContract}', name: 'app_contract_edit_from_project', options: ['expose' => true])]
-    public function createContractForProject(
+    public function contractForProjectForm(
         ConfigService          $configService,
         DTOService             $DTOService,
         Request                $request,
@@ -62,7 +62,7 @@ class ContractController extends AbstractController
         ?Project               $project = null,
         $idContract = null
     ) {
-        $contractTheaterPart = new ContractTheaterPart();
+        $contractAdminPart = new ContractAdminPart();
         $contractCompanyPart = new ContractCompanyPartAdmin();
         $contractConfig = new ContractGlobalConfig();
         if ($idContract) {
@@ -70,16 +70,16 @@ class ContractController extends AbstractController
             if (!$contract) {
                 throw $this->createNotFoundException();
             }
-            foreach ([$contractTheaterPart, $contractConfig, $contractCompanyPart] as $form) {
+            foreach ([$contractAdminPart, $contractConfig, $contractCompanyPart] as $form) {
                 $DTOService->transferDataTo($contract, $form);
             }
         } else {
             $contract = new Contract();
         }
 
-        $contractTheaterPart->project = $project;
-        $contractTheaterPart->contractConfig = $contractConfig;
-        $contractTheaterPart->contractCompanyPart = $contractCompanyPart;
+        $contractAdminPart->project = $project;
+        $contractAdminPart->contractTheaterConfig = $contractConfig;
+        $contractAdminPart->contractCompanyPart = $contractCompanyPart;
         $lastContract = $contractRepository->getUserLastCompletedContract($project->getOwner());
         if ($lastContract && !$idContract) {
             $DTOService->transferDataTo($lastContract, $contractCompanyPart);
@@ -88,20 +88,20 @@ class ContractController extends AbstractController
             $configs = $configService->getRawConfigs();
             $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class . '::camelize');
         }
-        $form = $this->createForm(ContractTheaterPartType::class, $contractTheaterPart);
+        $form = $this->createForm(ContractAdminPartType::class, $contractAdminPart);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $contractDate = new \DateTimeImmutable();
             $contract->setContractDate($contractDate);
             $contractSignatureDate = $contractDate->add(\DateInterval::createFromDateString('14 day'));
             $contract->setContractSignatureDate($contractSignatureDate);
-            foreach ($contractTheaterPart->getPerformances() as $performance) {
-                $performance->setRelatedProject($contractTheaterPart->project);
+            foreach ($contractAdminPart->getPerformances() as $performance) {
+                $performance->setRelatedProject($contractAdminPart->project);
                 $performance->setContract($contract);
                 $entityManager->persist($performance);
             }
-            $contract->setRelatedProject($contractTheaterPart->project);
-            foreach ([$contractTheaterPart, $contractConfig, $contractCompanyPart] as $form) {
+            $contract->setRelatedProject($contractAdminPart->project);
+            foreach ([$contractAdminPart, $contractConfig, $contractCompanyPart] as $form) {
                 $DTOService->transferDataTo($form, $contract);
             }
             $entityManager->persist($contract);

@@ -3,9 +3,10 @@
 namespace App\DTO;
 
 use App\Entity\Performance;
+use App\Validator\Amount;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ContractTheaterPart
+class ContractAdminPart
 {
     public $project;
 
@@ -16,8 +17,13 @@ class ContractTheaterPart
 
     public $showServiceSession;
 
+    public $contractType;
+
     public $contractCompanyPart;
-    public $contractConfig;
+    public $contractTheaterConfig;
+
+//    public bool $minimumShare;
+
 
     public function getPerformances()
     {

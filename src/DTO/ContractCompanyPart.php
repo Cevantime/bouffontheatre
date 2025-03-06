@@ -2,6 +2,7 @@
 
 namespace App\DTO;
 
+use App\Entity\Paper;
 use App\Validator\Phone;
 use App\Validator\Siret;
 use Doctrine\Common\Collections\Collection;
@@ -47,6 +48,22 @@ class ContractCompanyPart
     public $showBanner = null;
     public $showPoster = null;
     public $showMedia = null;
+
+    public ?string $showExcerpt = null;
+
+    public ?int $minAge = null;
+
+    /** @var Paper[] $papers */
+    public $papers;
+
+    #[Assert\Type('digit')]
+    public $showDuration;
+
+    #[Assert\Type('digit')]
+    public $showMaxDuration;
+
+    public ?string $teaser;
+
 
     #[Assert\Length(max: 250)]
     public ?string $showPunchline;

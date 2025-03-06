@@ -30,12 +30,6 @@ class ContractGlobalConfig
     #[Amount]
     public $showHalfPrice;
 
-    #[Assert\Type('digit')]
-    public $showDuration;
-
-    #[Assert\Type('digit')]
-    public $showMaxDuration;
-
 
     public $showTheaterAvailability;
     public $showInvitations;
@@ -54,8 +48,23 @@ class ContractGlobalConfig
 
     #[Amount]
     public $showMinimumShare;
+
+    #[Amount]
+    public $rentPrice;
+
     public $contractCity;
 
     #[Amount]
     public $tva;
+
+    #[Assert\Type(type: 'integer')]
+    public $stageManagementInstallHourCount = 4;
+
+    #[Assert\Type(type: 'integer')]
+    public $stageManagementShowHourCount = 4;
+
+    #[Amount]
+    public $stageManagementInstallPrice = 20;
+    #[Amount]
+    public $stageManagementShowPrice = 50;
 }

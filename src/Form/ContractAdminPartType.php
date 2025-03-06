@@ -2,16 +2,19 @@
 
 namespace App\Form;
 
-use App\DTO\ContractTheaterPart;
+use App\DTO\ContractAdminPart;
+use App\Entity\Contract;
 use App\Entity\Show;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ContractTheaterPartType extends AbstractType
+class ContractAdminPartType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,15 +29,26 @@ class ContractTheaterPartType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true
             ])
-            ->add('showServiceSession', TextType    ::class, [
+            ->add('showServiceSession', TextType::class, [
                 'label' => 'Date et heure de la session de service',
                 'attr' => ['placeholder' => 'le 15 mai 2024 de 14h à 18h']
             ])
+            ->add('contractType', ChoiceType::class, [
+                'choices' => [
+                    'Contrat de co-réalisation avec minimum garanti' => Contract::TYPE_CO_PRODUCTION,
+                    'Contrat de co-réalisation sans minimum garanti' => Contract::TYPE_CO_PRODUCTION_WITHOUT_MINIMUM,
+                    'Contrat de location avec régisseur' => Contract::TYPE_RENT_WITH_STAGE_MANAGER,
+                    'Contrat de location sans régisseur' => Contract::TYPE_RENT_WITHOUT_STAGE_MANAGER,
+                ]
+            ])
+//            ->add('minimumShare', CheckboxType::class, [
+//                'label' => 'Inclure un minimum garanti'
+//            ])
 
             ->add('contractCompanyPart', ContractCompanyPartAdminType::class, [
                 'label' => 'Information de la compagnie'
             ])
-            ->add('contractConfig', ContractGlobalConfigType::class, [
+            ->add('contractTheaterConfig', ContractGlobalConfigType::class, [
                 'label' => 'Configuration du contrat'
             ])
         ;
@@ -43,7 +57,7 @@ class ContractTheaterPartType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ContractTheaterPart::class,
+            'data_class' => ContractAdminPart::class,
         ]);
     }
 }

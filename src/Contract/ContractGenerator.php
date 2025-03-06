@@ -85,8 +85,15 @@ class ContractGenerator
             'showTheaterSharePercent',
             'showMinimumShare',
             'showRib',
+            'rentPrice',
             'contractCity',
             'tva',
+            'stageManagementInstallHourCount',
+            'stageManagementShowHourCount',
+            'stageManagementInstallPrice',
+            'stageManagementShowPrice',
+            'contractType',
+            'minimumShare'
         ]);
         $perfCount = $contract->getPerformances()->count();
         $twigContext['showCount'] = $contract->getPerformances()->count();
@@ -112,7 +119,9 @@ class ContractGenerator
         }
         $path = $dir . DIRECTORY_SEPARATOR . $exportName;
         $i = 0;
+//        $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
         $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
+
         return [
             'path' => $path,
             'name' => $exportName

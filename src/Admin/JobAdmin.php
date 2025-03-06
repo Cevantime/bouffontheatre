@@ -47,9 +47,9 @@ class JobAdmin extends AbstractAdmin
         ;
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->add('name', null, [
                 'label' => 'Métier'
             ])

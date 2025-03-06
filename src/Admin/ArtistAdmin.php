@@ -169,9 +169,9 @@ class ArtistAdmin extends AbstractAdmin
             ]);
     }
 
-    protected function configureShowFields(ShowMapper $show): void
+    protected function configureShowFields(ShowMapper $showMapper): void
     {
-        $show
+        $showMapper
             ->add('photo', ModelType::class, [
                 'photo' => 'Photo',
                 'template' => 'sonata/image_show.html.twig'

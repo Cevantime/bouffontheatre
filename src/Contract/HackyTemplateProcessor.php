@@ -28,7 +28,9 @@ class HackyTemplateProcessor extends TemplateProcessor
     public function saveAsWithTwigMainPart($output, $mainPartTemplate, $context)
     {
         $oldMainPart = $this->tempDocumentMainPart;
-        $this->tempDocumentMainPart = $this->twig->render($mainPartTemplate, $context);
+        $this->tempDocumentMainPart = trim($this->twig->render($mainPartTemplate, $context));
+//        echo $this->tempDocumentMainPart;
+//        die();
         $this->saveAs($output);
         $this->tempDocumentMainPart = $oldMainPart;
     }
