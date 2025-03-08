@@ -49,36 +49,41 @@ class SourceScrapper
 
         $crawler = $client->request('GET', "https://pro.billetreduc.com");
 
+        $crawler = $client->waitFor('[type="submit"]');
+
         /** @var Crawler $crawler */
-        $form = $crawler->selectButton('SE CONNECTER')->form();
+        $submitButton = $crawler->filter('[type="submit"]');
 
-        $form['login'] = $this->params->get('billetreduc_login');
-        $form['pass'] = $this->params->get('billetreduc_password');
+        $crawler->filter('[type="text"]')->sendKeys($this->params->get('billetreduc_login'));
+        $crawler->filter('[type="password"]')->sendKeys($this->params->get('billetreduc_password'));
+        $submitButton->click();
 
-        $crawler = $client->submit($form);
-
-        $crawler = $client->waitFor('.evtc .g');
+        $crawler = $client->waitFor('.event-card');
         $crawler = $client->refreshCrawler();
-
-        $links = $crawler->filter('.box-item.br-verysmallbtn.br-blue')->links();
-        $uris = array_unique(array_map(function ($link) {
-            return $link->getUri();
-        }, $links));
+        $uris = [];
+        $crawler->filter('.event-card')->each(function(Crawler $card) use (&$uris) {
+            if($card->filter('[style="background: rgb(154, 220, 117);"]')->count() > 0) {
+                $imgSrc = $card->filter('.image')->attr('src');
+                $matches = [];
+                preg_match('#https?://pic\.billetreduc\.com/r70-100-0/([0-9]+)\.*#', $imgSrc, $matches);
+                $uris[] = sprintf('https://pro.billetreduc.com/detail-event/%s/dashboard', $matches[1]);
+            }
+        });
 
         foreach ($uris as $uri) {
             /** @var Link $link */
             $crawler = $client->request('GET', $uri);
 
-            $client->waitFor('.bigeventtitle b');
+            $client->waitFor('.dashboard-table');
             $crawler = $client->refreshCrawler();
-            $showTitle = $crawler->filter('.bigeventtitle b')->getText();
+            $showTitle = $crawler->filter('.text-h6[style="color: rgb(65, 82, 121);"]')->getText();
             $show = $this->showRepository->findOneByTitleOrBilletreducTitle($showTitle);
 
             if (!$show) {
                 continue;
             }
 
-            $table = $crawler->filter('table.xt');
+            $table = $crawler->filter('.dashboard-table .dashboard-body');
             $html = $table->getElement(0)->getDomProperty('outerHTML');
 
             $insight = new Insight();
