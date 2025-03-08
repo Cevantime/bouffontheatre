@@ -82,7 +82,7 @@
                    row.remove();
                 }).appendTo(row);
             }
-            $('#contract_theater_part_project').change(function () {
+            $('#contract_admin_part_project').change(function () {
                 if ({{ edit }}) {
                     window.location = Routing.generate('app_contract_edit_from_project', {
                         id: $(this).val(),
@@ -93,22 +93,22 @@
                 }
             });
 
-            const $performanceList = $('#contract_theater_part_performances');
+            const $performanceList = $('#contract_admin_part_performances');
             $performanceList.children().each(function(){
                 addDeletePerformanceButton($(this));
+                $(this).find('label').text('Représentation n°' + ($(this).index() + 1));
             });
             const performanceRowPrototype = $performanceList.data('prototype');
-            $performanceList.each(function () {
-                $(this).find('label').text('Représentation n°' + ($(this).index()));
-            });
+
             $('#add_performance').click(function () {
                 const newIndex = $performanceList.children().length;
                 const newRow = performanceRowPrototype
                     .replace(/__name__label__/g, 'Représentation n°' + (newIndex + 1))
                     .replace(/__name__/g, newIndex)
                 ;
-                $performanceList.append(newRow);
-                addDeletePerformanceButton(newRow);
+                const $row = $(newRow);
+                $performanceList.append($row);
+                addDeletePerformanceButton($row);
             });
         });
     </script>
