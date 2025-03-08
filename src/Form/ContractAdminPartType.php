@@ -21,7 +21,8 @@ class ContractAdminPartType extends AbstractType
         $builder
             ->add('project', EntityType::class, [
                 'class' => Show::class,
-                'label' => 'Projet associé'
+                'label' => 'Projet associé',
+                'disabled' => true
             ])
             ->add('performances', CollectionType::class, [
                 'label' => 'Les représentations',

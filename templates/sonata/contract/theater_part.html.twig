@@ -82,16 +82,6 @@
                    row.remove();
                 }).appendTo(row);
             }
-            $('#contract_admin_part_project').change(function () {
-                if ({{ edit }}) {
-                    window.location = Routing.generate('app_contract_edit_from_project', {
-                        id: $(this).val(),
-                        idContract: '{{ idContract }}'
-                    });
-                } else {
-                    window.location = Routing.generate('app_contract_create_from_project', {id: $(this).val()});
-                }
-            });
 
             const $performanceList = $('#contract_admin_part_performances');
             $performanceList.children().each(function(){
