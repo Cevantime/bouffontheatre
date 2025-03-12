@@ -58,7 +58,7 @@ class SourceScrapper
         $crawler->filter('[type="password"]')->sendKeys($this->params->get('billetreduc_password'));
         $submitButton->click();
 
-        $crawler = $client->waitFor('.event-card');
+        $client->waitFor('.event-card');
         $crawler = $client->refreshCrawler();
         $uris = [];
         $crawler->filter('.event-card')->each(function(Crawler $card) use (&$uris) {
@@ -72,9 +72,9 @@ class SourceScrapper
 
         foreach ($uris as $uri) {
             /** @var Link $link */
-            $crawler = $client->request('GET', $uri);
+            $client->request('GET', $uri);
 
-            $client->waitFor('.dashboard-table');
+            $client->waitFor('.dashboard-table .dashboard-body div');
             $crawler = $client->refreshCrawler();
             $showTitle = $crawler->filter('.text-h6[style="color: rgb(65, 82, 121);"]')->getText();
             $show = $this->showRepository->findOneByTitleOrBilletreducTitle($showTitle);
