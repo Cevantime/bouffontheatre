@@ -5,17 +5,46 @@
 {% endblock %}
 {% block body %}
 <style>
-    .dashboard-body > div:first-child {
-        display: none !important;
-    }
+
     .dashboard-row {
         width: 100%;
+        display: table;
     }
     .dashboard-row > div {
         display: inline-block;
     }
     .dashboard-header > div {
         display: inline-block;
+    }
+
+    .dashboard-row:not(.w-full) {
+        display: table-row;
+    }
+
+    .dashboard-row:not(.w-full) > div {
+        display: table-cell;
+    }
+
+    .dashboard-row:not(.w-full) > div:nth-child(1),
+    .dashboard-row:not(.w-full) > div:nth-child(2),
+    .dashboard-row:not(.w-full) > div:nth-child(3),
+    .dashboard-row:not(.w-full) > div:nth-child(5),
+    .dashboard-row:not(.w-full) > div:nth-child(6),
+    .dashboard-row:not(.w-full) > div:nth-child(9),
+    .dashboard-row:not(.w-full) > div:nth-child(10){
+        display: none;
+    }
+
+    .dashboard-row:not(.w-full) > div:nth-child(4) {
+        width: 20% !important;
+    }
+
+    .dashboard-row:not(.w-full) > div:nth-child(7) {
+        width: 10% !important;
+    }
+
+    .dashboard-row:not(.w-full) > div:nth-child(8) {
+        width: 10% !important;
     }
 
 </style>
