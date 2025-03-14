@@ -26,7 +26,7 @@ class ReservationVoter extends Voter
 
         return (in_array($attribute, [self::EDIT, self::DELETE])
             && $subject instanceof \App\Entity\Reservation)
-            || (in_array($attribute, [self::ADD, self::LIST])
+            || (in_array($attribute, [self::ADD])
                 && $subject == null);
     }
 

@@ -38,7 +38,7 @@
                             {% else %}
                                 <p class="card-text">Cette représentation n'est plus disponible à la réservation</p>
                             {% endif %}
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('SHOW_LIST_RESERVATION', p.relatedProject) %}
                                 <a href="{{ path("app_reservation_view", {id: p.id}) }}">Voir les réservations</a>
                             {% endif %}
                         </div>

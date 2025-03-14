@@ -104,10 +104,12 @@ class ReservationController extends AbstractController
         return $this->redirectToRoute('app_reservation_view', ['id' => $reservation->getPerformance()->getId()]);
     }
 
-    #[IsGranted("RESERVATION_LIST")]
     #[Route('/view/{id}', name: 'app_reservation_view')]
     public function view(Performance $performance): Response
     {
+        if( ! $this->isGranted('SHOW_LIST_RESERVATION', $performance->getRelatedProject())) {
+            throw $this->createAccessDeniedException();
+        }
         $sortedReservation = $performance->getReservations()->toArray();
         usort($sortedReservation, function(Reservation $r1, Reservation $r2){
             return $r1->getLastName() <=> $r2->getLastName();
