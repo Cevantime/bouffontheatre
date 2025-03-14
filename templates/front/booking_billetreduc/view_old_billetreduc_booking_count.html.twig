@@ -1,0 +1,45 @@
+{% extends "front/base.html.twig" %}
+
+{% block title %}
+    Notre blog
+{% endblock %}
+{% block body %}
+    <style>
+        .titretableau + tr
+        {
+            display: none;
+        }
+
+        table .dispo a {
+            text-decoration: none;
+            color: green;
+        }
+
+        td.heure a:not(:nth-child(3)) {
+            display: none;
+        }
+
+        td:nth-child(5), .titretableau td:nth-child(8), td:nth-child(10):not(.titretableau td:nth-child(10)) {
+            display: none;
+        }
+
+        .diffusion.diffusion1 {
+            display: none;
+        }
+
+        p {
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+    </style>
+    <div class="container">
+        <h1>Réservations pour le spectacle "{{ show.name }}"</h1>
+        {% for i in insights %}
+            {{ i.html | raw }}
+            <p class="mt-5">
+                Mis à jour le {{ i.createdAt | date("d/m/Y à H:i") }}
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

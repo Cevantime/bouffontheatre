@@ -44,10 +44,14 @@ class SourceScrapper
 
     public function scrapBookings()
     {
+        $this->scrapOld();
+    }
 
+    public function scrapNew()
+    {
         $client = self::createReliableClient();
 
-        $crawler = $client->request('GET', "https://pro.billetreduc.com");
+        $client->request('GET', "https://pro.billetreduc.com");
 
         $crawler = $client->waitFor('[type="submit"]');
 
@@ -84,6 +88,119 @@ class SourceScrapper
             }
 
             $table = $crawler->filter('.dashboard-table .dashboard-body');
+            $html = $table->getElement(0)->getDomProperty('outerHTML');
+
+            $insight = new Insight();
+            $insight->setRelatedShow($show);
+            $insight->setCreatedAt(new DateTimeImmutable());
+            $insight->setType(Insight::TYPE_BOOKING_COUNT);
+            $insight->setHtml($html);
+
+            $this->entityManager->persist($insight);
+
+            // $date = null;
+            // $dateTime = null;
+
+            // $table->filter('tr')->each(function ($tr) use (&$date, &$dateTime) {
+            //     $class = $tr->getAttribute('class');
+            //     if ($class === 'tbNewDay') {
+            //         $date = trim($tr->getText());
+            //         $date = DateTimeImmutable::createFromFormat('l d F Y', trim($tr->getText()));
+            //     } else {
+            //         if ($class == "heure") {
+            //             $td = $tr->filter('td.heure');
+            //             var_dump($td->getText());
+            //             preg_match('#([0-9]{2}h[0-9]{2}).+#', trim($td->getText()), $matches);
+            //             var_dump($matches[1]);
+            //         }
+            //     }
+            // });
+
+        }
+
+        $is = $this->insightRepository->findAll();
+        foreach ($is as $i) {
+            $this->entityManager->remove($i);
+        }
+
+        $this->entityManager->flush();
+        // if ($source->getScript()) {
+        //     $client->executeScript($source->getScript());
+        // }
+
+        // if (($selector = $source->getSelector())) {
+        //     $client->waitFor($selector);
+        //     $client->refreshCrawler();
+        //     $crawler = $client->getCrawler();
+        //     $crawler = $crawler->filter($selector);
+        // }
+
+        // if ($crawler->count() == 0) {
+        //     throw new \Exception("Could not fetch the selected source {$source->getId()}");
+        // }
+
+        // $text = $crawler->text();
+
+        // if ($source->getRegex()) {
+        //     if (preg_match($source->getRegex(), $text, $matches)) {
+        //         $text = $matches[$source->getRegexCaptureGroup()];
+        //     }
+        // }
+
+        // $result = trim($text);
+        // if (!$text) {
+        //     throw new \Exception("Source {$source->getId()} returned an empty result");
+        // }
+        // $insight = new Insight();
+        // $insight->setDate(new \DateTime());
+        // $insight->setJournal($source->getJournal());
+        // $insight->setType($source->getInsightType());
+        // $insight->setValue($result);
+
+        // $source->getJournal()->addInsight($insight);
+
+        // $this->entityManager->persist($insight);
+        // $this->entityManager->flush();
+
+        // return $result;
+    }
+
+    public function scrapOld()
+    {
+        $client = self::createReliableClient();
+
+        $crawler = $client->request('GET', "https://pro-old.billetreduc.com/index2.htm");
+
+        /** @var Crawler $crawler */
+        $form = $crawler->selectButton('SE CONNECTER')->form();
+
+        $form['login'] = $this->params->get('billetreduc_login');
+        $form['pass'] = $this->params->get('billetreduc_password');
+
+        $crawler = $client->submit($form);
+
+        $crawler = $client->waitFor('.evtc .g');
+        $crawler = $client->refreshCrawler();
+
+        $links = $crawler->filter('.box-item.br-verysmallbtn.br-blue')->links();
+        $uris = array_unique(array_map(function ($link) {
+            return $link->getUri();
+        }, $links));
+
+        foreach ($uris as $uri) {
+            /** @var Link $link */
+            $crawler = $client->request('GET', $uri);
+
+            $client->waitFor('.bigeventtitle b');
+            $crawler = $client->refreshCrawler();
+            $showTitle = $crawler->filter('.bigeventtitle b')->getText();
+            $show = $this->showRepository->findOneByTitleOrBilletreducTitle($showTitle);
+
+            if (!$show) {
+                continue;
+            }
+
+            $table = $crawler->filter('table.xt');
             $html = $table->getElement(0)->getDomProperty('outerHTML');
 
             $insight = new Insight();
