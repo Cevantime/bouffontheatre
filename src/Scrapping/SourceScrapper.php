@@ -60,6 +60,7 @@ class SourceScrapper
 
         $crawler->filter('[type="text"]')->sendKeys($this->params->get('billetreduc_login'));
         $crawler->filter('[type="password"]')->sendKeys($this->params->get('billetreduc_password'));
+
         $submitButton->click();
 
         $client->waitFor('.event-card');
@@ -177,9 +178,10 @@ class SourceScrapper
         $form['login'] = $this->params->get('billetreduc_login');
         $form['pass'] = $this->params->get('billetreduc_password');
 
-        $crawler = $client->submit($form);
+        $client->submit($form);
 
-        $crawler = $client->waitFor('.evtc .g');
+        $client->waitFor('.evtc .g');
+
         $crawler = $client->refreshCrawler();
 
         $links = $crawler->filter('.box-item.br-verysmallbtn.br-blue')->links();
@@ -189,7 +191,7 @@ class SourceScrapper
 
         foreach ($uris as $uri) {
             /** @var Link $link */
-            $crawler = $client->request('GET', $uri);
+            $client->request('GET', $uri);
 
             $client->waitFor('.bigeventtitle b');
             $crawler = $client->refreshCrawler();

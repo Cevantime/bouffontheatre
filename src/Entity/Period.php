@@ -13,10 +13,10 @@ class Period
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     private $dateStart;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     private $dateEnd;
 
     #[ORM\Column(type: 'simple_array')]
