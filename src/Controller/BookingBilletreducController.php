@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Show;
 use App\Repository\InsightRepository;
 use App\Security\Voter\BookingBilletreducVoter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

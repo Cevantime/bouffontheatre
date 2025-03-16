@@ -14,7 +14,7 @@ class Reservation extends Constraint
 {
     public $message = 'Votre réservation comporte plus de places ({{ sum }}) que disponible ({{ available }})';
 
-    public function getTargets()
+    public function getTargets(): array|string
     {
         return self::CLASS_CONSTRAINT;
     }

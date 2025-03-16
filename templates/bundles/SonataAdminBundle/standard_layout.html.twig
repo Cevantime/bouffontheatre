@@ -29,7 +29,7 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-flag fa-fw" aria-hidden="true"></i>
+                        <i class="fas fa-plus-square fa-fw" aria-hidden="true"></i>
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                     </a>
                     <div class="dropdown-menu">
@@ -45,19 +45,6 @@
                                     <li role="presentation">
                                         <a role="menuitem" href="{{ path('app_home') }}"><i class="fa fa-home"></i>Revenir au site</a>
                                     </li>
-                                    <li role="presentation" class="dropdown-header">
-                                        <i class="fa fa-language"></i>
-                                        {{ 'languages'|trans({}, 'SonataTranslationBundle') }}
-                                    </li>
-                                    {% for locale in sonata_translation_locales %}
-                                        <li role="presentation"
-                                            class="{{ app.request.locale == locale ? 'active' : '' }}">
-                                            <a role="menuitem" tabindex="-1"
-                                               href="{{ path('sonata.translation.locale', {'locale': locale}) }}">
-                                                {{ locale|sonata_language_name(locale)|capitalize }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>

@@ -31,8 +31,6 @@ class ArtistItem
     #[ORM\ManyToOne(targetEntity: Show::class, inversedBy: 'authors')]
     private $authoredShow;
 
-    #[ORM\ManyToOne(targetEntity: Content::class, inversedBy: 'artistGallery')]
-    private $content;
 
     public function getId(): ?int
     {
@@ -100,18 +98,6 @@ class ArtistItem
     public function setAuthoredShow(?Show $authoredShow): self
     {
         $this->authoredShow = $authoredShow;
-
-        return $this;
-    }
-
-    public function getContent(): ?Content
-    {
-        return $this->content;
-    }
-
-    public function setContent(?Content $content): self
-    {
-        $this->content = $content;
 
         return $this;
     }

@@ -19,7 +19,7 @@ class PhoneTransformer implements DataTransformerInterface
      * @param mixed $value
      * @return mixed|null
      */
-    public function transform(mixed $value)
+    public function transform(mixed $value):mixed
     {
         return $value;
     }
@@ -28,7 +28,7 @@ class PhoneTransformer implements DataTransformerInterface
      * @param mixed $value
      * @return mixed|null
      */
-    public function reverseTransform(mixed $value)
+    public function reverseTransform(mixed $value):mixed
     {
         return $this->phoneService->formatPhone($value);
     }

@@ -7,7 +7,7 @@ use App\Admin\UserAdmin;
 use App\Entity\Show;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Entity\User;
 
 class UserVoter extends Voter

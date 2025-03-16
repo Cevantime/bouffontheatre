@@ -18,7 +18,7 @@ class AmountTransformer implements DataTransformerInterface
      * @param mixed $value
      * @return mixed|null
      */
-    public function transform(mixed $value)
+    public function transform(mixed $value): mixed
     {
        return $this->amountService->formatStandardToFrenchAmount($value);
     }
@@ -27,7 +27,7 @@ class AmountTransformer implements DataTransformerInterface
      * @param mixed $value
      * @return mixed|null
      */
-    public function reverseTransform(mixed $value)
+    public function reverseTransform(mixed $value):mixed
     {
         return $this->amountService->formatFrenchToStandardAmount($value);
     }

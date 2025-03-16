@@ -7,9 +7,9 @@ use App\Admin\ArtistItemAdmin;
 use App\Entity\Artist;
 use App\Entity\ArtistItem;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ArtistItemVoter extends Voter

@@ -7,7 +7,7 @@ use App\Admin\CandidatureAdmin;
 use App\Entity\Candidature;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class CandidatureVoter extends Voter
 {
