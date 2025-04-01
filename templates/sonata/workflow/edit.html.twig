@@ -1,0 +1,573 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('stimulus-only') }}
+    <style>
+        .workflow-section.workflow-section-success {
+            background: #a0ecc7;
+            position: relative;
+        }
+
+        .workflow-section.workflow-section-success:not(.displayed) .box-body,
+        .workflow-section.workflow-section-hidden .box-body {
+            display: none;
+        }
+
+        .workflow-section.workflow-section-success .box-header {
+            cursor: pointer;
+        }
+
+        .workflow-section.workflow-section-success::after {
+            content: "✓";
+            position: absolute;
+            top: -15px;
+            right: 0;
+            font-size: 3rem;
+        }
+
+        .workflow-section.workflow-section-hidden {
+            opacity: 0.5;
+        }
+
+        .box-body {
+            font-size: 1.3rem;
+        }
+
+        .insight {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+
+        p {
+            margin-top: 1.5rem;
+        }
+
+        #workflow_revenue_performances fieldset {
+            display: inline-block;
+            margin: 2rem;
+            border: 1px solid black;
+            padding: 2rem;
+        }
+
+        #workflow_revenue_performances legend {
+            display: none;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .copy-clipboard {
+            margin-left: 0.5rem;
+        }
+
+        .fa-check {
+            margin-left: 0.5rem;
+            color: #00a157;
+        }
+
+    </style>
+{% endblock %}
+{% block sonata_admin_content %}
+    <h1>Workflow du spectacle {{ workflow.associatedShow }} du {{ workflow.createdAt.format('d/m/Y') }}</h1>
+    {% if workflow.closed %}
+        <div class="alert alert-warning">
+            Ce workflow est à présent clôt
+        </div>
+    {% endif %}
+    {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_CONTRACT_CREATION')) }}
+    <div class="box-header">
+        Création d'un contrat
+    </div>
+    <div class="box-body">
+        {% if workflow.contract %}
+            <div class="insight">
+                {% if workflow_service.workflowContractFrozen(workflow) %}
+                    <p>Le statut du contrat (<strong>{{ workflow.contract.status | trans }}</strong>) ne permet plus sa
+                        modification.</p>
+                {% endif %}
+                <p>
+                    Vous pouvez retrouver l'édition complète du contrat <a target="_blank"
+                                                                           href="{{ path('app_contract_edit_from_project', {id:workflow.associatedShow.id, idContract: workflow.contract.id}) }}">ici</a>.
+                </p>
+            </div>
+        {% endif %}
+        {% if not workflow_service.workflowContractFrozen(workflow) %}
+            {{ form_start(contractForm) }}
+            {{ form_row(contractForm.performances) }}
+            <div class="btn-group">
+                <button class="btn btn-primary mb-3" type="button" id="add_performance">Ajouter une représentation
+                </button>
+            </div>
+            {{ form_row(contractForm.showServiceSession) }}
+
+            {{ form_row(contractForm.contractType) }}
+            <button class="btn btn-success" type="submit">Valider</button>
+            {{ form_end(contractForm) }}
+
+        {% endif %}
+    </div>
+    {{ workflow_section_end() }}
+    {% if workflow.contract %}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_FETCH_INFORMATIONS')) }}
+        {% set info_fetch_not_sent = workflow.contract.fetchDataStatus == constant('App\\Entity\\Contract::FETCH_DATA_STATUS_NOT_SENT') %}
+        {% set info_fetched_auto = info_fetch_not_sent and workflow_service.areInformationsFetched(workflow) %}
+        <div class="box-header">
+            Demande d'informations {% if info_fetched_auto %} <i class="fas fa-exclamation-triangle"></i> {% endif %}
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                {% if info_fetched_auto %}
+                    <div class="alert alert-warning">
+                        <p>
+                            <i class="fas fa-exclamation-triangle"></i> Les informations liées aux workflow ont été
+                            déduites automatiquement par le système. <br>
+                        </p>
+                        <p>
+                            Si vous souhaitez effectuer une demande d'info, vous pouvez toujours envoyer la
+                            demande d'information.
+                        </p>
+                        <p>
+                            Sinon, confirmez dès maintenant que les informations sont correctes.
+                            <a class="btn btn-primary"
+                               href="{{ path("app_workflow_confirm_data_fetch", {id: workflow.id}) }}">Les informations
+                                sont correctes</a>
+                        </p>
+                    </div>
+                {% endif %}
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du contrat
+                        <a target="_blank"
+                           href="{{ path('app_contract_edit_from_project', {id:workflow.associatedShow.id, idContract: workflow.contract.id}) }}">ici</a>
+                    </li>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du spectacle
+                        <a target="_blank" href="{{ path('admin_app_show_edit', {id: workflow.associatedShow.id}) }}">ici</a>
+                    </li>
+                </ul>
+                <p>Le statut actuel de la demande d'info est
+                    <strong>{{ workflow.contract.fetchDataStatus | trans }}</strong></p>
+            </div>
+            {% if workflow.contract.draft %}
+                <p>
+                    Envoyez le formulaire de demande d'infos à la compagnie: <a class="btn btn-primary"
+                                                                                href="{{ path('app_workflow_send_data_form', {id: workflow.id}) }}">Envoyer
+                        maintenant</a>
+                </p>
+            {% endif %}
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_SEND_CONTRACT')) }}
+        <div class="box-header">
+            Envoi du contrat
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du contrat
+                        <a target="_blank"
+                           href="{{ path('app_contract_edit_from_project', {id:workflow.associatedShow.id, idContract: workflow.contract.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                {% if workflow.contract.status == constant('App\\Entity\\Contract::STATUS_DRAFT') %}
+                    Envoyer le contrat à la compagnie : <a class="btn btn-primary"
+                                                           href="{{ path('app_workflow_send_contract', {id: workflow.id}) }}">Envoyer</a>
+                    ou bien <a class="btn btn-secondary" href="{{ path('app_admin_workflow_skip_send_contract', {id: workflow.id}) }}">Passer cette étape</a>
+                {% else %}
+                    Le contrat a déjà été envoyé
+                {% endif %}
+            </p>
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_SIGN_CONTRACT')) }}
+        <div class="box-header">
+            Signature du contrat
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du contrat
+                        <a target="_blank"
+                           href="{{ path('app_contract_edit_from_project', {id:workflow.associatedShow.id, idContract: workflow.contract.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+            {% if workflow.contract.status != constant('App\\Entity\\Contract::STATUS_SIGNED') %}
+
+                <p>
+                    Une fois le contrat signé <strong>par les 2 parties</strong>, vous pouvez valider cette étape :
+                    <a class="btn btn-primary" href="{{ path("app_workflow_sign_contract", {id: workflow.id}) }}">Signer
+                        le contrat</a>
+                </p>
+            {% else %}
+                <p>
+                    Le contrat a été signé
+                </p>
+            {% endif %}
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_BILLETREDUC')) }}
+        <div class="box-header">
+            Lien de réservation
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                <p>
+                    <i class="fas fa-exclamation-triangle"></i> Cette étape est indispensable pour établir le lien avec
+                    le site de réservation
+                </p>
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du spectacle
+                        <a target="_blank" href="{{ path('admin_app_show_edit', {id: workflow.associatedShow.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+            {% if workflow.associatedShow.shopLinks.empty %}
+                {{ form(shop_link_form) }}
+            {% else %}
+                <p>
+                    Le site possède déjà un lien de réservation
+                </p>
+            {% endif %}
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_HIGHTLIGHT')) }}
+        <div class="box-header">
+            Mise en avant du spectacle
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                <p>
+                    La mise en avant du spectacle consiste ajouter ou à repositionner le spectacle dans les galleries du
+                    site
+                    (page d'accueil, page spectacle et liste de pied de page).
+                </p>
+                <p>
+                    Elle crée également une session englobant les dates de jeu afin de rendre le spectacle réservable en
+                    ligne
+                </p>
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du spectacle
+                        <a target="_blank" href="{{ path('admin_app_show_edit', {id: workflow.associatedShow.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                Mettre en avant le projet ? <a class="btn btn-primary"
+                                               href="{{ path('app_workflow_highlight', {id: workflow.id}) }}">Mettre en
+                    avant</a>
+            </p>
+            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_highlight', {id: workflow.id}) }}">Passer cette étape</a></p>
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_REMOVE')) }}
+        <div class="box-header">
+            Mise en retrait du spectacle
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                <p>
+                    La mise en retrait du spectacle consiste enlever le spectacle de la page d'accueil (il sera maintenu
+                    dans la gallerie de "tous les spectacles").
+                </p>
+                <ul>
+                    <li>
+                        Vous pouvez accéder à l'édition complète du spectacle
+                        <a target="_blank" href="{{ path('admin_app_show_edit', {id: workflow.associatedShow.id}) }}">ici</a>
+                    </li>
+                </ul>
+            </div>
+
+            <p>
+                Effectuer le retrait du spectacle : <a class="btn btn-primary"
+                                                       href="{{ path('app_workflow_remove', {id: workflow.id}) }}">Retirer
+                    le spectacle</a>
+            </p>
+            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_remove', {id: workflow.id}) }}">Passer cette étape</a></p>
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_REVENUE_DECLARATION')) }}
+        <div class="box-header">
+            Déclaration des recettes
+        </div>
+        {% if workflow_service.workflowCanAccess(workflow, constant('App\\Entity\\Workflow::STEP_REVENUE_DECLARATION')) %}
+            <div class="box-body">
+                <div class="insight">
+                    Vous pouvez préremplir le formulaire ci-dessous en fournissant la version <strong>excel</strong> de
+                    l'export de l'état simplifié des recettes Tickboss.
+                    {{ form(workflow_revenue_excel_form) }}
+                </div>
+                {{ form(workflow_revenue_form) }}
+            </div>
+        {% endif %}
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_EMAILS')) }}
+        <div class="box-header">
+            Envoi des emails
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                Cette étape envoie deux emails concernant la déclaration des recettes auxquels sont joints le bilan
+                Tickboss ainsi que l'excel de la déclaration de recette:
+                <ul>
+                    <li>
+                        Le premier mail est adressé à Richard pour lui permettre d'effectuer le virement à la compagnie
+                    </li>
+                    <li>Le deuxième est adressé à la compagnie pour lui permettre de prendre connaissance de ses
+                        recettes
+                    </li>
+                </ul>
+                Vous pouvez vérifier que la déclaration est correcte en téléchargeant le fichier qui sera joint aux
+                emails :<br>
+                <a target="_blank" class="btn btn-primary"
+                   href="{{ path('app_workflow_download_excel_revenue', {id: workflow.id}) }}">Télécharger la
+                    déclaration de recettes au format excel</a>
+            </div>
+            <p>
+                Envoyer les emails dès à présent : <a class="btn btn-success"
+                                                      href="{{ path('app_workflow_send_revenue_emails', {id: workflow.id}) }}">Envoyer
+                    les emails</a>
+            </p>
+            <p>
+                Si vous souhaitez envoyer les emails par vos propres moyens, vous pouvez <a class="btn btn-secondary"
+                        href="{{ path('app_workflow_skip_send_revenue_emails', { id: workflow.id}) }}">passer cette étape</a>.
+            </p>
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_SIBIL')) }}
+        <div class="box-header">
+            Déclaration SIBIL
+        </div>
+        <div class="box-body">
+            {% if workflow.contract %}
+                <div class="insight">
+                    Instructions:
+                    <ul>
+                        <li>Naviguer vers le site <a class="btn btn-primary" target="_blank"
+                                                     href="https://sibil.culture.gouv.fr">SIBIL</a></li>
+                        <li>Cliquez sur le bouton <strong>se connecter</strong></li>
+                        <li>Saisissez <strong>vos identifiants</strong> dans la popup qui s'affiche (voir plus bas)</li>
+                        <li>Une fois sur votre <a class="btn btn-primary" target="_blank"
+                                                  href="https://sibil.culture.gouv.fr/#/declarant">profil</a>, cliquez
+                            sur <strong>Ajouter une représentation</strong></li>
+                        <li>Saisissez les informations du formulaire en vous aidant des informations ci-dessous</li>
+                        <li>Une fois terminé, valider l'étape <a class="btn btn-success"
+                                                                 href="{{ path('app_workflow_validate_sibil', {id: workflow.id}) }}">Valider</a>
+                        </li>
+                    </ul>
+                </div>
+                {% set contract = workflow.contract %}
+                {% set performances = contract.performances %}
+                <div class="insight">
+                    Informations utiles:
+                    <ul>
+                        <li>Nom d'utilisateur SIBIL : <strong class="clipboard">bouffontheatre</strong></li>
+                        <li>Mot de passe SIBIL : <strong class="clipboard">SBII79bouffon</strong></li>
+                        <li>Nom de spectacle : <strong class="clipboard">{{ workflow.associatedShow.name }}</strong>
+                        </li>
+                        <li>Lieu : <strong class="clipboard">Bouffon Théâtre</strong></li>
+                        <li>Date de début : <strong
+                                    class="clipboard">{{ performances.first.performedAt | date('d/m/Y') }}</strong>
+                        </li>
+                        <li>Date de fin : <strong
+                                    class="clipboard">{{ performances.last.performedAt | date('d/m/Y') }}</strong>
+                        </li>
+                        <li>Nombre de représentations : <strong
+                                    class="clipboard">{{ performances.count }}</strong></li>
+                        <li>
+                            Total billetterie : <strong
+                                    class="clipboard">{{ performances.map((p) => p.totalCount).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Recette TTC : <strong
+                                    class="clipboard">{{ performances.map((p) => p.grossRevenue).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Nombre de billets plein tarifs : <strong
+                                    class="clipboard">{{ performances.map((p) => p.fullPriceCount).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Recette plein tarif : <strong
+                                    class="clipboard">{{ performances.map((p) => p.fullPriceCount * contract.showFullPrice).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Nombre de billets au tarif abonnement : <strong
+                                    class="clipboard">{{ performances.map((p) => p.halfPriceCount + p.appPriceCount + p.taxFreePriceCount).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Nombre de billets exonéré (invitations) : <strong
+                                    class="clipboard">{{ performances.map((p) => p.freeCount).toArray() | sum }}</strong>
+                        </li>
+                        <li>
+                            Nombre de places disponibles : <strong class="clipboard">45</strong>
+                        </li>
+                    </ul>
+                </div>
+                <p>
+                    <a class="btn btn-success"
+                                         href="{{ path('app_workflow_validate_sibil', {id: workflow.id}) }}">Valider cette étape</a>
+                </p>
+            {% endif %}
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_DECTANET')) }}
+
+        <div class="box-header">Déclaration Dectanet</div>
+        <div class="box-body">
+            <div class="insight">
+                {% if workflow.contract %}
+                Instructions :
+                <ul>
+                    <li>Naviguer vers le site <a class="btn btn-primary" target="_blank"
+                                                 href="https://dectanet.astp.asso.fr/">DECTANET</a></li>
+                    <li>Cliquez sur le bouton <strong>Connexion</strong></li>
+                    <li>Saisissez <strong>vos identifiants</strong> dans la popup qui s'affiche (voir plus bas)</li>
+                    <li>Une fois connecté cliquez sur <strong>Déclarer</strong></li>
+                    <li>Saisissez les informations du formulaire en vous aidant des informations ci-dessous</li>
+                    <li>Une fois terminé, valider l'étape <a class="btn btn-success"
+                                                             href="{{ path('app_workflow_validate_dectanet', {id: workflow.id}) }}">Valider</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="insight">
+                {% set contract = workflow.contract %}
+                Informations utiles:
+                <ul>
+                    <li>Nom d'utilisateur SIBIL : <strong class="clipboard">11518</strong></li>
+                    <li>Mot de passe SIBIL : <strong class="clipboard">BOUFFONTHEATRETF</strong></li>
+                    <li>Titre de spectacle : <strong class="clipboard">{{ workflow.associatedShow.name }}</strong>
+                    </li>
+                    <li>Lieu de représentation : <strong class="clipboard">Bouffon Théâtre</strong></li>
+                    <li>Code postal : <strong class="clipboard">75012</strong></li>
+                    <li>Nombre de représentations : <strong
+                                class="clipboard">{{ performances.count }}</strong></li>
+                    <li>Date de début : <strong
+                                class="clipboard">{{ performances.first.performedAt | date('d/m/Y') }}</strong>
+                    </li>
+                    <li>Date de fin : <strong
+                                class="clipboard">{{ performances.last.performedAt | date('d/m/Y') }}</strong>
+                    </li>
+                    <li><strong>Pas de bon de commande</strong></li>
+                    <li>Représentation <strong>avec</strong> perception de droit d'entrée</li>
+                    <li>
+                        Nombre de billets vendus : <strong
+                                class="clipboard">{{ performances.map((p) => p.totalCount).toArray() | sum }}</strong>
+                    </li>
+                    <li>
+                        Recette Hors TVA : <strong
+                                class="clipboard">{{ ((performances.map((p) => p.grossRevenue).toArray() | sum) / 1.021) | number_format(2, '.', '') }}</strong>
+                    </li>
+                    <li>
+                        Numéro SIRET/SIREN/ASSO : <strong
+                                class="clipboard">{{ workflow.contract.companySiret }}</strong>
+                    </li>
+                    <li>
+                        Raison sociale : <strong
+                                class="clipboard">{{ workflow.contract.companyName }}</strong>
+                    </li>
+                    <li>
+                        Adresse : <strong
+                                class="clipboard">{{ workflow.contract.companyAddress }}</strong>
+                    </li>
+                    <li>
+                        Email : <strong
+                                class="clipboard">{{ workflow.associatedShow.owner.email }}</strong>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+
+            <p>
+                <a class="btn btn-success"
+                                         href="{{ path('app_workflow_validate_dectanet', {id: workflow.id}) }}">Valider cette étape</a>
+            </p>
+        </div>
+        {{ workflow_section_end() }}
+        {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_MANUAL')) }}
+        <div class="box-header">
+            Étapes manuellles
+        </div>
+        <div class="box-body">
+            <div class="insight">
+                Instructions:
+                <ul>
+                    <li>Sur l'ordinateur du bureau, aller dans le fichier nommé de cette façon : <strong>Budget ANNÉE HT</strong></li>
+                    <li>Ajouter dans <strong>Recette billeterie</strong>, colonne <strong>mois courant</strong> la recette globale.</li>
+                    <li>Si il y a lieu (si il y a eu des locations supplémentaires pour des répètes par exemple), ajouter les montants de <strong>mise à disposition</strong></li>
+                    <li>Aller ensuite dans le fichier TVA ANNÉE</li>
+                    <li>Ajouter la recette à la section <strong>Billeterie</strong> et, le cas échéant, <strong>Location</strong></li>
+                </ul>
+            </div>
+            <div class="insight">
+                <ul>
+                    <li>Recette brute : <strong class="clipboard">{{ workflow.contract.performances.map((p) => p.grossRevenue).toArray() | sum }}</strong></li>
+                </ul>
+            </div>
+            <a class="btn btn-success" href="{{ path('app_workflow_validate_manual_steps', {id: workflow.id}) }}">Valider cette étape</a>
+        </div>
+        {{ workflow_section_end() }}
+        {% if workflow.closed %}
+            <a class="btn btn-success" href="{{ path('app_admin_workflow_open', {id: workflow.id}) }}">Réouvrir le workflow</a>
+        {% else %}
+            <a class="btn btn-danger" href="{{ path('app_admin_workflow_close', {id: workflow.id}) }}">Clore le contrat</a>
+        {% endif %}
+    {% endif %}
+{% endblock sonata_admin_content %}
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+        <script src="{{ asset('js/fos_js_routes.js') }}"></script>
+        <script>
+            $(function () {
+                $('.box-header').click(function () {
+                    $(this).parent().toggleClass('displayed');
+                });
+
+                function addDeletePerformanceButton(row) {
+                    $('<button class="btn btn-danger">Supprimer</button>').click(function () {
+                        row.remove();
+                    }).appendTo(row);
+                }
+
+                const $performanceList = $('#workflow_contract_performances');
+                $performanceList.children().each(function () {
+                    addDeletePerformanceButton($(this));
+                    $(this).find('label').text('Représentation n°' + ($(this).index() + 1));
+                });
+                const performanceRowPrototype = $performanceList.data('prototype');
+
+                $('#add_performance').click(function () {
+                    const newIndex = $performanceList.children().length;
+                    const newRow = performanceRowPrototype
+                        .replace(/__name__label__/g, 'Représentation n°' + (newIndex + 1))
+                        .replace(/__name__/g, newIndex)
+                    ;
+                    const $row = $(newRow);
+                    $performanceList.append($row);
+                    addDeletePerformanceButton($row);
+                });
+
+                $(".clipboard").each(function () {
+                    const $row = $(this);
+                    const text = $row.text();
+                    const $buttonCopy = $('<button class="btn btn-secondary copy-clipboard" type="button">Copier</button>');
+                    $row.append($buttonCopy);
+                    $buttonCopy.click(function (e) {
+                        e.preventDefault();
+                        $row.append('<i class="fas fa-check"></i>');
+                        navigator.clipboard.writeText(text);
+                    });
+                });
+
+            });
+        </script>
+    {% endblock %}

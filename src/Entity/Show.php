@@ -56,6 +56,12 @@ class Show extends Project
     #[ORM\Column]
     private bool $bookableOnline = false;
 
+    /**
+     * @var Collection<int, Workflow>
+     */
+    #[ORM\OneToMany(mappedBy: 'associatedShow', targetEntity: Workflow::class)]
+    private Collection $workflows;
+
     public function __construct()
     {
         parent::__construct();
@@ -68,6 +74,7 @@ class Show extends Project
         $this->featuredDocuments = new ArrayCollection();
         $this->featuredLinks = new ArrayCollection();
         $this->insights = new ArrayCollection();
+        $this->workflows = new ArrayCollection();
     }
 
     public function canBeBooked(): bool
@@ -417,6 +424,36 @@ class Show extends Project
     public function setBookableOnline(bool $bookableOnline): static
     {
         $this->bookableOnline = $bookableOnline;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Workflow>
+     */
+    public function getWorkflows(): Collection
+    {
+        return $this->workflows;
+    }
+
+    public function addWorkflow(Workflow $workflow): static
+    {
+        if (!$this->workflows->contains($workflow)) {
+            $this->workflows->add($workflow);
+            $workflow->setAssociatedShow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkflow(Workflow $workflow): static
+    {
+        if ($this->workflows->removeElement($workflow)) {
+            // set the owning side to null (unless already changed)
+            if ($workflow->getAssociatedShow() === $this) {
+                $workflow->setAssociatedShow(null);
+            }
+        }
 
         return $this;
     }

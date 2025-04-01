@@ -42,6 +42,20 @@ class ContractAdminPartType extends AbstractType
                     'Contrat de location sans régisseur' => Contract::TYPE_RENT_WITHOUT_STAGE_MANAGER,
                 ]
             ])
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    'Brouillon' => Contract::STATUS_DRAFT,
+                    'Envoyé à la compagnie' => Contract::STATUS_SENT_TO_COMPANY,
+                    'Signé' => Contract::STATUS_SIGNED,
+                ],
+                'label' => "Statut du contrat"
+            ])
+
+            ->add('fetchDataStatus', ChoiceType::class, [
+                'choices' => array_combine(Contract::FETCH_DATA_STATUSES, Contract::FETCH_DATA_STATUSES),
+                'label' => "Demande d'informations",
+                'disabled' => true
+            ])
 //            ->add('minimumShare', CheckboxType::class, [
 //                'label' => 'Inclure un minimum garanti'
 //            ])

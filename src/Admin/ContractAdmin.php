@@ -53,6 +53,11 @@ class ContractAdmin extends AbstractAdmin
                 'label' => 'Statut',
                 'template' => 'sonata/contract_status_show.html.twig'
             ])
+
+            ->add('fetchDataStatus', null, [
+                'label' => 'Demande d\'informations',
+                'template' => 'sonata/contract_status_show.html.twig'
+            ])
             ->end()
             ->with('Informations données par le théâtre', ['class' => 'col-md-6'])
             ->add('theaterName', null, [

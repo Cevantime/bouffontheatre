@@ -19,6 +19,9 @@ class ContractAdminPart
 
     public $contractType;
 
+    public $status;
+    public $fetchDataStatus;
+
     public $contractCompanyPart;
     public $contractTheaterConfig;
 

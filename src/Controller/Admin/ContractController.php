@@ -3,39 +3,37 @@
 namespace App\Controller\Admin;
 
 use App\Contract\ContractGenerator;
-use App\DTO\ContractCompanyPart;
+use App\DTO\ContractAdminPart;
 use App\DTO\ContractCompanyPartAdmin;
 use App\DTO\ContractGlobalConfig;
-use App\DTO\ContractAdminPart;
 use App\Entity\Contract;
 use App\Entity\Project;
-use App\Form\ContractGlobalConfigType;
 use App\Form\ContractAdminPartType;
+use App\Form\ContractGlobalConfigType;
 use App\Repository\ContractRepository;
 use App\Service\ConfigService;
 use App\Service\DTOService;
+use App\Service\EmailService;
 use App\Service\StringCallbacks;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
-#[Route('/admin')]
+#[Route('/admin/app')]
 class ContractController extends AbstractController
 {
 
     #[Route(path: '/contract/config', name: 'app_contract_config')]
     public function form(
-        Request                   $request,
-        ConfigService             $configService,
-        DTOService $DTOService
-    ): Response {
+        Request       $request,
+        ConfigService $configService,
+        DTOService    $DTOService
+    ): Response
+    {
         $contractConfig = new ContractGlobalConfig();
         $configs = $configService->getRawConfigs();
         $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class . '::camelize');
@@ -60,8 +58,9 @@ class ContractController extends AbstractController
         ContractRepository     $contractRepository,
         ContractGenerator      $contractService,
         ?Project               $project = null,
-        $idContract = null
-    ) {
+                               $idContract = null
+    )
+    {
         $contractAdminPart = new ContractAdminPart();
         $contractCompanyPart = new ContractCompanyPartAdmin();
         $contractConfig = new ContractGlobalConfig();
@@ -112,6 +111,8 @@ class ContractController extends AbstractController
                 return $contractService->createGeneratedContractResponse($contract);
             } elseif ($request->request->get('send')) {
                 return $this->redirectToRoute('app_contract_send_email', ['id' => $contract->getId()]);
+            } elseif ($request->request->get('sign')) {
+                return $this->redirectToRoute('app_contract_sign', ['id' => $contract->getId()]);
             } else {
                 return $this->redirectToRoute('app_contract_edit_from_project', [
                     'id' => $contract->getRelatedProject()->getId(),
@@ -128,22 +129,15 @@ class ContractController extends AbstractController
 
     #[Route(path: '/contract/invite-company/{id}', name: 'app_contract_invite_company')]
     public function inviteCompany(
-        Contract $contract,
+        Contract               $contract,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer
-    ) {
-        $contract->setStatus(Contract::STATUS_SENT_TO_COMPANY);
+        EmailService           $emailService,
+    )
+    {
+        $contract->setFetchDataStatus(Contract::FETCH_DATA_STATUS_SENT_TO_COMPANY);
         $entityManager->persist($contract);
         $entityManager->flush();
-        $user = $contract->getRelatedProject()->getOwner();
-        $mail = (new TemplatedEmail())
-            ->from('contactbouffon@gmail.com')
-            ->to(new Address($user->getEmail(), $user->getFirstname() . ' ' . $user->getLastname()))
-            ->subject('Fiche infos Bouffon Théâtre')
-            ->htmlTemplate('front/user/email_user_contract_fill.html.twig')
-            ->context(['user' => $user]);
-
-        $mailer->send($mail);
+        $emailService->sendFetchDataFormMail($contract);
         $this->addFlash('success', 'Formulaire envoyé avec succès');
         return $this->redirectToRoute('admin_app_contract_show', ['id' => $contract->getId()]);
     }
@@ -154,20 +148,22 @@ class ContractController extends AbstractController
         return $contractService->createGeneratedContractResponse($contract);
     }
 
-    #[Route('/contract/send-email/{id}', name: 'app_contract_send_email')]
-    public function sendByEmail(Contract $contract, MailerInterface $mailer, ContractGenerator $contractService)
+    #[Route('/contract/sign/{id}', name: 'app_contract_sign')]
+    public function signContract(Contract $contract, EntityManagerInterface $entityManager)
     {
-        $user = $contract->getRelatedProject()->getOwner();
+        $contract->setStatus(Contract::STATUS_SIGNED);
+        $entityManager->persist($contract);
+        $entityManager->flush();
+        return $this->redirectToRoute('admin_app_contract_show', ['id' => $contract->getId()]);
+    }
 
-        $export = $contractService->generateContractFile($contract);
-        $mail = (new TemplatedEmail())
-            ->from('contactbouffon@gmail.com')
-            ->to(new Address($user->getEmail(), $user->getFirstname() . ' ' . $user->getLastname()))
-            ->subject('Contrat Bouffon Théâtre')
-            ->attach(fopen($export['path'], 'r'), $export['name'])
-            ->htmlTemplate('front/user/email_user_contract_sign.html.twig')
-            ->context(['user' => $user]);
-        $mailer->send($mail);
+    #[Route('/contract/send-email/{id}', name: 'app_contract_send_email')]
+    public function sendByEmail(Contract $contract, EmailService $emailService, EntityManagerInterface $entityManager)
+    {
+        $contract->setStatus(Contract::STATUS_SENT_TO_COMPANY);
+        $entityManager->persist($contract);
+        $entityManager->flush();
+        $emailService->sendContractMail($contract);
         $this->addFlash('success', 'Contrat envoyé avec succès');
         return $this->redirectToRoute('admin_app_contract_show', ['id' => $contract->getId()]);
     }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\DTO\ContractCompanyPart;
 use App\Form\DataTransformer\PhoneTransformer;
 use App\Form\DataTransformer\SiretTransformer;
+use App\Repository\ContractRepository;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -18,13 +19,15 @@ class ContractCompanyPartType extends AbstractType
 {
     public function __construct(
         private SiretTransformer $siretTransformer,
-        private PhoneTransformer $phoneTransformer
+        private PhoneTransformer $phoneTransformer,
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $companyPart = $builder->getData();
+
         $builder
             ->add('companyName', TextType::class, [
                 'label' => 'Nom de la compagnie',
@@ -66,18 +69,10 @@ class ContractCompanyPartType extends AbstractType
                 'attr' => ['placeholder' => 'Ruy Blas']
             ])
             ->add('showAuthors', ArtistMultipleAutocompleteField::class, [
-                'label' => 'Nom du ou des auteur(s)',
-                'attr' => [
-                    'placeholder' => 'Victor Hugo',
-                    'data-controller' => 'contract-artist-autocomplete',
-                ]
+                'label' => 'Nom du ou des auteur(s)'
             ])
             ->add('showDirectors', ArtistMultipleAutocompleteField::class, [
-                'label' => 'Nom du ou des metteur(s) en scène',
-                'attr' => [
-                    'placeholder' => 'Robert Hossein',
-                    'data-controller' => 'contract-artist-autocomplete',
-                ]
+                'label' => 'Nom du ou des metteur(s) en scène'
             ])
             ->add('showArtists', ArtistMultipleAutocompleteField::class, [
                 'label' => 'Artistes présents en scène'
@@ -89,6 +84,15 @@ class ContractCompanyPartType extends AbstractType
             ->add('showDescription', CKEditorType::class, [
                 'label' => 'Résumé',
                 'help' => 'Le résumé qui apparaîtra dans la fiche du spectacle'
+            ])
+
+            ->add('showDuration', null, [
+                'label' => 'Durée du spectacle',
+                'help' => 'en minutes'
+            ])
+            ->add('showMaxDuration', null, [
+                'label' => 'Durée maximale du spectacle',
+                'help' => 'en minutes'
             ])
             ->add('showBanner', FileType::class, [
                 'constraints' => [
@@ -104,7 +108,8 @@ class ContractCompanyPartType extends AbstractType
                     ]),
                 ],
                 'label' => 'Bannière affichée sur le site',
-                'help' => 'Format 16/9. Ne doit pas excéder 4Mo'
+                'help' => 'Format 16/9. Ne doit pas excéder 4Mo',
+                'required' => ! $companyPart->showHasBanner,
             ])
             ->add('showPoster', FileType::class, [
                 'constraints' => [
@@ -120,7 +125,8 @@ class ContractCompanyPartType extends AbstractType
                     ]),
                 ],
                 'label' => 'Votre affiche',
-                'help' => 'Votre affiche doit être conforme à notre charte graphique et ne pas excéder 4Mo'
+                'help' => 'Votre affiche doit être conforme à notre charte graphique et ne pas excéder 4Mo',
+                'required' => ! $companyPart->showHasPoster,
             ])
             ->add('showMedia', CollectionType::class, [
                 'label' => 'Vos photos',

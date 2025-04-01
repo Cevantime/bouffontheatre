@@ -23,7 +23,7 @@ class CalendarSyncGoogleEventsCommand extends Command
     public function __construct(
         private GoogleAuthenticationService $googleAuthentication,
         private CalendarService             $calendarService,
-        string                              $name = null
+        ?string                              $name = null
     )
     {
         parent::__construct(

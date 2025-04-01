@@ -1,0 +1,13 @@
+{% extends "@SonataAdmin/CRUD/list.html.twig" %}
+
+{%- block actions -%}
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a class="sonata-action-element" href="{{ path('app_workflow_create') }}">
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                Ajouter
+            </a>
+        </li>
+    </ul>
+{%- endblock -%}
+

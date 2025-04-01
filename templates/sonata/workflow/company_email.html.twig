@@ -1,0 +1,14 @@
+<p>Bonjour,</p>
+{% set performances = workflow.contract.performances %}
+<p>
+    Vous trouverez en pièce jointe les relevés détaillés des recettes de votre exploitation
+    du {{ performances.first.performedAt | date('d/m/Y') }}
+    au {{ performances.last.performedAt | date('d/m/Y') }}.
+</p>
+<p>
+    Bien à vous,
+</p>
+
+<p>
+    Toute l'équipe du Bouffon Théâtre.
+</p>

@@ -4,13 +4,14 @@ namespace App\Subscriber\Doctrine;
 
 use App\Entity\BlogPost;
 use DateTimeImmutable;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
-class BlogPostDateSubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::prePersist)]
+#[AsDoctrineListener(event: Events::preUpdate)]
+class BlogPostDateSubscriber
 {
     /**
      * @return string[]

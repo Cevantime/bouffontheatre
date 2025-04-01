@@ -1,0 +1,141 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('stimulus-only') }}
+    <style>
+        .select2.select2-container {
+            display: none;
+        }
+        .ts-wrapper {
+            background: white;
+        }
+
+        .insight {
+            margin-top: 2rem;
+            background: white;
+            padding: 2rem;
+            border: 1px solid darkgray;
+            border-radius: 0.2rem;
+            display: none;
+        }
+
+        #new-user-form {
+
+        }
+        .ts-dropdown {
+            background: white;
+        }
+        .mb-3 {
+            margin-bottom: 2rem;
+        }
+
+    </style>
+{% endblock %}
+{% block sonata_admin_content %}
+    {{ form_start(owner_select_form) }}
+    {{ form_widget(owner_select_form) }}
+    L'utilisateur n'existe pas encore ?
+    <button id="add-user-btn" class="btn btn-primary" type="button">Ajouter un utilisateur</button>
+    <button class="btn btn-success" type="submit">Créer ce workflow</button>
+    {{ form_end(owner_select_form) }}
+    <div id="new-user-form" class="insight">
+        {{ render(controller('App\\Controller\\Admin\\WorkflowController::createUserAjax')) }}
+    </div>
+
+    <div id="workflows-list" class="insight">
+        Ce spectacle est déjà associé aux workflows suivants. Vous pouvez les rejoindre maintenant plutôt que de créer un nouveau workflow:
+        <ul>
+
+        </ul>
+
+        <button type="button" class="btn btn-success force-create">Je souhaite créer un nouveau workflow</button>
+    </div>
+
+    <div id="contract-list" class="insight">
+        Ce spectacle est déjà associé aux contrats suivants. Vous pouvez créer un nouveau workflow à partir de l'un d'eux:
+        <ul>
+
+        </ul>
+        <button type="button" class="btn btn-success force-create">Je souhaite créer un nouveau workflow</button>
+    </div>
+{% endblock sonata_admin_content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ asset('js/fos_js_routes.js') }}"></script>
+    {{ encore_entry_script_tags('stimulus-only') }}
+    <script>
+        $(function(){
+            let submitAuthorized = false;
+            const $newUserForm =  $('#new-user-form');
+            $('#add-user-btn').click(function(){
+               $newUserForm.show();
+            });
+            const selectOwner = document.getElementById('workflow_select_project_form_owner');
+            selectOwner.addEventListener('new_name_entered', function(e){
+                $('.insight').hide();
+                $('#workflow_user_firstname').val(e.detail.firstName);
+                $('#workflow_user_lastname').val(e.detail.lastName);
+                $newUserForm.show();
+            });
+            const $selectShow = $('#workflow_select_project_form_show');
+            $selectShow.change(function(){
+               const showId = $(this).val();
+               $.getJSON(Routing.generate('app_workflow_ajax_get_owner', {id: showId }), function(rep) {
+                     const tomSelectOwner = selectOwner.tomSelect;
+                     if(tomSelectOwner.getOption(rep.id) == null) {
+                         tomSelectOwner.addOption({
+                             value: rep.id,
+                             text: rep.fullName
+                         });
+                         tomSelectOwner.addItem(rep.id);
+                     }
+                   tomSelectOwner.setValue(rep.id);
+               });
+            });
+            const $mainForm = $('[name="workflow_select_project_form"]');
+            $mainForm.submit(function(e){
+                if(submitAuthorized) {
+                    return;
+                }
+                if( ! $selectShow.val()) {
+                    return;
+                }
+                e.preventDefault();
+                $('.insight').hide();
+                $.getJSON(Routing.generate('app_workflow_ajax_get_associated_workflows', {id : $selectShow.val()}), function (rep) {
+                     if(rep.workflows.length === 0 && rep.contracts.length === 0) {
+                         submitAuthorized = true;
+                         $mainForm.submit();
+                         submitAuthorized = false;
+                     } else {
+                         if(rep.workflows.length > 0) {
+                             const $workflowList = $('#workflows-list');
+                             const $workflowListUl = $workflowList.find('ul');
+                             $workflowListUl.empty();
+                             rep.workflows.forEach(function(w){
+                                 $workflowListUl.append('<li><a class="btn btn-check" href="'+Routing.generate('app_workflow_edit', {id: w.id})+'">'+w.name+'</a></li>');
+                             });
+                             $workflowList.show();
+                         }
+                         if(rep.contracts.length > 0) {
+                             const $contractList = $('#contract-list');
+                             const $contractListUl = $contractList.find('ul');
+                             $contractListUl.empty();
+                             rep.contracts.forEach(function(c){
+                                 $contractListUl.append('<li><a class="btn btn-check" href="'+Routing.generate('app_workflow_create_from_contract', {id: c.id})+'">'+c.name+'</a></li>');
+                             });
+                             $contractList.show();
+                         }
+                     }
+                });
+            });
+            $('.force-create').click(function(e){
+                submitAuthorized = true;
+                $mainForm.submit();
+                submitAuthorized = false;
+            });
+        });
+    </script>
+{% endblock %}

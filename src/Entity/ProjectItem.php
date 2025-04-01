@@ -16,7 +16,7 @@ class ProjectItem
     #[ORM\Column(type: 'integer')]
     private $position;
 
-    #[ORM\ManyToOne(targetEntity: Project::class, cascade: ['all'])]
+    #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $project;
 

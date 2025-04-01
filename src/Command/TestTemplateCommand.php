@@ -22,8 +22,7 @@ use Twig\Environment;
 class TestTemplateCommand extends Command
 {
     public function __construct(
-        private KernelInterface $kernel,
-        private Environment $twig,
+        private readonly KernelInterface $kernel,
     ) {
         parent::__construct('app:test-template');
     }

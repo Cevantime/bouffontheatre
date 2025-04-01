@@ -4,14 +4,13 @@ namespace App\Subscriber\Doctrine;
 
 use App\Entity\MediaGallery;
 use App\Entity\Project;
-use App\Entity\Show;
-use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class ShowSubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::prePersist)]
+class ShowSubscriber
 {
     private Security $security;
 

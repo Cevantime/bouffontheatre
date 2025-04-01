@@ -31,6 +31,13 @@ class ContractGlobalConfig
     public $showHalfPrice;
 
 
+    #[Amount]
+    public $showTaxFreePrice;
+
+    #[Amount]
+    public $showAppPrice;
+
+
     public $showTheaterAvailability;
     public $showInvitations;
 

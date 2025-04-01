@@ -21,10 +21,7 @@ class GenerateArtistSlugsCommand extends Command
     private SlugService $artistSlugService;
     private EntityManagerInterface $entityManager;
 
-    /**
-     * @param ArtistRepository $artistRepository
-     * @param ArtistSlugService $artistSlugService
-     */
+
     public function __construct(ArtistRepository $artistRepository, SlugService $artistSlugService, EntityManagerInterface $entityManager)
     {
         $this->artistRepository = $artistRepository;

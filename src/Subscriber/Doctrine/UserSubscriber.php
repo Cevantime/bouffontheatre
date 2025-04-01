@@ -3,16 +3,19 @@
 namespace App\Subscriber\Doctrine;
 
 use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserSubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::prePersist)]
+#[AsDoctrineListener(event: Events::preUpdate)]
+class UserSubscriber
 {
     private UserPasswordHasherInterface $hasher;
     private MailerInterface $mailer;
@@ -23,12 +26,7 @@ class UserSubscriber implements EventSubscriberInterface
         $this->mailer = $mailer;
     }
 
-    public function getSubscribedEvents()
-    {
-        return [Events::prePersist, Events::preUpdate];
-    }
-
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $user = $args->getObject();
 
@@ -55,7 +53,7 @@ class UserSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function preUpdate(PreUpdateEventArgs $args)
+    public function preUpdate(PreUpdateEventArgs $args): void
     {
         $user = $args->getObject();
 
@@ -78,7 +76,7 @@ class UserSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function generateRandomString($length = 10)
+    private function generateRandomString($length = 10): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);

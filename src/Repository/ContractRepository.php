@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Contract;
+use App\Entity\Show;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,30 +28,41 @@ class ContractRepository extends ServiceEntityRepository
         return  $this->createQueryBuilder('c')
             ->leftJoin('c.relatedProject', 'rp')
             ->leftJoin('rp.owner', 'o')
-            ->where('c.status = :status')
+            ->where('c.fetchDataStatus = :fetchDataStatus')
             ->andWhere('o = :owner')
-            ->setParameter('status', Contract::STATUS_SENT_TO_COMPANY)
+            ->setParameter('fetchDataStatus', Contract::FETCH_DATA_STATUS_SENT_TO_COMPANY)
             ->setParameter('owner', $user)
             ->getQuery()
             ->getResult()
             ;
     }
 
-    public function getUserLastCompletedContract(User $user)
+    public function getUserLastCompletedContract(User $user): ?Contract
     {
         return  $this->createQueryBuilder('c')
             ->leftJoin('c.relatedProject', 'rp')
             ->leftJoin('rp.owner', 'o')
-            ->where('c.status = :status')
+            ->where('c.fetchDataStatus = :fetchDataStatus')
             ->andWhere('o = :owner')
             ->orderBy('c.contractDate', 'DESC')
-            ->setParameter('status', Contract::STATUS_FILLED_BY_COMPANY)
+            ->setParameter('fetchDataStatus', Contract::FETCH_DATA_STATUS_FILLED_BY_COMPANY)
             ->setParameter('owner', $user)
 
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
             ;
+    }
+
+    public function getWorkflowReadyContractsForShow(Show $show)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.workflow', 'w')
+            ->where('w IS NULL')
+            ->andWhere('c.relatedProject = :related_project')
+            ->setParameter('related_project', $show)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

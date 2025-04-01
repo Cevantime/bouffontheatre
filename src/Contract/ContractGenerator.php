@@ -2,9 +2,11 @@
 
 namespace App\Contract;
 
+use App\DTO\Export;
 use App\Entity\Contract;
 use App\Entity\Performance;
-use PhpOffice\PhpWord\Settings;
+use App\Service\ConfigService;
+use App\Service\DTOService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -20,9 +22,13 @@ class ContractGenerator
         private KernelInterface           $kernel,
         private PropertyAccessorInterface $propertyAccessor,
         private Environment               $twig,
-        private TranslatorInterface       $translator
-    ) {
+        private TranslatorInterface       $translator,
+        private ConfigService             $configService,
+        private DTOService                $DTOService,
+    )
+    {
     }
+
 
     private function setRawContractValue(Contract $contract, array &$twigContext, $key)
     {
@@ -39,15 +45,15 @@ class ContractGenerator
     public function createGeneratedContractResponse(Contract $contract)
     {
         $export = $this->generateContractFile($contract);
-        $response = new BinaryFileResponse($export['path']);
+        $response = new BinaryFileResponse($export->path);
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $export['name']
+            $export->name
         );
         return $response;
     }
 
-    public function generateContractFile(Contract $contract): array
+    public function generateContractFile(Contract $contract): Export
     {
 
         $templateProcessor = new HackyTemplateProcessor($this->kernel->getProjectDir() . "/assets/docx/contract_template.docx", $this->twig);
@@ -122,10 +128,7 @@ class ContractGenerator
 //        $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
         $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
 
-        return [
-            'path' => $path,
-            'name' => $exportName
-        ];
+        return new Export($path, $exportName);
     }
 
     private function formatDate(\DateTimeInterface $dateTime)

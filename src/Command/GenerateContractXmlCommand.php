@@ -24,7 +24,7 @@ class GenerateContractXmlCommand extends Command
     public function __construct(
         private Environment $twig,
         private KernelInterface $kernel,
-        string $name = null
+        ?string $name = null
     )
     {
         parent::__construct($name);

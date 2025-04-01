@@ -15,6 +15,7 @@ class ArrayExtension extends AbstractExtension
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
             new TwigFilter('flip', [$this, 'flipArray']),
+            new TwigFilter('sum', 'array_sum'),
         ];
     }
 

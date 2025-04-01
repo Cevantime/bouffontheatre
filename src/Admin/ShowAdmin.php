@@ -4,9 +4,7 @@ namespace App\Admin;
 
 use App\Entity\ArtistItem;
 use App\Entity\MediaGalleryItem;
-use App\Entity\Project;
 use App\Entity\Show;
-use App\Repository\ArtistItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -14,7 +12,6 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ModelListType;
-use Sonata\AdminBundle\Form\Type\ModelType;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\Form\Type\CollectionType;
 use Sonata\MediaBundle\Form\Type\MediaType;
@@ -65,7 +62,6 @@ class ShowAdmin extends AbstractAdmin
                 'inline' => 'table',
                 'sortable' => 'position',
             ])
-
             ->add('actors', CollectionType::class, [
                 'by_reference' => false,
                 'label' => 'Acteur(s)'
@@ -184,7 +180,7 @@ class ShowAdmin extends AbstractAdmin
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $form
                 ->with('Propriétaire')
-                ->add('owner',  ModelListType::class, [
+                ->add('owner', ModelListType::class, [
                     'label' => 'Propriétaire'
                 ])
                 ->end();
@@ -193,7 +189,9 @@ class ShowAdmin extends AbstractAdmin
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
     {
-        $datagrid->add('name');
+        $datagrid->add('name', null, [
+            'show_filter' => true,
+        ]);
     }
 
     protected function configureListFields(ListMapper $list): void
@@ -203,8 +201,17 @@ class ShowAdmin extends AbstractAdmin
                 'label' => 'Affiche',
                 'template' => 'sonata/image_list.html.twig'
             ])
+//            ->addIdentifier('id', null, [
+//                'label' => "Id",
+//                'route' => [
+//                    'name' => 'edit',
+//                ]
+//            ])
             ->addIdentifier('name', null, [
-                'label' => "Nom"
+                'label' => "Nom",
+                'route' => [
+                    'name' => 'edit',
+                ]
             ])
             ->add('billetreducTitle', null, [
                 'label' => 'Nom sur Billetreduc'
@@ -212,6 +219,12 @@ class ShowAdmin extends AbstractAdmin
             ->add('authors', null, [
                 'template' => 'sonata/artists_list.html.twig'
             ]);
+    }
+
+    protected function configureDefaultSortValues(array &$sortValues): void
+    {
+        $sortValues['_sort_by'] = 'id';
+        $sortValues['_sort_order'] = 'DESC';
     }
 
     protected function configureShowFields(ShowMapper $showMapper): void

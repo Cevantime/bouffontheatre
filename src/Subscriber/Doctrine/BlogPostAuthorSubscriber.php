@@ -3,12 +3,13 @@
 namespace App\Subscriber\Doctrine;
 
 use App\Entity\BlogPost;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class BlogPostAuthorSubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::prePersist)]
+class BlogPostAuthorSubscriber
 {
     private Security $security;
 

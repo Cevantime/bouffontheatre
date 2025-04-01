@@ -24,7 +24,7 @@ class CalendarTest extends Command
     public function __construct(
         private CalendarService             $calendarService,
         private GoogleAuthenticationService $googleAuthentication,
-        string                              $name = null,
+        ?string                              $name = null,
     )
     {
         parent::__construct($name);

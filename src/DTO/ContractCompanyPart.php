@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ContractCompanyPart
 {
+
     #[Assert\Length(max: 150)]
     public ?string $companyName = null;
 
@@ -57,9 +58,11 @@ class ContractCompanyPart
     public $papers;
 
     #[Assert\Type('digit')]
+    #[Assert\NotBlank]
     public $showDuration;
 
     #[Assert\Type('digit')]
+    #[Assert\NotBlank]
     public $showMaxDuration;
 
     public ?string $teaser;
@@ -69,4 +72,7 @@ class ContractCompanyPart
     public ?string $showPunchline;
 
     public ?string $showDescription;
+
+    public bool $showHasBanner = false;
+    public bool $showHasPoster = false;
 }

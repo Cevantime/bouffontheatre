@@ -1,0 +1,34 @@
+<p>Ajouter un nouvel utilisateur</p>
+
+{{ form(form) }}
+
+<button class="btn btn-check" id="close-add-user">Fermer</button>
+
+<script>
+    $(function(){
+        $('form[name="workflow_user"]').submit(function(e){
+            const wrapper = $(this).parent();
+            e.preventDefault();
+            const data = $(this).serialize();
+            $.post(Routing.generate('app_workflow_ajax_create_user'), data, function(rep){
+                if(rep.status === 'ko') {
+                    wrapper.html(rep.html);
+                } else {
+                    const tomSelect = document.getElementById('workflow_select_project_form_owner').tomSelect;
+                    wrapper.html('<div class="alert alert-success">Utilisateur crée</div>');
+                    tomSelect.clear();
+                    tomSelect.clearOptions();
+                    tomSelect.addOption({
+                        value: rep.new_id,
+                        text: rep.fullName
+                    });
+                    tomSelect.addItem(rep.new_id);
+                    tomSelect.setValue(rep.new_id);
+                }
+            });
+        });
+        $('#close-add-user').click(function(){
+            $(this).parent().hide();
+        });
+    });
+</script>

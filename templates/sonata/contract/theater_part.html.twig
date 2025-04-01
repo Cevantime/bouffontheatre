@@ -19,6 +19,8 @@
             {{ form_row(form.showServiceSession) }}
 
             {{ form_row(form.contractType) }}
+            {{ form_row(form.status) }}
+            {{ form_row(form.fetchDataStatus) }}
 
 {#            {{ form_row(form.minimumShare) }}#}
         </div>
@@ -58,6 +60,7 @@
                        value="Mettre à jour et envoyer le formulaire">
                 <input class="btn btn-success" type="submit" name="generate" value="Mettre à jour et générer">
                 <input class="btn btn-success" type="submit" name="send" value="Mettre à jour et envoyer à la compagnie">
+                <input class="btn btn-check" type="submit" name="sign" value="Définir ce contrat comme signé">
 
             {% else %}
                 <input class="btn btn-primary" type="submit" value="Créer">

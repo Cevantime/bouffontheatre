@@ -13,11 +13,21 @@ class Contract
 {
     const STATUS_DRAFT = 'DRAFT';
     const STATUS_SENT_TO_COMPANY = 'SENT_TO_COMPANY';
-    const STATUS_FILLED_BY_COMPANY = 'FILLED_BY_COMPANY';
+    const STATUS_SIGNED = 'SIGNED';
+
     const STATUSES = [
         self::STATUS_DRAFT,
         self::STATUS_SENT_TO_COMPANY,
-        self::STATUS_FILLED_BY_COMPANY
+        self::STATUS_SIGNED
+    ];
+
+    const FETCH_DATA_STATUS_NOT_SENT = 'NOT_SENT';
+    const FETCH_DATA_STATUS_SENT_TO_COMPANY = 'SENT_TO_COMPANY';
+    const FETCH_DATA_STATUS_FILLED_BY_COMPANY = 'FILLED_BY_COMPANY';
+    const FETCH_DATA_STATUSES = [
+        self::FETCH_DATA_STATUS_NOT_SENT,
+        self::FETCH_DATA_STATUS_SENT_TO_COMPANY,
+        self::FETCH_DATA_STATUS_FILLED_BY_COMPANY,
     ];
 
     const TYPE_RENT_WITH_STAGE_MANAGER = 'RENT_WITH_STAGE_MANAGER';
@@ -175,6 +185,18 @@ class Contract
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $rentPrice = null;
+
+    #[ORM\OneToOne(mappedBy: 'contract', cascade: ['persist', 'remove'])]
+    private ?Workflow $workflow = null;
+
+    #[ORM\Column(length: 40)]
+    private ?string $fetchDataStatus = self::FETCH_DATA_STATUS_NOT_SENT;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    private ?string $showTaxFreePrice = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    private ?string $showAppPrice = null;
 
     public function __construct()
     {
@@ -767,6 +789,64 @@ class Contract
     public function setRentPrice(?string $rentPrice): static
     {
         $this->rentPrice = $rentPrice;
+
+        return $this;
+    }
+
+    public function getWorkflow(): ?Workflow
+    {
+        return $this->workflow;
+    }
+
+    public function setWorkflow(Workflow $workflow): static
+    {
+        // set the owning side of the relation if necessary
+        if ($workflow->getContract() !== $this) {
+            $workflow->setContract($this);
+        }
+
+        $this->workflow = $workflow;
+
+        return $this;
+    }
+
+    public function isDraft()
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function getFetchDataStatus(): ?string
+    {
+        return $this->fetchDataStatus;
+    }
+
+    public function setFetchDataStatus(string $fetchDataStatus): static
+    {
+        $this->fetchDataStatus = $fetchDataStatus;
+
+        return $this;
+    }
+
+    public function getShowTaxFreePrice(): ?string
+    {
+        return $this->showTaxFreePrice;
+    }
+
+    public function setShowTaxFreePrice(string $showTaxFreePrice): static
+    {
+        $this->showTaxFreePrice = $showTaxFreePrice;
+
+        return $this;
+    }
+
+    public function getShowAppPrice(): ?string
+    {
+        return $this->showAppPrice;
+    }
+
+    public function setShowAppPrice(string $showAppPrice): static
+    {
+        $this->showAppPrice = $showAppPrice;
 
         return $this;
     }

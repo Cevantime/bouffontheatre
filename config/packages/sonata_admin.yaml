@@ -17,6 +17,12 @@ sonata_admin:
                 items:
                     - { route: app_contract_config, label: Configuration globale }
                     - admin.contract
+
+            workflow:
+                label: "Gestion des workflows"
+                items:
+                    - admin.workflow
+
             artists:
                 label: "Les artistes"
                 items:

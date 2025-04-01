@@ -72,6 +72,14 @@ class ContractGlobalConfigType extends AbstractType
                 'attr' => ['placeholder' => '12'],
                 'label' => 'Prix des places en tarif réduit (€)'
             ])
+            ->add('showTaxFreePrice', TextType::class, [
+                'attr' => ['placeholder' => '8'],
+                'label' => 'Prix des places détaxées (€)'
+            ])
+            ->add('showAppPrice', TextType::class, [
+                'attr' => ['placeholder' => '10'],
+                'label' => 'Prix des places sur les app tierces (€)'
+            ])
             ->add('showInvitations', TextareaType::class, [
                 'attr' => ['placeholder' => 'Les invitations sont strictement limitées aux professionnels : Journalistes et Programmateurs.'],
                 'label' => 'À qui s\'adressent les invitations ?',

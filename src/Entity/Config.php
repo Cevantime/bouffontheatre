@@ -13,7 +13,7 @@ class Config
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 200)]
     private ?string $keyName = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -23,7 +23,7 @@ class CalendarSyncBookingCommand extends Command
         private BookingRepository           $bookingRepository,
         private GoogleAuthenticationService $googleAuthentication,
         private CalendarService             $calendarService,
-        string                              $name = null
+        ?string                              $name = null
     )
     {
         parent::__construct($name);

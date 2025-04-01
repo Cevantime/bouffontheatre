@@ -73,6 +73,11 @@ class Period
         return $this;
     }
 
+    public function encloses($dateStart, $dateEnd): bool
+    {
+        return $this->dateStart <= $dateStart && $this->dateEnd >= $dateEnd;
+    }
+
     public function __toString(): string
     {
         return 'du '.$this->getDateStart()->format('d/m/Y').' au '.$this->getDateEnd()->format('d/m/Y');

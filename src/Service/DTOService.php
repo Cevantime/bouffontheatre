@@ -14,7 +14,7 @@ class DTOService
     {
     }
 
-    public function transferDataTo(&$origin, &$destination, $callbackFieldName = null)
+    public function transferDataTo(&$origin, &$destination, $callbackFieldName = null, $fields = null)
     {
         if(!$callbackFieldName) {
             $callbackFieldName = fn($f)=>$f;
@@ -23,11 +23,11 @@ class DTOService
         $closingBracketOr = is_array($origin) ? ']' : '';
         $openingBracketDest = is_array($destination) ? '[' : '';
         $closingBracketDest = is_array($destination) ? ']' : '';
-        $originFields = $this->getFieldNames($origin);
+        $originFields = $fields ?: $this->getFieldNames($origin);
         $destinationFields = $this->getFieldNames($destination);
         foreach ($originFields as $of) {
             $orFieldTransformed = call_user_func($callbackFieldName, $of);
-            if(in_array($orFieldTransformed, $destinationFields)){
+            if(is_array($destination) || in_array($orFieldTransformed, $destinationFields)){
                 $this->propertyAccessor->setValue(
                     $destination,
                     $openingBracketDest.$orFieldTransformed.$closingBracketDest,

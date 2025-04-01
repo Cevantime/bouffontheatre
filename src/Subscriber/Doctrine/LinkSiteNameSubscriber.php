@@ -4,11 +4,13 @@ namespace App\Subscriber\Doctrine;
 
 use App\Entity\Link;
 use App\Service\LinkSiteNameExtractor;
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class LinkSiteNameSubscriber implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::prePersist)]
+#[AsDoctrineListener(event: Events::preUpdate)]
+class LinkSiteNameSubscriber
 {
     private LinkSiteNameExtractor $linkSiteNameExtractor;
 

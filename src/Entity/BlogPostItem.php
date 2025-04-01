@@ -16,7 +16,7 @@ class BlogPostItem
     #[ORM\Column]
     private ?int $position = null;
 
-    #[ORM\ManyToOne(targetEntity: BlogPost::class, cascade: ['all'])]
+    #[ORM\ManyToOne(targetEntity: BlogPost::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?BlogPost $blogPost = null;
 

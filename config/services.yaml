@@ -38,6 +38,10 @@ services:
         arguments:
             $pool: '@sonata.media.pool'
 
+    App\Service\EmailService:
+        arguments:
+            $pool: '@sonata.media.pool'
+
     App\Admin\Extension\MediaBrowserAdminExtension:
         tags: 
             - { name: sonata.admin.extension, attributes: { target: sonata.media.admin.media } }
@@ -184,19 +188,36 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\Contract, manager_type: orm, label: 'Les contrats' }
 
+    admin.workflow:
+        class: App\Admin\WorkflowAdmin
+        calls:
+            - [ setTemplate, [ 'list', 'sonata/list_workflow_template.html.twig' ] ]
+            - [ setTemplate, [ 'show', 'sonata/detail_workflow_template.html.twig' ] ]
+
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Workflow, manager_type: orm, label: 'Les workflows' }
+
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
+            - { name: doctrine.event_listener, event: 'prePersist' }
         calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+        # Uncomment the below call if using attributes, and comment the call for the annotation reader
+#            - [ setAnnotationReader, [ '@gedmo.mapping.driver.attribute' ] ]
 
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
         tags:
-            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine.event_listener, event: 'prePersist' }
+            - { name: doctrine.event_listener, event: 'onFlush' }
+            - { name: doctrine.event_listener, event: 'loadClassMetadata' }
         calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            # Uncomment the below call if using attributes, and comment the call for the annotation reader
+#            - [ setAnnotationReader, [ '@gedmo.mapping.driver.attribute' ] ]
+            # The `clock` service was intrroduced in Symfony 6.2; if using an older Symfony version, you can either comment this call or provide your own PSR-20 Clock implementation
+            - [ setClock, [ '@clock' ] ]
 
 
     Sonata\MediaBundle\Model\MediaManagerInterface: '@sonata.media.manager.media'

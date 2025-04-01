@@ -15,4 +15,5 @@ class StringCallbacks
     {
         return u($value)->snake()->__toString();
     }
+
 }

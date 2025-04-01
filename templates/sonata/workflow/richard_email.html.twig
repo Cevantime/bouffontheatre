@@ -1,0 +1,21 @@
+Salut, Richard !
+
+Peux-tu faire le virement à cette compagnie :
+{% set show = workflow.associatedShow %}
+{% set contract = workflow.contract %}
+<p>
+    Spectacle : {{ show.name }}
+</p>
+<p>
+    Association : {{ contract.companyName }}
+</p>
+<p>
+    Montant : {{ companyRevenue }} euros
+</p>
+<p>
+    IBAN : {{ contract.showRib }}
+</p>
+<p>
+    Merci beaucoup !
+</p>
+

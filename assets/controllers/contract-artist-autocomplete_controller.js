@@ -22,6 +22,7 @@ export default class extends Controller {
     }
 
     _onPreConnect(event) {
+        console.log('preco');
         event.detail.options.create = (input) => {
             const parts = input.trim().split(' ');
             if (parts.length < 2) {
@@ -61,7 +62,6 @@ export default class extends Controller {
                 });
                 this.tomSelect.addItem(rep.id);
             })
-
             return newOption;
         };
     }
