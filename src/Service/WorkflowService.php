@@ -90,7 +90,7 @@ class WorkflowService
             case Workflow::STEP_REVENUE_DECLARATION:
                 return $this->isRevenueDeclarationDone($workflow);
             case Workflow::STEP_EMAILS:
-                return $workflow->isEmailsSent();
+                return $workflow->isRevenueEmailSentToPresident() && $workflow->isRevenueEmailSentToCompany();
             case Workflow::STEP_SIBIL:
                 return $workflow->isSibilDone();
             case Workflow::STEP_DECTANET:
@@ -326,10 +326,10 @@ class WorkflowService
         });
 
         $prices = [
-            'fullPrice' => intval($contract->getShowFullPrice()),
-            'halfPrice' => intval($contract->getShowHalfPrice()),
-            'taxFreePrice' => intval($contract->getShowTaxFreePrice()),
-            'appPrice' => intval($contract->getShowAppPrice()),
+            'fullPrice' => intval($contract->getShowFullPrice() ?: 0),
+            'halfPrice' => intval($contract->getShowHalfPrice() ?: 0),
+            'taxFreePrice' => intval($contract->getShowTaxFreePrice() ?: 0),
+            'appPrice' => intval($contract->getShowAppPrice() ?: 0),
             'free' => 0
         ];
 
@@ -375,6 +375,7 @@ class WorkflowService
         $worksheet = $spreadsheet->getActiveSheet();
 
         $worksheet->setCellValue('B2', $workflow->getAssociatedShow()->getName());
+        $worksheet->setCellValue('B3', $workflow->getContract()->getCompanyName());
         $performances = $workflow->getContract()->getPerformances();
         $worksheet->setCellValue('F3', $workflow->getContract()->getCompanyLicense());
         $worksheet->getCell('D5')->setValueExplicit($performances->first()->getPerformedAt()->format('m/d/Y'), DataType::TYPE_ISO_DATE);

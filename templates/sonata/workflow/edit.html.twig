@@ -177,7 +177,9 @@
                 {% if workflow.contract.status == constant('App\\Entity\\Contract::STATUS_DRAFT') %}
                     Envoyer le contrat à la compagnie : <a class="btn btn-primary"
                                                            href="{{ path('app_workflow_send_contract', {id: workflow.id}) }}">Envoyer</a>
-                    ou bien <a class="btn btn-secondary" href="{{ path('app_admin_workflow_skip_send_contract', {id: workflow.id}) }}">Passer cette étape</a>
+                    ou bien <a class="btn btn-secondary"
+                               href="{{ path('app_admin_workflow_skip_send_contract', {id: workflow.id}) }}">Passer
+                    cette étape</a>
                 {% else %}
                     Le contrat a déjà été envoyé
                 {% endif %}
@@ -265,7 +267,8 @@
                                                href="{{ path('app_workflow_highlight', {id: workflow.id}) }}">Mettre en
                     avant</a>
             </p>
-            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_highlight', {id: workflow.id}) }}">Passer cette étape</a></p>
+            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_highlight', {id: workflow.id}) }}">Passer
+                    cette étape</a></p>
         </div>
         {{ workflow_section_end() }}
         {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_REMOVE')) }}
@@ -291,7 +294,8 @@
                                                        href="{{ path('app_workflow_remove', {id: workflow.id}) }}">Retirer
                     le spectacle</a>
             </p>
-            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_remove', {id: workflow.id}) }}">Passer cette étape</a></p>
+            <p><a class="btn btn-secondary" href="{{ path('app_workflow_skip_remove', {id: workflow.id}) }}">Passer
+                    cette étape</a></p>
         </div>
         {{ workflow_section_end() }}
         {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_REVENUE_DECLARATION')) }}
@@ -336,9 +340,21 @@
                                                       href="{{ path('app_workflow_send_revenue_emails', {id: workflow.id}) }}">Envoyer
                     les emails</a>
             </p>
+            <div>
+                Vous pouvez aussi envoyer les emails individuellement :
+                <ul>
+                    <li><a class="btn btn-secondary"
+                           href="{{ path('app_workflow_send_revenue_email_to_president', {id: workflow.id}) }}">Envoyer
+                            l'email à Richard</a>{% if workflow.revenueEmailSentToPresident %} <i class="fa fa-check"></i>{% endif %}</li>
+                    <li><a class="btn btn-secondary"
+                           href="{{ path('app_workflow_send_revenue_email_to_company', {id: workflow.id}) }}">Envoyer
+                            l'email à la compagnie</a>{% if workflow.revenueEmailSentToCompany %} <i class="fa fa-check"></i>{% endif %}</li>
+                </ul>
+            </div>
             <p>
                 Si vous souhaitez envoyer les emails par vos propres moyens, vous pouvez <a class="btn btn-secondary"
-                        href="{{ path('app_workflow_skip_send_revenue_emails', { id: workflow.id}) }}">passer cette étape</a>.
+                                                                                            href="{{ path('app_workflow_skip_send_revenue_emails', { id: workflow.id}) }}">passer
+                    cette étape</a>.
             </p>
         </div>
         {{ workflow_section_end() }}
@@ -413,7 +429,7 @@
                 </div>
                 <p>
                     <a class="btn btn-success"
-                                         href="{{ path('app_workflow_validate_sibil', {id: workflow.id}) }}">Valider cette étape</a>
+                       href="{{ path('app_workflow_validate_sibil', {id: workflow.id}) }}">Valider cette étape</a>
                 </p>
             {% endif %}
         </div>
@@ -487,7 +503,7 @@
 
             <p>
                 <a class="btn btn-success"
-                                         href="{{ path('app_workflow_validate_dectanet', {id: workflow.id}) }}">Valider cette étape</a>
+                   href="{{ path('app_workflow_validate_dectanet', {id: workflow.id}) }}">Valider cette étape</a>
             </p>
         </div>
         {{ workflow_section_end() }}
@@ -499,25 +515,35 @@
             <div class="insight">
                 Instructions:
                 <ul>
-                    <li>Sur l'ordinateur du bureau, aller dans le fichier nommé de cette façon : <strong>Budget ANNÉE HT</strong></li>
-                    <li>Ajouter dans <strong>Recette billeterie</strong>, colonne <strong>mois courant</strong> la recette globale.</li>
-                    <li>Si il y a lieu (si il y a eu des locations supplémentaires pour des répètes par exemple), ajouter les montants de <strong>mise à disposition</strong></li>
+                    <li>Sur l'ordinateur du bureau, aller dans le fichier nommé de cette façon : <strong>Budget ANNÉE
+                            HT</strong></li>
+                    <li>Ajouter dans <strong>Recette billeterie</strong>, colonne <strong>mois courant</strong> la
+                        recette globale.
+                    </li>
+                    <li>Si il y a lieu (si il y a eu des locations supplémentaires pour des répètes par exemple),
+                        ajouter les montants de <strong>mise à disposition</strong></li>
                     <li>Aller ensuite dans le fichier TVA ANNÉE</li>
-                    <li>Ajouter la recette à la section <strong>Billeterie</strong> et, le cas échéant, <strong>Location</strong></li>
+                    <li>Ajouter la recette à la section <strong>Billeterie</strong> et, le cas échéant,
+                        <strong>Location</strong></li>
                 </ul>
             </div>
             <div class="insight">
                 <ul>
-                    <li>Recette brute : <strong class="clipboard">{{ workflow.contract.performances.map((p) => p.grossRevenue).toArray() | sum }}</strong></li>
+                    <li>Recette brute : <strong
+                                class="clipboard">{{ workflow.contract.performances.map((p) => p.grossRevenue).toArray() | sum }}</strong>
+                    </li>
                 </ul>
             </div>
-            <a class="btn btn-success" href="{{ path('app_workflow_validate_manual_steps', {id: workflow.id}) }}">Valider cette étape</a>
+            <a class="btn btn-success" href="{{ path('app_workflow_validate_manual_steps', {id: workflow.id}) }}">Valider
+                cette étape</a>
         </div>
         {{ workflow_section_end() }}
         {% if workflow.closed %}
-            <a class="btn btn-success" href="{{ path('app_admin_workflow_open', {id: workflow.id}) }}">Réouvrir le workflow</a>
+            <a class="btn btn-success" href="{{ path('app_admin_workflow_open', {id: workflow.id}) }}">Réouvrir le
+                workflow</a>
         {% else %}
-            <a class="btn btn-danger" href="{{ path('app_admin_workflow_close', {id: workflow.id}) }}">Clore le contrat</a>
+            <a class="btn btn-danger" href="{{ path('app_admin_workflow_close', {id: workflow.id}) }}">Clore le
+                contrat</a>
         {% endif %}
     {% endif %}
 {% endblock sonata_admin_content %}

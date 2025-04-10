@@ -60,7 +60,11 @@ class Workflow
     private ?bool $dectanetDone = false;
 
     #[ORM\Column]
-    private ?bool $emailsSent = false;
+    private ?bool $revenueEmailSentToPresident = false;
+
+
+    #[ORM\Column]
+    private ?bool $revenueEmailSentToCompany = null;
 
     #[ORM\ManyToOne(inversedBy: 'workflows')]
     #[ORM\JoinColumn(nullable: false)]
@@ -149,14 +153,14 @@ class Workflow
         return $this;
     }
 
-    public function isEmailsSent(): ?bool
+    public function isRevenueEmailSentToPresident(): ?bool
     {
-        return $this->emailsSent;
+        return $this->revenueEmailSentToPresident;
     }
 
-    public function setEmailsSent(bool $emailsSent): static
+    public function setRevenueEmailSentToPresident(bool $revenueEmailSentToPresident): static
     {
-        $this->emailsSent = $emailsSent;
+        $this->revenueEmailSentToPresident = $revenueEmailSentToPresident;
 
         return $this;
     }
@@ -269,5 +273,17 @@ class Workflow
             return null;
         }
         return $this->contract->__toString();
+    }
+
+    public function isRevenueEmailSentToCompany(): ?bool
+    {
+        return $this->revenueEmailSentToCompany;
+    }
+
+    public function setRevenueEmailSentToCompany(bool $revenueEmailSentToCompany): static
+    {
+        $this->revenueEmailSentToCompany = $revenueEmailSentToCompany;
+
+        return $this;
     }
 }

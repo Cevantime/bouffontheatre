@@ -67,7 +67,7 @@ class EmailService
     }
 
 
-    public function sendRevenueEmailToRichard(Workflow $workflow, RevenueExport $revenueExport)
+    public function sendRevenueEmailToPresident(Workflow $workflow, RevenueExport $revenueExport)
     {
         $email = $this->buildClientEmail(
             new Address('contact@bouffontheatre.fr', "Bouffon Théâtre"),

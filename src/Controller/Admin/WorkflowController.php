@@ -284,9 +284,37 @@ class WorkflowController extends AbstractController
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
-        $emailService->sendRevenueEmailToRichard($workflow, $revenueReport);
+        $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
         $emailService->sendRevenueEmailToCompany($workflow, $revenueReport);
-        $workflow->setEmailsSent(true);
+        $workflow->setRevenueEmailSentToPresident(true);
+        $workflow->setRevenueEmailSentToCompany(true);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
+    }
+
+    #[Route(path: '/workflow/send-revenue-email-to-president/{id}', name: 'app_workflow_send_revenue_email_to_president')]
+    public function sendRevenueEmailToPresident(Workflow $workflow, WorkflowService $workflowService, EmailService $emailService, EntityManagerInterface $entityManager)
+    {
+        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+            throw $this->createAccessDeniedException();
+        }
+        $revenueReport = $workflowService->generateRevenueExport($workflow);
+        $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
+        $workflow->setRevenueEmailSentToPresident(true);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
+    }
+
+
+    #[Route(path: '/workflow/send-revenue-email-to-company/{id}', name: 'app_workflow_send_revenue_email_to_company')]
+    public function sendRevenueEmailToCompany(Workflow $workflow, WorkflowService $workflowService, EmailService $emailService, EntityManagerInterface $entityManager)
+    {
+        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+            throw $this->createAccessDeniedException();
+        }
+        $revenueReport = $workflowService->generateRevenueExport($workflow);
+        $emailService->sendRevenueEmailToCompany($workflow, $revenueReport);
+        $workflow->setRevenueEmailSentToCompany(true);
         $entityManager->flush();
         return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
     }
@@ -295,7 +323,8 @@ class WorkflowController extends AbstractController
     #[Route(path: '/workflow/skip-send-revenue-emails/{id}', name: 'app_workflow_skip_send_revenue_emails')]
     public function skipSendEmails(Workflow $workflow, EntityManagerInterface $entityManager)
     {
-        $workflow->setEmailsSent(true);
+        $workflow->setRevenueEmailSentToPresident(true);
+        $workflow->setRevenueEmailSentToCompany(true);
         $entityManager->flush();
         return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
     }

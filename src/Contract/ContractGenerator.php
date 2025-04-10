@@ -23,8 +23,6 @@ class ContractGenerator
         private PropertyAccessorInterface $propertyAccessor,
         private Environment               $twig,
         private TranslatorInterface       $translator,
-        private ConfigService             $configService,
-        private DTOService                $DTOService,
     )
     {
     }
