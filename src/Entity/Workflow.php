@@ -64,7 +64,7 @@ class Workflow
 
 
     #[ORM\Column]
-    private ?bool $revenueEmailSentToCompany = null;
+    private ?bool $revenueEmailSentToCompany = false;
 
     #[ORM\ManyToOne(inversedBy: 'workflows')]
     #[ORM\JoinColumn(nullable: false)]
