@@ -46,6 +46,7 @@ class WorkflowService
                 return $this->workflowValidated($workflow, Workflow::STEP_CONTRACT_CREATION);
             case Workflow::STEP_HIGHTLIGHT:
             case Workflow::STEP_REMOVE:
+                return $this->areShowInformationsFetched($workflow);
             case Workflow::STEP_SEND_CONTRACT:
                 return $this->areInformationsFetched($workflow);
             case Workflow::STEP_SIGN_CONTRACT:
@@ -262,14 +263,24 @@ class WorkflowService
             }
         }
 
+        if(! $this->areShowInformationsFetched($workflow)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function areShowInformationsFetched(Workflow $workflow): bool
+    {
+        if ($workflow->getContract() === null || $workflow->getAssociatedShow() === null) {
+            return false;
+        }
         $contractShowFields = [
             'name',
             'punchline',
             'description',
             'banner',
-            'poster'
         ];
-
         foreach ($contractShowFields as $contractShowField) {
             if ($this->propertyAccessor->getValue($workflow->getAssociatedShow(), $contractShowField) === null) {
                 return false;
