@@ -337,10 +337,10 @@ class WorkflowService
         });
 
         $prices = [
-            'fullPrice' => intval($contract->getShowFullPrice() ?: 0),
-            'halfPrice' => intval($contract->getShowHalfPrice() ?: 0),
-            'taxFreePrice' => intval($contract->getShowTaxFreePrice() ?: 0),
-            'appPrice' => intval($contract->getShowAppPrice() ?: 0),
+            'fullPrice' => intval($contract->getShowFullPrice() ?: 17),
+            'halfPrice' => intval($contract->getShowHalfPrice() ?: 12),
+            'taxFreePrice' => intval($contract->getShowTaxFreePrice() ?: 8),
+            'appPrice' => intval($contract->getShowAppPrice() ?: 10),
             'free' => 0
         ];
 
