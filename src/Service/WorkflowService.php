@@ -412,6 +412,7 @@ class WorkflowService
 
         $spreadsheet->getNamedRange('RECETTES')->setRange(sprintf('$C$9:$C$%s', 8 + $pCount));
         $spreadsheet->getNamedRange('CONTRIBUTION_DIFFUSEUR_AGESSA')->setRange(sprintf('$C$%s', 14 + $pCount));
+        $spreadsheet->getNamedRange('NOMBRE_REPRESENTATIONS')->setRange(sprintf('$A$9:$A$%s', 8 + $pCount));
         $spreadsheet->getNamedRange('CONTRIBUTION_RETRAITE')->setRange(sprintf('$C$%s', 13 + $pCount));
         $spreadsheet->getNamedRange('DROIT_D_AUTEUR')->setRange(sprintf('$C$%s', 12 + $pCount));
         $spreadsheet->getNamedRange('RECETTE_BRUTE')->setRange(sprintf('$C$%s', 9 + $pCount));
@@ -422,6 +423,19 @@ class WorkflowService
         $spreadsheet->getNamedRange('PART_COMPAGNIE')->setRange(sprintf('$F$%s', 15 + $pCount));
 //        $spreadsheet->getNamedRange('LIGNE_APPLICABLE')->setRange(sprintf('$B$%s:$B$%s', 12 + $pCount, 14 + $pCount));
         $spreadsheet->getNamedRange('RECETTE_NETTE')->setRange(sprintf('$C$%s', 16 + $pCount));
+        $spreadsheet->getNamedRange('MINIMUM_GARANTI_THEATRE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 9 + $pCount));
+        $spreadsheet->getNamedRange('MINIMUM_GARANTI_TOTAL')->setRange(sprintf('$G$%s', 10 + $pCount));
+        $spreadsheet->getNamedRange('MINIMUM_COMPAGNIE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 11 + $pCount));
+        $spreadsheet->getNamedRange('DIFFERENCE_RECETTE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 12 + $pCount));
+        $spreadsheet->getNamedRange('TVA_DIFFERENCE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 13 + $pCount));
+        $spreadsheet->getNamedRange('TOTAL_THEATRE')->setRange(sprintf('$G$%s', 14 + $pCount));
+
+        $theaterMinimumShareCell = $worksheet->getCell(sprintf('G%s', 9 + $pCount));
+        $theaterMinimumShareCell->setValue($workflow->getContract()->getShowTheaterShare());
+
+        $companyMinimumShareCell = $worksheet->getCell(sprintf('G%s', 11 + $pCount));
+        $companyMinimumShareCell->setValue($workflow->getContract()->getShowCompanyShare());
+
 
         $theaterShareCell = $worksheet->getCell(sprintf('F%s', 14 + $pCount));
         $theaterShareCell->setValue($workflow->getContract()->getShowTheaterSharePercent() / 100.00);
