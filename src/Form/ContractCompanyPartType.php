@@ -116,8 +116,8 @@ class ContractCompanyPartType extends AbstractType
                     new Assert\Image([
                         'minRatio' => 0.65,
                         'maxRatio' => 0.8,
-                        'minRatioMessage' => 'Le ratio de l\'image est trop faible (elle n\'est pas assez large). Il doit être proche de 16/9.',
-                        'maxRatioMessage' => 'Le ratio de l\'image est trop élevé (elle est trop large). Il doit être proche de 16/9.',
+                        'minRatioMessage' => 'Le ratio de l\'image est trop faible (elle n\'est pas assez large). Il doit être proche de 3/4.',
+                        'maxRatioMessage' => 'Le ratio de l\'image est trop élevé (elle est trop large). Il doit être proche de 3/4.',
                         'mimeTypes' => ['image/jpeg', 'image/png'],
                         'mimeTypesMessage' => 'Veuillez fournir une image valide (formats acceptés : JPG, PNG).',
                         'maxSize' => '4M',
