@@ -37,6 +37,7 @@ class ContractInformationsController extends AbstractController
         EmailService $emailService,
     ): Response
     {
+        \Safe\set_time_limit(300);
         /** @var User $user */
         $user = $this->getUser();
         $contracts = $contractRepository->getUserContractsToComplete($user);
