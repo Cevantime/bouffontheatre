@@ -37,13 +37,13 @@ class ContractInformationsController extends AbstractController
         EmailService $emailService,
     ): Response
     {
-        \Safe\set_time_limit(300);
         /** @var User $user */
         $user = $this->getUser();
         $contracts = $contractRepository->getUserContractsToComplete($user);
         if( ! $contracts) {
             return $this->render('front/contract_informations/no_contract.html.twig');
         }
+        \Safe\set_time_limit(300);
         /** @var Contract $lastContract */
         $lastContract = $contracts[0];
         $contractCompanyPart = new ContractCompanyPart();

@@ -180,15 +180,15 @@ class WorkflowService
         }
 
         $lastDate = max($dates->toArray());
-        if ($show->getSessions()->filter(fn(PeriodItem $sessionItem) => $sessionItem->getPeriod()->encloses($mostRecentDate, $lastDate))->isEmpty()) {
-            $sessionItem = new PeriodItem();
-            $show->addSession($sessionItem);
-            $session = new Period();
-            $sessionItem->setPeriod($session);
-            $session->setDateStart($mostRecentDate);
-            $session->setDateEnd($lastDate);
-            $session->setDays(array_unique($dates->map(fn(\DateTimeInterface $dateTime) => $dateTime->format('w'))->toArray()));
-            $this->entityManager->persist($sessionItem);
+        if ($show->getSessions()->filter(fn(PeriodItem $periodItem) => $periodItem->getPeriod()->encloses($mostRecentDate, $lastDate))->isEmpty()) {
+            $periodItem = new PeriodItem();
+            $show->addSession($periodItem);
+            $period = new Period();
+            $periodItem->setPeriod($period);
+            $period->setDateStart($mostRecentDate);
+            $period->setDateEnd($lastDate);
+            $period->setDays(array_unique($dates->map(fn(\DateTimeInterface $dateTime) => $dateTime->format('w'))->toArray()));
+            $this->entityManager->persist($periodItem);
         }
         $workflow->setShowHighlighted(true);
 

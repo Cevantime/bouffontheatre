@@ -70,7 +70,7 @@
     </style>
 {% endblock %}
 {% block sonata_admin_content %}
-    <h1>Workflow du spectacle {{ workflow.associatedShow }} du {{ workflow.createdAt.format('d/m/Y') }}</h1>
+    <h1>Workflow du spectacle <em>{{ workflow.associatedShow }}</em> du {{ workflow.createdAt.format('d/m/Y') }}</h1>
     {% if workflow.closed %}
         <div class="alert alert-warning">
             Ce workflow est à présent clôt
@@ -543,7 +543,7 @@
                 workflow</a>
         {% else %}
             <a class="btn btn-danger" href="{{ path('app_admin_workflow_close', {id: workflow.id}) }}">Clore le
-                contrat</a>
+                workflow</a>
         {% endif %}
     {% endif %}
 {% endblock sonata_admin_content %}

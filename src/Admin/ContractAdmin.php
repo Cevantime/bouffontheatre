@@ -5,6 +5,7 @@ namespace App\Admin;
 use App\Entity\Contract;
 use Doctrine\DBAL\Types\DateType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\Type\CollectionType;
 use Sonata\AdminBundle\Form\Type\ModelType;
@@ -223,5 +224,18 @@ class ContractAdmin extends AbstractAdmin
     {
         $collection->remove('edit');
         $collection->remove('create');
+    }
+
+    protected function configureDatagridFilters(DatagridMapper $datagrid): void
+    {
+        $datagrid->add('showName', null, [
+            'show_filter' => true,
+        ]);
+    }
+
+    protected function configureDefaultSortValues(array &$sortValues): void
+    {
+        $sortValues['_sort_by'] = 'id';
+        $sortValues['_sort_order'] = 'DESC';
     }
 }

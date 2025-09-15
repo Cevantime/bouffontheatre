@@ -219,7 +219,7 @@ class WorkflowController extends AbstractController
     {
         $contract = $workflow->getContract();
         if ($contract == null) {
-            return $this->createAccessDeniedException();
+            return $this->createNotFoundException();
         }
         $contract->setStatus(Contract::STATUS_SIGNED);
         $entityManager->persist($contract);
