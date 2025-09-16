@@ -44,7 +44,7 @@ class SourceScrapper
 
     public function scrapBookings()
     {
-        $this->scrapOld();
+        $this->scrapNew();
     }
 
     public function scrapNew()
@@ -65,59 +65,54 @@ class SourceScrapper
 
         $client->waitFor('.event-card');
         $crawler = $client->refreshCrawler();
-        $uris = [];
-        $crawler->filter('.event-card')->each(function(Crawler $card) use (&$uris) {
-            if($card->filter('[style="background: rgb(154, 220, 117);"]')->count() > 0) {
-                $imgSrc = $card->filter('.image')->attr('src');
-                $matches = [];
-                preg_match('#https?://pic\.billetreduc\.com/r70-100-0/([0-9]+)\.*#', $imgSrc, $matches);
-                $uris[] = sprintf('https://pro.billetreduc.com/detail-event/%s/dashboard', $matches[1]);
-            }
-        });
-
-        foreach ($uris as $uri) {
-            /** @var Link $link */
-            $client->request('GET', $uri);
-
+        $cardsToCheckCount = $crawler->filter('.event-card [style="background: rgb(154, 220, 117);"]')->count();
+        $nbPass = 0;
+        while($nbPass < $cardsToCheckCount) {
+            $client->executeScript('document.querySelector("main > div > div .v-row > div:nth-child('.($nbPass + 1).') .event-card button").click();');
             $client->waitFor('.dashboard-table .dashboard-body div');
             $crawler = $client->refreshCrawler();
             $showTitle = $crawler->filter('.text-h6[style="color: rgb(65, 82, 121);"]')->getText();
             $show = $this->showRepository->findOneByTitleOrBilletreducTitle($showTitle);
 
-            if (!$show) {
-                continue;
+            if ($show) {
+                $table = $crawler->filter('.dashboard-table .dashboard-body');
+                $html = $table->getElement(0)->getDomProperty('outerHTML');
+
+                $insight = new Insight();
+                $insight->setRelatedShow($show);
+                $insight->setCreatedAt(new DateTimeImmutable());
+                $insight->setType(Insight::TYPE_BOOKING_COUNT);
+                $insight->setHtml($html);
+
+                $this->entityManager->persist($insight);
+
+                // $date = null;
+                // $dateTime = null;
+
+                // $table->filter('tr')->each(function ($tr) use (&$date, &$dateTime) {
+                //     $class = $tr->getAttribute('class');
+                //     if ($class === 'tbNewDay') {
+                //         $date = trim($tr->getText());
+                //         $date = DateTimeImmutable::createFromFormat('l d F Y', trim($tr->getText()));
+                //     } else {
+                //         if ($class == "heure") {
+                //             $td = $tr->filter('td.heure');
+                //             var_dump($td->getText());
+                //             preg_match('#([0-9]{2}h[0-9]{2}).+#', trim($td->getText()), $matches);
+                //             var_dump($matches[1]);
+                //         }
+                //     }
+                // });
             }
-
-            $table = $crawler->filter('.dashboard-table .dashboard-body');
-            $html = $table->getElement(0)->getDomProperty('outerHTML');
-
-            $insight = new Insight();
-            $insight->setRelatedShow($show);
-            $insight->setCreatedAt(new DateTimeImmutable());
-            $insight->setType(Insight::TYPE_BOOKING_COUNT);
-            $insight->setHtml($html);
-
-            $this->entityManager->persist($insight);
-
-            // $date = null;
-            // $dateTime = null;
-
-            // $table->filter('tr')->each(function ($tr) use (&$date, &$dateTime) {
-            //     $class = $tr->getAttribute('class');
-            //     if ($class === 'tbNewDay') {
-            //         $date = trim($tr->getText());
-            //         $date = DateTimeImmutable::createFromFormat('l d F Y', trim($tr->getText()));
-            //     } else {
-            //         if ($class == "heure") {
-            //             $td = $tr->filter('td.heure');
-            //             var_dump($td->getText());
-            //             preg_match('#([0-9]{2}h[0-9]{2}).+#', trim($td->getText()), $matches);
-            //             var_dump($matches[1]);
-            //         }
-            //     }
-            // });
-
+            if(++$nbPass == $cardsToCheckCount) {
+                break;
+            }
+            $client->request('GET', "https://pro.billetreduc.com");
+            $client->waitFor('.event-card');
+            $crawler = $client->refreshCrawler();
         }
+
+
 
         $is = $this->insightRepository->findAll();
         foreach ($is as $i) {

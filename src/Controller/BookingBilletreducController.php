@@ -22,7 +22,7 @@ class BookingBilletreducController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->render('front/booking_billetreduc/view_old_billetreduc_booking_count.html.twig', [
+        return $this->render('front/booking_billetreduc/view_billetreduc_booking_count.html.twig', [
             'insights' => $insights,
             'show' => $show
         ]);
