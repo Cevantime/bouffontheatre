@@ -133,7 +133,7 @@ class WorkflowService
         $performedAtClosure = fn(Performance $performance) => $performance->getPerformedAt();
 
         $dates = $futurePerformances->map($performedAtClosure);
-        $mostRecentDate = min($dates->toArray());
+        $nearestDate = min($dates->toArray());
 
         foreach ([$homeShowsSlider, $homeSlider, $showsGallery, $footerProjects] as $content) {
             $newItem = new ProjectItem();
@@ -152,8 +152,7 @@ class WorkflowService
             }
 
             if ($futurePerformances->isEmpty()) {
-                $projectGallery->add($newItem);
-                $newItem->setPosition($projectGallery->count());
+                $this->addToCollection($projectGallery, $newItem);
                 continue;
             }
             for ($i = 0; $i < $projectGallery->count(); $i++) {
@@ -167,25 +166,24 @@ class WorkflowService
                     $this->insertInCollection($projectGallery, $newItem, $i);
                     break;
                 }
-                $projectMostRecentDate = min($projectFuturePerformances->map($performedAtClosure)->toArray());
-                if ($projectMostRecentDate > $mostRecentDate) {
+                $projectNearestDate = min($projectFuturePerformances->map($performedAtClosure)->toArray());
+                if ($projectNearestDate > $nearestDate) {
                     $this->insertInCollection($projectGallery, $newItem, $i);
                     break;
                 }
             }
             if (!$projectGallery->map(fn(ProjectItem $projectItem) => $projectItem->getProject())->contains($show)) {
-                $newItem->setPosition($projectGallery->count());
-                $projectGallery->add($newItem);
+                $this->addToCollection($projectGallery, $newItem);
             }
         }
 
         $lastDate = max($dates->toArray());
-        if ($show->getSessions()->filter(fn(PeriodItem $periodItem) => $periodItem->getPeriod()->encloses($mostRecentDate, $lastDate))->isEmpty()) {
+        if ($show->getSessions()->filter(fn(PeriodItem $periodItem) => $periodItem->getPeriod()->encloses($nearestDate, $lastDate))->isEmpty()) {
             $periodItem = new PeriodItem();
             $show->addSession($periodItem);
             $period = new Period();
             $periodItem->setPeriod($period);
-            $period->setDateStart($mostRecentDate);
+            $period->setDateStart($nearestDate);
             $period->setDateEnd($lastDate);
             $period->setDays(array_unique($dates->map(fn(\DateTimeInterface $dateTime) => $dateTime->format('w'))->toArray()));
             $this->entityManager->persist($periodItem);
@@ -215,6 +213,12 @@ class WorkflowService
         $workflow->setShowRemoved(true);
         $this->entityManager->persist($workflow);
         $this->entityManager->flush();
+    }
+
+    private function addToCollection(Collection $collection, $element)
+    {
+        $element->setPosition($collection->count());
+        $collection->add($element);
     }
 
     private function insertInCollection(Collection $collection, $element, $index)

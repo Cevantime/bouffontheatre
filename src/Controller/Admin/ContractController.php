@@ -69,11 +69,11 @@ class ContractController extends AbstractController
             if (!$contract) {
                 throw $this->createNotFoundException();
             }
-            foreach ([$contractAdminPart, $contractConfig, $contractCompanyPart] as $form) {
-                $DTOService->transferDataTo($contract, $form);
-            }
         } else {
             $contract = new Contract();
+        }
+        foreach ([$contractAdminPart, $contractConfig, $contractCompanyPart] as $form) {
+            $DTOService->transferDataTo($contract, $form);
         }
 
         $contractAdminPart->project = $project;

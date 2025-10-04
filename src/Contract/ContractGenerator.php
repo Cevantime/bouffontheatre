@@ -122,8 +122,6 @@ class ContractGenerator
             mkdir($dir);
         }
         $path = $dir . DIRECTORY_SEPARATOR . $exportName;
-        $i = 0;
-//        $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
         $templateProcessor->saveAsWithTwigMainPart($path, 'sonata/contract/contract_main_part.xml.twig', $twigContext);
 
         return new Export($path, $exportName);

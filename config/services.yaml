@@ -121,6 +121,7 @@ services:
         class: App\Admin\ShowAdmin
         calls:
             - [setTemplate, ['show', 'sonata/detail_show_template.html.twig']]
+            - [setTemplate, ['edit', 'sonata/edit_show_template.html.twig']]
         tags:
             - { name: sonata.admin, model_class: App\Entity\Show, manager_type: orm, label: 'Les spectacles' }
 
