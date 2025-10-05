@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\ContractCompanyPart;
-use App\Entity\Artist;
 use App\Entity\ArtistItem;
 use App\Entity\Contract;
 use App\Entity\Media;
@@ -19,10 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Twig\Environment;
 use Twig\Extension\CoreExtension;
 
 class ContractInformationsController extends AbstractController
@@ -43,7 +40,7 @@ class ContractInformationsController extends AbstractController
         if( ! $contracts) {
             return $this->render('front/contract_informations/no_contract.html.twig');
         }
-        \Safe\set_time_limit(300);
+        set_time_limit(300);
         /** @var Contract $lastContract */
         $lastContract = $contracts[0];
         $contractCompanyPart = new ContractCompanyPart();

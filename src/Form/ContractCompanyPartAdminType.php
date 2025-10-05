@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ContractCompanyPartAdminType extends AbstractType
 {
@@ -85,7 +86,7 @@ class ContractCompanyPartAdminType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ContractCompanyPartAdmin::class,
+            'data_class' => ContractCompanyPartAdmin::class
         ]);
     }
 }

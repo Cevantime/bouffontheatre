@@ -8,6 +8,7 @@ use App\DTO\ContractCompanyPartAdmin;
 use App\DTO\ContractGlobalConfig;
 use App\Entity\Contract;
 use App\Entity\Project;
+use App\Entity\Show;
 use App\Form\ContractAdminPartType;
 use App\Form\ContractGlobalConfigType;
 use App\Repository\ContractRepository;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Twig\Extension\CoreExtension;
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/admin/app')]
@@ -83,6 +85,11 @@ class ContractController extends AbstractController
         if ($lastContract && !$idContract) {
             $DTOService->transferDataTo($lastContract, $contractCompanyPart);
             $DTOService->transferDataTo($lastContract, $contractConfig);
+            $contractCompanyPart->showName = $project->getName();
+            if($project instanceof Show) {
+                $contractCompanyPart->showAuthor = CoreExtension::join($project->getAuthors(), ", ", " et ");
+                $contractCompanyPart->showDirector = CoreExtension::join($project->getDirectors(), ", ", " et ");
+            }
         } elseif (!$idContract) {
             $configs = $configService->getRawConfigs();
             $DTOService->transferDataTo($configs, $contractConfig, StringCallbacks::class . '::camelize');
