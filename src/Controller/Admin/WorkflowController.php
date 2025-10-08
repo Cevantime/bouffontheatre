@@ -429,7 +429,8 @@ class WorkflowController extends AbstractController
                 ->filter(fn(Workflow $workflow) => !$workflow->isClosed())
                 ->map(function (Workflow $workflow) {
                     return ['id' => $workflow->getId(), 'name' => $workflow->__toString()];
-                }),
+                })
+                ->getValues(),
             'contracts' => array_map(fn(Contract $contract) => ['id' => $contract->getId(), 'name' => $contract->__toString()], $workflowReadyContracts)
         ]);
     }
