@@ -4,8 +4,13 @@ namespace App\Security\Voter;
 
 use App\Admin\ArtistAdmin;
 use App\Entity\Artist;
+use App\Entity\ArtistItem;
+use App\Entity\RoleItem;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,14 +26,14 @@ class ArtistVoter extends Voter
     public const ADMIN_VIEW = 'ROLE_ADMIN_ARTIST_VIEW';
     public const CREATE = 'ARTIST_CREATE';
 
-    private Security $security;
-
     /**
      * @param Security $security
      */
-    public function __construct(Security $security)
+    public function __construct(
+        private readonly Security $security,
+        private readonly PropertyAccessorInterface $propertyAccessor,
+    )
     {
-        $this->security = $security;
     }
 
     protected function supports(string $attribute, $subject): bool
@@ -62,7 +67,27 @@ class ArtistVoter extends Voter
             case self::ADMIN_EDIT:
                 /** @var Artist $subject */
                 $user = $token->getUser();
-                return $this->security->isGranted('ROLE_ARTIST') && $subject->getAssociatedUser() === $user || $user->getOwnedProjects()->count() > 0;
+                if( ! $this->security->isGranted('ROLE_ARTIST')) {
+                    return false;
+                }
+                if($subject->getAssociatedUser() === $user) {
+                    return true;
+                }
+                $artists = [];
+                $getArtistPredicate = fn(ArtistItem $artistItem) => $artistItem->getArtist();
+
+                foreach ($user->getOwnedProjects() as $project) {
+                    foreach (['authors', 'actors', 'directors'] as $artistField) {
+                        /** @var ArrayCollection $artistItems */
+                        $artistItems = $this->propertyAccessor->getValue($project, $artistField);
+                        $artists = array_merge($artists, $artistItems->map($getArtistPredicate)->getValues());
+                    }
+                    $projectRoleItems = $project->getRoles();
+                    $roleArtists = $projectRoleItems->map(fn(RoleItem $roleItem) => $roleItem->getRole()->getArtist())->getValues();
+                    $artists = array_merge($artists, $roleArtists);
+                }
+
+                return in_array($subject, $artists);
         }
 
         return false;

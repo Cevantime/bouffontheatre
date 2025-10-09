@@ -44,12 +44,11 @@ class ServiceVoter extends Voter
 
         switch ($attribute) {
             case self::ADMIN_LIST:
-            case self::ADMIN_CREATE:
             case self::ADMIN_VIEW:
                 return $this->security->isGranted('ROLE_ARTIST');
             case self::ADMIN_EDIT:
             case self::ADMIN_DELETE:
-                /** @var Show $subject */
+                /** @var Service $subject */
                 return $subject->getOwner() === $token->getUser();
         }
 

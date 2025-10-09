@@ -14,6 +14,7 @@ sonata_admin:
                     - { route: app_show, label: Les spectacles}
             contract:
                 label: "Gestion des contrats"
+                roles: [ 'ROLE_ADMIN' ]
                 items:
                     - { route: app_contract_config, label: Configuration globale }
                     - admin.contract
@@ -39,6 +40,7 @@ sonata_admin:
                     - admin.service
             proContact:
                 label: "Les contacts pro"
+                roles: [ 'ROLE_ADMIN' ]
                 items:
                     - admin.proContact
             contents:
@@ -58,11 +60,13 @@ sonata_admin:
 
             job:
                 label: "Gestion des métiers"
+                roles: [ 'ROLE_ADMIN' ]
                 items:
                     - admin.job
 
             user:
                 label: "Gestion des utilisateurs"
+                roles: [ 'ROLE_ADMIN' ]
                 items:
                     - admin.user
     assets:
