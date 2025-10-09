@@ -155,6 +155,9 @@
                     Envoyez le formulaire de demande d'infos à la compagnie: <a class="btn btn-primary"
                                                                                 href="{{ path('app_workflow_send_data_form', {id: workflow.id}) }}">Envoyer
                         maintenant</a>
+                    {% if not info_fetch_not_sent %}
+                        <i class="fas fa-check"></i> déjà envoyé
+                    {% endif %}
                 </p>
             {% endif %}
         </div>

@@ -133,7 +133,8 @@ class WorkflowService
         $performedAtClosure = fn(Performance $performance) => $performance->getPerformedAt();
 
         $dates = $futurePerformances->map($performedAtClosure);
-        $nearestDate = min($dates->toArray());
+        $hasPlannedDates =  ! $dates->isEmpty();
+        $nearestDate = $hasPlannedDates ? min($dates->toArray()) : null;
 
         foreach ([$homeShowsSlider, $homeSlider, $showsGallery, $footerProjects] as $content) {
             $newItem = new ProjectItem();
@@ -144,10 +145,9 @@ class WorkflowService
             $projectGallery = $content->getProjectGallery();
             $projects = $projectGallery->map(fn(ProjectItem $projectItem) => $projectItem->getProject());
             if ($projects->contains($show)) {
-                $projectItem = $projectGallery->get($projects->indexOf($show));
                 $index = $projects->indexOf($show);
+                $projectItem = $projectGallery->get($index);
                 $this->removeFromCollection($projectGallery, $index);
-                $projectGallery->remove($projectGallery->count());
                 $this->entityManager->remove($projectItem);
             }
 
@@ -177,8 +177,9 @@ class WorkflowService
             }
         }
 
-        $lastDate = max($dates->toArray());
-        if ($show->getSessions()->filter(fn(PeriodItem $periodItem) => $periodItem->getPeriod()->encloses($nearestDate, $lastDate))->isEmpty()) {
+        $lastDate = $hasPlannedDates ? max($dates->toArray()) : null;
+
+        if ($hasPlannedDates && $show->getSessions()->filter(fn(PeriodItem $periodItem) => $periodItem->getPeriod()->encloses($nearestDate, $lastDate))->isEmpty()) {
             $periodItem = new PeriodItem();
             $show->addSession($periodItem);
             $period = new Period();
@@ -236,12 +237,13 @@ class WorkflowService
     private function removeFromCollection(Collection $collection, $index)
     {
         $collection->remove($index);
-        for ($i = $index + 1; $i <= $collection->count(); $i++) {
+        for ($i = $index + 1; $i < $collection->count(); $i++) {
             $pi = $collection->get($i);
             $pi->setPosition($pi->getPosition() - 1);
             $collection->set($i - 1, $pi);
-            $collection->remove($i);
         }
+        $collection->remove($collection->count() - 1);
+
     }
 
     public function areInformationsFetched(Workflow $workflow)

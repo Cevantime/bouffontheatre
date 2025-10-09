@@ -50,7 +50,7 @@ class Project
     private $owner;
 
     #[ORM\OneToMany(mappedBy: 'relatedProject', targetEntity: Performance::class)]
-    #[ORM\OrderBy(['performedtAt' => 'ASC'])]
+    #[ORM\OrderBy(['performedAt' => 'ASC'])]
     private Collection $performances;
 
     #[ORM\OneToMany(mappedBy: 'relatedProject', targetEntity: Contract::class)]
