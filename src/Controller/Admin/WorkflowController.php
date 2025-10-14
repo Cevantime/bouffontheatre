@@ -156,7 +156,7 @@ class WorkflowController extends AbstractController
     public function createFromContract(Contract $contract, EntityManagerInterface $entityManager)
     {
         if ($contract->getWorkflow() !== null) {
-            return $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
         $workflow = new Workflow();
         $workflow->setContract($contract);
@@ -171,7 +171,7 @@ class WorkflowController extends AbstractController
     {
         $contract = $workflow->getContract();
         if ($contract == null) {
-            return $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
         $contractDate = new \DateTimeImmutable();
         $contract->setContractDate($contractDate);
@@ -197,7 +197,7 @@ class WorkflowController extends AbstractController
     {
         $contract = $workflow->getContract();
         if ($contract == null) {
-            return $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException();
         }
         $contract->setFetchDataStatus(Contract::FETCH_DATA_STATUS_SENT_TO_COMPANY);
         $entityManager->persist($contract);
@@ -219,7 +219,7 @@ class WorkflowController extends AbstractController
     {
         $contract = $workflow->getContract();
         if ($contract == null) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
         $contract->setStatus(Contract::STATUS_SIGNED);
         $entityManager->persist($contract);
