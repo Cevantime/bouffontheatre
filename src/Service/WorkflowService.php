@@ -13,6 +13,7 @@ use App\Entity\ProjectItem;
 use App\Entity\Show;
 use App\Entity\Workflow;
 use App\Repository\ContentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -236,14 +237,12 @@ class WorkflowService
 
     private function removeFromCollection(Collection $collection, $index)
     {
-        $collection->remove($index);
         for ($i = $index + 1; $i < $collection->count(); $i++) {
             $pi = $collection->get($i);
             $pi->setPosition($pi->getPosition() - 1);
             $collection->set($i - 1, $pi);
         }
         $collection->remove($collection->count() - 1);
-
     }
 
     public function areInformationsFetched(Workflow $workflow)

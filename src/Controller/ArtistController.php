@@ -31,24 +31,6 @@ class ArtistController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ARTIST_VIEW_PROFILE', subject: 'artist')]
-    #[Route(path: '/artist/view/{slug}', name: 'app_artist_view')]
-    public function artistView(Artist $artist, ViewRepository $viewRepository)
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        if ($user) {
-            $view = $viewRepository->findOneBy(['user' => $user, 'artist' => $artist]);
-            if (!$view) {
-                $view = new View();
-                $view->setUser($user);
-                $view->setArtist($artist);
-                $viewRepository->add($view, true);
-            }
-        }
-        return $this->redirectToRoute('app_artist_details', ['slug' => $artist->getSlug()]);
-    }
-
     #[IsGranted('ARTIST_CREATE')]
     #[Route(path: '/artist/create/ajax', name: 'app_artist_create_ajax', options: ['expose' => true])]
     public function createAjax(Request $request, EntityManagerInterface $entityManager)

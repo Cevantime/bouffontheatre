@@ -58,7 +58,7 @@ class LinkExtension extends AbstractExtension
         if( ! $this->security->isGranted(ArtistVoter::VIEW_PROFILE, $artist)) {
             return $artist->getFullname();
         }
-        $url = $this->router->generate('app_artist_view', ['slug' => $artist->getSlug()]);
+        $url = $this->router->generate('app_artist_details', ['slug' => $artist->getSlug()]);
         return $this->generateLinkTag($url, $artist->getFullname(), 'Accéder au profile de '.$artist->getFullname());
     }
 
