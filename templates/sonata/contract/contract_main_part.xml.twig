@@ -3706,9 +3706,10 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> des entrées sera partagée de la façon suivante                 </w:t>
+                <w:t xml:space="preserve"> des entrées sera partagée de la façon suivante :                 </w:t>
             </w:r>
         </w:p>
+        {% if not corea_without_minimum_share %}
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -3804,6 +3805,7 @@
                 <w:t xml:space="preserve"> euros au profit du {{producer}}</w:t>
             </w:r>
         </w:p>
+        {% endif %}
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -3831,7 +3833,7 @@
                     <w:spacing w:val="20"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Le reste des recettes : {{showCompanySharePercent}}% au profit du {{producer}} et {{showTheaterSharePercent}}% au profit du Directeur</w:t>
+                <w:t>{% if not corea_without_minimum_share %}Le reste des recettes : {% endif %}{{showCompanySharePercent}}% au profit du {{producer}} et {{showTheaterSharePercent}}% au profit du Directeur</w:t>
             </w:r>
         </w:p>
         <w:p>
