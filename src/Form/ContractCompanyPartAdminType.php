@@ -76,6 +76,14 @@ class ContractCompanyPartAdminType extends AbstractType
             ->add('showRib', TextType::class, [
                 'label' => 'IBAN de la compagnie'
             ])
+            ->add('showDuration', null, [
+                'label' => 'Durée du spectacle',
+                'help' => 'en minutes'
+            ])
+            ->add('showMaxDuration', null, [
+                'label' => 'Durée maximale du spectacle',
+                'help' => 'en minutes'
+            ])
         ;
 
         $builder->get('companySiret')->addViewTransformer($this->siretTransformer);

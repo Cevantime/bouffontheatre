@@ -42,6 +42,16 @@ class ContractCompanyPartAdmin
 
     #[Assert\Type("int")]
     public ?int $showArtistCount = null;
+
     #[Assert\Iban]
     public ?string $showRib = null;
+
+    #[Assert\Type('digit')]
+    #[Assert\NotBlank]
+    public $showDuration;
+
+    #[Assert\Type('digit')]
+    #[Assert\NotBlank]
+    public $showMaxDuration;
+
 }
