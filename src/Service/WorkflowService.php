@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use _PHPStan_7d8742a37\Symfony\Component\Console\Exception\LogicException;
 use App\DTO\RevenueExport;
 use App\Entity\Content;
 use App\Entity\Contract;
@@ -74,7 +73,7 @@ class WorkflowService
                     return false;
                 }
                 if ($contract->getRelatedProject() !== $workflow->getAssociatedShow()) {
-                    throw new LogicException("Project associated with a workflow is different from the contract's project");
+                    throw new \LogicException("Project associated with a workflow is different from the contract's project");
                 }
                 return !$contract->getPerformances()->isEmpty() || $this->isWorkflowContractFrozen($workflow);
             case Workflow::STEP_FETCH_INFORMATIONS:
@@ -113,8 +112,7 @@ class WorkflowService
 
     public function checkBilletreduc(Workflow $workflow): bool
     {
-        $show = $workflow->getAssociatedShow();
-        return !$show->getShopLinks()->isEmpty();
+        return !$workflow->getAssociatedShow()->getShopLinks()->isEmpty();
     }
 
     public function highlight(Workflow $workflow): void
