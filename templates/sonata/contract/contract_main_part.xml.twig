@@ -858,18 +858,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>- Le {{ producer }} représentera au Bouffon Théâtre </w:t>
-            </w:r>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:eastAsia="Times New Roman" w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:color w:val="000000"/>
-                    <w:kern w:val="0"/>
-                    <w:sz w:val="20"/>
-                    <w:szCs w:val="20"/>
-                    <w:lang w:val="fr-CA" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
-                </w:rPr>
-                <w:t>le</w:t>
+                <w:t>- Le {{ producer }} représentera au Bouffon Théâtre le</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -1829,7 +1818,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>- la rémunération et les indemnités des ses artistes ainsi que de son personnel technique et administratif ayant participé à la réalisation ou à la représentation du spectacle.</w:t>
+                <w:t>- la rémunération et les indemnités des artistes ainsi que de son personnel technique et administratif ayant participé à la réalisation ou à la représentation du spectacle.</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -2101,7 +2090,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> déclare bien connaître pour l’avoir vue, la salle où s’effectuera l’activité tant en ce qui concerne les structures techniques et d’accueil du public qu’en ce qui concerne les loges des artistes. Il ne pourra donc prétendre obtenir plus que ce qui peut lui être fourni. Si le {{ producer }} estimait nécessaire d’utiliser des matériels et équipements autres que ce dont disposent le directeur, il devrait lui-même et à ses frais, en effectuer la location ou l’achat, le transport, l’assurance, la mise en place et l’enlèvement. Le {{ producer }} assure le montage, le démontage et le rangement de son décor chaque fois qu’il est nécessaire à la bonne marche du théâtre. La mise en place du décor devra exclure tous moyens de fixation générateurs de dégradations tels que vis, clous, chevilles, pitons, agrafes, scotch double face, et tout autre moyen jugé comme tel par le directeur; dans le plancher, le plafond ou les murs du théâtre. L’utilisation de « peintures », de « sable », de  « paille », de « viande », de « liquides inflammables », d’ « eau », de « bière », de « sang », de « farine », de « craie » ou de « verres brisés » est strictement interdite dans le théâtre. </w:t>
+                <w:t xml:space="preserve"> déclare bien connaître pour l’avoir vue, la salle où s’effectuera l’activité tant en ce qui concerne les structures techniques et d’accueil du public qu’en ce qui concerne les loges des artistes. Il ne pourra donc prétendre obtenir plus que ce qui peut lui être fourni. Si le {{ producer }} estimait nécessaire d’utiliser des matériels et équipements autres que ce dont dispose le directeur, il devrait lui-même et à ses frais, en effectuer la location ou l’achat, le transport, l’assurance, la mise en place et l’enlèvement. Le {{ producer }} assure le montage, le démontage et le rangement de son décor chaque fois qu’il est nécessaire à la bonne marche du théâtre. La mise en place du décor devra exclure tous moyens de fixation générateurs de dégradations tels que vis, clous, chevilles, pitons, agrafes, scotch double face, et tout autre moyen jugé comme tel par le directeur; dans le plancher, le plafond ou les murs du théâtre. L’utilisation de « peintures », de « sable », de  « paille », de « viande », de « liquides inflammables », d’ « eau », de « bière », de « sang », de « farine », de « craie » ou de « verres brisés » est strictement interdite dans le théâtre. </w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -3866,7 +3855,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Recette au {{ producer }}</w:t>
+                <w:t>{{ ('Recette au ' ~ producer)| upper  }}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -3978,7 +3967,7 @@
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve"> représentations à {{showMinimumShare}} euro HT. </w:t>
+                <w:t xml:space="preserve"> représentation{% if showCount > 1 %}s{% endif%} à {{showMinimumShare}} euro HT. </w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4193,7 +4182,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-Paiement</w:t>
+                <w:t>PAIEMENT</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4223,8 +4212,10 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-Paiement</w:t>
+                <w:t>-PAIEMENT</w:t>
             </w:r>
+        </w:p>
+         <w:p>
             <w:r>
                 <w:rPr>
                     <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
@@ -4313,8 +4304,8 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                {% set stageManagementShowTotalPrice = stageManagementInstallHourCount * stageManagementShowPrice %}
-                <w:t>{{ stageManagementInstallHourCount}} Régies à {{ stageManagementShowPrice | euro }} HT : {{ stageManagementShowTotalPrice | euro }}
+                {% set stageManagementShowTotalPrice = stageManagementShowHourCount * stageManagementShowPrice %}
+                <w:t>{{ stageManagementShowHourCount}} Régies à {{ stageManagementShowPrice | euro }} HT : {{ stageManagementShowTotalPrice | euro }}
                 </w:t>
             </w:r>
         </w:p>
@@ -4536,7 +4527,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-Désistement</w:t>
+                <w:t>-DÉSISTEMENT</w:t>
             </w:r>
         </w:p>
         <w:p>
