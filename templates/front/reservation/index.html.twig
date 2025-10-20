@@ -51,5 +51,6 @@
                 <p>Aucune date n'est disponible pour l'instant</p>
             {% endfor %}
         </div>
+        <a href="{{ path("app_show_details", {slug: show.slug}) }}" class="btn btn-outline-success">Revenir au spectacle</a>
     </section>
 {% endblock %}

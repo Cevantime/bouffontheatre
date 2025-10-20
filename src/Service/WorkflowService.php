@@ -12,7 +12,6 @@ use App\Entity\ProjectItem;
 use App\Entity\Show;
 use App\Entity\Workflow;
 use App\Repository\ContentRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -132,7 +131,7 @@ class WorkflowService
         $performedAtClosure = fn(Performance $performance) => $performance->getPerformedAt();
 
         $dates = $futurePerformances->map($performedAtClosure);
-        $hasPlannedDates =  ! $dates->isEmpty();
+        $hasPlannedDates = !$dates->isEmpty();
         $nearestDate = $hasPlannedDates ? min($dates->toArray()) : null;
 
         foreach ([$homeShowsSlider, $homeSlider, $showsGallery, $footerProjects] as $content) {
@@ -266,7 +265,7 @@ class WorkflowService
             }
         }
 
-        if(! $this->areShowInformationsFetched($workflow)) {
+        if (!$this->areShowInformationsFetched($workflow)) {
             return false;
         }
 
@@ -349,35 +348,36 @@ class WorkflowService
 
         $mapPrices = array_flip($prices);
 
-        for($j = 1; $j < $activeSheet->getHighestDataRow(); $j++) {
-            if( ! $activeSheet->cellExists([1, $j])) {
+        for ($j = 1; $j < $activeSheet->getHighestDataRow(); $j++) {
+            if (!$activeSheet->cellExists([1, $j])) {
                 break;
             }
             $date = $activeSheet->getCell([1, $j])->getFormattedValue();
             $performanceIndex = $performanceDates->indexOf($date);
-            if($performanceIndex !== false) {
-                $performance = $performances->get($performanceIndex);
-                foreach ($mapPrices as $price) {
-                    $this->propertyAccessor->setValue($performance, $price.'Count', 0);
+            if ($performanceIndex === false) {
+                continue;
+            }
+            $performance = $performances->get($performanceIndex);
+            foreach ($mapPrices as $price) {
+                $this->propertyAccessor->setValue($performance, $price . 'Count', 0);
+            }
+            $priceRow = $j + 3;
+            for ($i = 1; $i < $activeSheet->getHighestColumn(); $i++) {
+                if (!$activeSheet->cellExists([$i, $priceRow])) {
+                    break;
                 }
-                $priceRow = $j + 3;
-                for($i = 1; $i < $activeSheet->getHighestColumn(); $i++) {
-                    if( ! $activeSheet->cellExists([$i, $priceRow])){
-                        break;
-                    }
-                    $cellPriceValue = $activeSheet->getCell([$i, $priceRow])->getValue();
-                    if(array_key_exists($cellPriceValue, $mapPrices)) {
-                        $cellCountValue = $activeSheet->getCell([$i, $priceRow+1]);
-                        $currentValue = $this->propertyAccessor->getValue($performance, $mapPrices[$cellPriceValue].'Count');
-                        $this->propertyAccessor->setValue($performance, $mapPrices[$cellPriceValue].'Count', $currentValue + ($cellCountValue->getValue() ?: 0));
-                    } else if ($cellPriceValue === 'Total TTC') {
-                        $cellCountValue = $activeSheet->getCell([$i, $priceRow+1]);
-                        $this->propertyAccessor->setValue($performance, 'grossRevenue', $cellCountValue->getValue());
-                    }
+                $cellPriceValue = $activeSheet->getCell([$i, $priceRow])->getValue();
+                if (array_key_exists($cellPriceValue, $mapPrices)) {
+                    $cellCountValue = $activeSheet->getCell([$i, $priceRow + 1]);
+                    $currentValue = $this->propertyAccessor->getValue($performance, $mapPrices[$cellPriceValue] . 'Count');
+                    $this->propertyAccessor->setValue($performance, $mapPrices[$cellPriceValue] . 'Count', $currentValue + ($cellCountValue->getValue() ?: 0));
+                } else if ($cellPriceValue === 'Total TTC') {
+                    $cellCountValue = $activeSheet->getCell([$i, $priceRow + 1]);
+                    $this->propertyAccessor->setValue($performance, 'grossRevenue', $cellCountValue->getValue());
                 }
             }
-            $this->entityManager->flush();
         }
+        $this->entityManager->flush();
 
     }
 

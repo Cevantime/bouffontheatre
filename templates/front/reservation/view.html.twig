@@ -34,5 +34,6 @@
                 </tr>
             {% endfor %}
         </table>
+        <a class="btn btn-outline-success" href="{{ path('app_reservation', {slug: performance.relatedProject.slug}) }}">Revenir aux représentations</a>
     </section>
 {% endblock %}
