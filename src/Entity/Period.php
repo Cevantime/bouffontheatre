@@ -23,13 +23,13 @@ class Period
     private $days = [];
 
     public const DAYS = [
-        'Lundi' => 0,
-        'Mardi' => 1,
-        'Mercredi' => 2,
-        'Jeudi' => 3,
-        'Vendredi' => 4,
-        'Samedi' => 5,
-        'Dimanche' => 6,
+        'Lundi' => 1,
+        'Mardi' => 2,
+        'Mercredi' => 3,
+        'Jeudi' => 4,
+        'Vendredi' => 5,
+        'Samedi' => 6,
+        'Dimanche' => 0,
     ];
 
     public function getId(): ?int

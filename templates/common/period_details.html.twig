@@ -1,3 +1,3 @@
-{% set daysDict = constant('App\\Entity\\Period::DAYS') | keys %}
+{% set daysDict = constant('App\\Entity\\Period::DAYS') | flip %}
 
 {{ period }} <br> les {{ period.days | map(d => daysDict[d]) | join(', ', ' et ') }}
