@@ -4,57 +4,74 @@
     Notre blog
 {% endblock %}
 {% block body %}
-<style>
+    <style>
 
-    .dashboard-row {
-        width: 100%;
-        display: table;
-    }
-    .dashboard-row > div {
-        display: inline-block;
-    }
-    .dashboard-header > div {
-        display: inline-block;
-    }
+        .dashboard-row {
+            width: 100%;
+            display: table;
+        }
 
-    .dashboard-row:not(.w-full) {
-        display: table-row;
-    }
+        .dashboard-row > div {
+            display: inline-block;
+        }
 
-    .dashboard-row:not(.w-full) > div {
-        display: table-cell;
-    }
+        .dashboard-header > div {
+            display: inline-block;
+        }
 
-    .dashboard-row:not(.w-full) > div:nth-child(1),
-    .dashboard-row:not(.w-full) > div:nth-child(2),
-    .dashboard-row:not(.w-full) > div:nth-child(4),
-    .dashboard-row:not(.w-full) > div:nth-child(5),
-    .dashboard-row:not(.w-full) > div:nth-child(6),
-    .dashboard-row:not(.w-full) > div:nth-child(9),
-    .dashboard-row:not(.w-full) > div:nth-child(10){
-        display: none;
-    }
+        .dashboard-row:not(.w-full) {
+            display: table-row;
+        }
 
-    .dashboard-row:not(.w-full) > div:nth-child(4) {
-        width: 20% !important;
-    }
+        .dashboard-row:not(.w-full) > div {
+            display: table-cell;
+        }
 
-    .dashboard-row:not(.w-full) > div:nth-child(7) {
-        width: 10% !important;
-    }
+        .dashboard-row:not(.w-full) > div:nth-child(1),
+        .dashboard-row:not(.w-full) > div:nth-child(2),
+        .dashboard-row:not(.w-full) > div:nth-child(4),
+        .dashboard-row:not(.w-full) > div:nth-child(5),
+        .dashboard-row:not(.w-full) > div:nth-child(6),
+        .dashboard-row:not(.w-full) > div:nth-child(9),
+        .dashboard-row:not(.w-full) > div:nth-child(10) {
+            display: none;
+        }
 
-    .dashboard-row:not(.w-full) > div:nth-child(8) {
-        width: 10% !important;
-    }
+        .dashboard-row:not(.w-full) > div:nth-child(4) {
+            width: 20% !important;
+        }
 
-</style>
-<div class="container">
-<h1>Réservations pour le spectacle "{{ show.name }}"</h1>
-{% for i in insights %}
-{{ i.html | raw }}
-<p class="mt-5">
-  Mis à jour le {{ i.createdAt | date("d/m/Y à H:i", "Europe/Paris") }}
-</p>
-{% endfor %}
-</div>
+        .dashboard-row:not(.w-full) > div:nth-child(7) {
+            width: 10% !important;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(7) span a {
+            text-decoration: none;
+            color: black;
+            cursor: default;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(8) {
+            width: 10% !important;
+        }
+
+    </style>
+    <div class="container">
+        <h1>Réservations pour le spectacle "{{ show.name }}"</h1>
+        {% for i in insights %}
+            {{ i.html | raw }}
+            <p class="mt-5">
+                Mis à jour le {{ i.createdAt | date("d/m/Y à H:i", "Europe/Paris") }}
+            </p>
+            <script>
+
+                $(function(){
+                   $('.dashboard-row a').click(function(e){
+                       e.preventDefault();
+                       return false;
+                   });
+                });
+            </script>
+        {% endfor %}
+    </div>
 {% endblock %}
