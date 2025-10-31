@@ -63,7 +63,7 @@
                                 {% endif %}
                                 {% if is_granted('ROLE_USER') %}
                                     {% if is_granted('ROLE_ARTIST') and app.user.associatedArtist and app.user.associatedArtist.file %}
-                                        <li><a class="dropdown-item" href="{{ path('app_artist_view', { slug: app.user.associatedArtist.slug }) }}">Ma fiche perso</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('app_artist_details', { slug: app.user.associatedArtist.slug }) }}">Ma fiche perso</a></li>
                                     {% endif %}
                                     {% if is_granted('ROLE_PRO') %}
                                         <li><a class="dropdown-item" href="{{ path('app_profile') }}">Mon profil</a></li>
