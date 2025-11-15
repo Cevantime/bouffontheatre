@@ -24,7 +24,7 @@
         <h2 class="mb-4">Dates disponibles</h2>
         <div class="row">
             {% for p in available_performances %}
-                <div class="col md-3">
+                <div class="col-md-3">
                     <div class="card">
                         <div class="card-header">
                             {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }}
@@ -36,7 +36,7 @@
                                     ci-dessous</p>
                                 <a href="{{ path("app_reservation_form", {id: p.id}) }}" class="btn btn-primary me-2">Réserver</a>
                             {% else %}
-                                <p class="card-text">Cette représentation n'est plus disponible à la réservation</p>
+                                <p class="card-text">Cette représentation n'est plus disponible à la réservation.</p>
                             {% endif %}
                             {% if is_granted('SHOW_LIST_RESERVATION', p.relatedProject) %}
                                 <a href="{{ path("app_reservation_view", {id: p.id}) }}">Voir les réservations</a>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             {% else %}
-                <p>Aucune date n'est disponible pour l'instant</p>
+                <p>Aucune date n'est disponible pour l'instant.</p>
             {% endfor %}
         </div>
         <a href="{{ path("app_show_details", {slug: show.slug}) }}" class="btn btn-outline-success mt-4">Revenir au spectacle</a>

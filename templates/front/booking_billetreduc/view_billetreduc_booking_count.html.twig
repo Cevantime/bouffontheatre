@@ -63,15 +63,15 @@
             <p class="mt-5">
                 Mis à jour le {{ i.createdAt | date("d/m/Y à H:i", "Europe/Paris") }}
             </p>
-            <script>
-
-                $(function(){
-                   $('.dashboard-row a').click(function(e){
-                       e.preventDefault();
-                       return false;
-                   });
-                });
-            </script>
         {% endfor %}
+        <script>
+
+            $(function(){
+               $('.dashboard-row a').click(function(e){
+                   e.preventDefault();
+                   return false;
+               });
+            });
+        </script>
     </div>
 {% endblock %}

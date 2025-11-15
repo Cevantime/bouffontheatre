@@ -21,6 +21,7 @@ class ReservationValidator extends ConstraintValidator
         $performance = $value->getPerformance();
 
         $availableSum = $performance->getAvailableReservationsSum($value->getId() ? $value : null);
+
         $sumTarifs = $value->getSumTarifs();
 
         if ($availableSum >= $sumTarifs) {

@@ -35,6 +35,9 @@ class PerformanceVoter extends Voter
                 if ($this->security->isGranted('ROLE_ADMIN')) {
                     return true;
                 }
+                if($this->security->isGranted('ROLE_ARTIST')) {
+                    return $subject->getRelatedProject() instanceof Show && $subject->getRelatedProject()->getOwner() === $token->getUser();
+                }
                 return $subject->getRelatedProject() instanceof Show && $subject->getRelatedProject()->isBookableOnline();
         }
 

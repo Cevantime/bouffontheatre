@@ -8,32 +8,45 @@
         {% set p = performance %}
         Réservation pour {{ performance.relatedProject.name }}
         le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i') }}
+
+
         <table class="table">
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
-                {# <th>17€</th> #}
-                {# <th>12€</th> #}
                 <th>Nombre de places</th>
+                <th>Tarif</th>
+                <th>Commentaire</th>
                 <th>Actions</th>
             </tr>
             {% for r in reservations %}
                 <tr>
                     <td>{{ r.lastName }}</td>
                     <td>{{ r.firstName }}</td>
-                    {# <td>{{r.tarif2}}</td> #}
-                    <td>{{ r.tarif1 }}</td>
+                    <td>{{ r.placeCount }}</td>
+                    <td>{{ r.priceLabel }}</td>
+                    <td>{{ r.comment }}</td>
                     <td>
                         <div class="btn-group">
+                            {% if is_granted('RESERVATION_EDIT', r) %}
                             <a href="{{ path("app_reservation_edit", {id: r.id}) }}"
                                class="btn btn-success">Modifier</a>
+                            {% endif %}
+                            {% if is_granted('RESERVATION_DELETE', r) %}
                             <a href="{{ path("app_reservation_delete", {id: r.id}) }}"
                                class="btn btn-danger">Supprimer</a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
             {% endfor %}
         </table>
-        <a class="btn btn-outline-success" href="{{ path('app_reservation', {slug: performance.relatedProject.slug}) }}">Revenir aux représentations</a>
+        <a class="btn btn-success mb-3" href="{{ path('app_reservation_form', {id: performance.id}) }}">Ajouter une réservation</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ render(controller('App\\Controller\\ReservationController::editQuota', {'performance' : performance})) }}
+        {% endif %}
+        <div class="mt-3">
+            <a class="btn btn-outline-success" href="{{ path('app_reservation', {slug: performance.relatedProject.slug}) }}">Revenir aux représentations</a>
+        </div>
     </section>
 {% endblock %}

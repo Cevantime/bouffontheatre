@@ -8,6 +8,7 @@ use App\Repository\PerformanceRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,13 +24,13 @@ class ReservationEditType extends AbstractType
             ->add('firstName', null, [
                 'label' => 'Prénom'
             ])
-            // ->add('tarif2', null, [
-            //     "label" => "Nombre de places en tarifs plein (17€)"
-            // ])
-            ->add('tarif1', null, [
-                // "label" => "Nombre de place au tarif réduit (12€)",
+            ->add('placeCount', null, [
                 "label" => "Nombre de places",
-                // "help" => "Chômeur, RSA, intermittents, étudiants ou -26 ans"
+            ])
+            ->add('price', ChoiceType::class, [
+                'label' => 'Tarif',
+                'choices' => array_flip(Reservation::AVAILABLE_PRICES),
+                'help' => 'Le tarif réduit concerne les demandeurs d\'emploi, les étudiants et les intermittents du spectacle',
             ])
             ->add('performance', EntityType::class, [
                 'class' => Performance::class,

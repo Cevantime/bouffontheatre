@@ -17,6 +17,8 @@ class ContractGlobalConfig
     public $theaterSiret;
     #[Assert\Length(max: 150)]
     public $theaterPresident;
+    #[Assert\Length(max: 150)]
+    public $theaterLicense;
     #[Phone]
     public $theaterPhone;
     #[Assert\Email]

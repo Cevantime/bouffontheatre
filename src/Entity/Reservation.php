@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReservationRepository;
 use App\Validator\Reservation as ValidatorReservation;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Positive;
@@ -12,6 +13,15 @@ use Symfony\Component\Validator\Constraints\Positive;
 #[ValidatorReservation()]
 class Reservation
 {
+
+    const AVAILABLE_PRICES = [
+        'none' => 'Non précisé',
+        'plain' => 'Plein Tarif',
+        'discount' => 'Tarif Réduit',
+        'group' => 'Groupe',
+        'enfant' => 'Enfant',
+        'invitation' => 'Invitation',
+    ];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,19 +35,7 @@ class Reservation
 
     #[Positive()]
     #[ORM\Column(nullable: true)]
-    private ?int $tarif1 = null;
-
-    #[Positive()]
-    #[ORM\Column(nullable: true)]
-    private ?int $tarif2 = null;
-
-    #[Positive()]
-    #[ORM\Column(nullable: true)]
-    private ?int $tarif3 = null;
-
-    #[Positive()]
-    #[ORM\Column(nullable: true)]
-    private ?int $tarif4 = null;
+    private ?int $placeCount = 0;
 
     #[ORM\Column(length: 60)]
     private ?string $firstName = null;
@@ -45,6 +43,15 @@ class Reservation
     #[ORM\Column(length: 255)]
     #[Assert\Email()]
     private ?string $email = null;
+
+    #[ORM\Column(length: 60)]
+    private ?string $price = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $comment = null;
+
+    #[ORM\ManyToOne]
+    private ?User $author = null;
 
     public function getId(): ?int
     {
@@ -75,57 +82,21 @@ class Reservation
         return $this;
     }
 
-    public function getTarif1(): ?int
+    public function getPlaceCount(): ?int
     {
-        return $this->tarif1;
+        return $this->placeCount;
     }
 
-    public function setTarif1(?int $tarif1): static
+    public function setPlaceCount(?int $placeCount): static
     {
-        $this->tarif1 = $tarif1;
-
-        return $this;
-    }
-
-    public function getTarif2(): ?int
-    {
-        return $this->tarif2;
-    }
-
-    public function setTarif2(?int $tarif2): static
-    {
-        $this->tarif2 = $tarif2;
-
-        return $this;
-    }
-
-    public function getTarif3(): ?int
-    {
-        return $this->tarif3;
-    }
-
-    public function setTarif3(?int $tarif3): static
-    {
-        $this->tarif3 = $tarif3;
-
-        return $this;
-    }
-
-    public function getTarif4(): ?int
-    {
-        return $this->tarif4;
-    }
-
-    public function setTarif4(?int $tarif4): static
-    {
-        $this->tarif4 = $tarif4;
+        $this->placeCount = $placeCount;
 
         return $this;
     }
 
     public function getSumTarifs()
     {
-        return $this->tarif1 + $this->tarif2 + $this->tarif3 + $this->tarif4;
+        return $this->placeCount;
     }
 
     public function getFirstName(): ?string
@@ -153,6 +124,47 @@ class Reservation
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getPriceLabel(): string
+    {
+        return self::AVAILABLE_PRICES[$this->getPrice()] ?? '';
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): static
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }

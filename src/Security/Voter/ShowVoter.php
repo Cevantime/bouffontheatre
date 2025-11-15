@@ -56,7 +56,7 @@ class ShowVoter extends Voter
                 return $subject->getOwner() === $token->getUser();
             case self::BOOK_ONLINE:
                 /** @var Show $subject */
-                return $subject->isBookableOnline() || $this->security->isGranted('ROLE_ADMIN');
+                return $subject->isBookableOnline() || $this->security->isGranted('ROLE_ADMIN') || $subject->getOwner() === $token->getUser();
             case self::INSIGHT_VIEW:
                 if ($this->security->isGranted('ROLE_ADMIN')) {
                     return true;

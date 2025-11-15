@@ -47,6 +47,9 @@ class Performance
     #[ORM\Column(nullable: true)]
     private ?int $appPriceCount = null;
 
+    #[ORM\Column]
+    private ?int $quota = 45;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -142,7 +145,7 @@ class Performance
 
     public function getAvailableReservationsSum(?Reservation $ignoreReservation = null)
     {
-        return 45 - $this->getReservationsSum($ignoreReservation);
+        return $this->getQuota() - $this->getReservationsSum($ignoreReservation);
     }
 
     public function __toString()
@@ -225,5 +228,17 @@ class Performance
     public function getTotalCount()
     {
         return $this->appPriceCount + $this->freeCount + $this->taxFreePriceCount + $this->halfPriceCount + $this->fullPriceCount;
+    }
+
+    public function getQuota(): ?int
+    {
+        return $this->quota;
+    }
+
+    public function setQuota(int $quota): static
+    {
+        $this->quota = $quota;
+
+        return $this;
     }
 }

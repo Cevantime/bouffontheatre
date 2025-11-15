@@ -10,9 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class ReservationVoter extends Voter
 {
     public const EDIT = 'RESERVATION_EDIT';
-    public const ADD = 'RESERVATION_ADD';
     public const DELETE = 'RESERVATION_DELETE';
-    public const LIST = 'RESERVATION_LIST';
 
     private Security $security;
 
@@ -25,21 +23,19 @@ class ReservationVoter extends Voter
     {
 
         return (in_array($attribute, [self::EDIT, self::DELETE])
-            && $subject instanceof \App\Entity\Reservation)
-            || (in_array($attribute, [self::ADD])
-                && $subject == null);
+            && $subject instanceof \App\Entity\Reservation);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case self::ADD:
-                return $subject->isBookableOnline();
-
-            default:
-                return $this->security->isGranted('ROLE_ADMIN');
+            case 'RESERVATION_EDIT':
+            case 'RESERVATION_DELETE':
+                return $subject->getAuthor() === $token->getUser();
         }
     }
 }

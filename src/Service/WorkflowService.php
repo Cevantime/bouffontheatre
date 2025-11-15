@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\DTO\Export;
 use App\DTO\RevenueExport;
 use App\Entity\Content;
 use App\Entity\Contract;
@@ -381,7 +382,7 @@ class WorkflowService
 
     }
 
-    public function generateRevenueExport(Workflow $workflow)
+    public function generateRevenueExport(Workflow $workflow): Export
     {
         $reader = IOFactory::createReader("Xlsx");
 

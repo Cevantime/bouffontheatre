@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Performance;
 use App\Entity\Reservation;
 use App\Entity\Show;
+use App\Form\PerformanceQuotaType;
 use App\Form\ReservationEditType;
 use App\Form\ReservationType;
 use App\Repository\PerformanceRepository;
 use App\Repository\ReservationRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +50,12 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() and $form->isValid()) {
+            if($reservation->getEmail() === null && $this->getUser() != null){
+                $reservation->setEmail($this->getUser()->getEmail());
+            }
+            if($this->getUser() != null){
+                $reservation->setAuthor($this->getUser());
+            }
             $emailService->sendMailTo(
                 $reservation->getEmail(),
                 'Votre réservation a bien été enregistrée',
@@ -117,6 +125,25 @@ class ReservationController extends AbstractController
         return $this->render('front/reservation/view.html.twig', [
             'performance' => $performance,
             'reservations' => $sortedReservation
+        ]);
+    }
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/quota/{id}', name: 'app_edit_performance_quota')]
+    public function editQuota(Performance $performance, RequestStack $requestStack, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PerformanceQuotaType::class, $performance);
+
+        $form->handleRequest($requestStack->getMainRequest());
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->addFlash('success', 'Le quota a bien été mis à jour');
+            $entityManager->persist($performance);
+            $entityManager->flush();
+        }
+
+        return $this->render('front/reservation/edit_quota.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

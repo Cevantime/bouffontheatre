@@ -78,9 +78,13 @@ class ContractAdmin extends AbstractAdmin
                 'label' => 'SIRET de la compagnie du théâtre',
                 'help' => 'Numéro de SIRET de la compagnie du théâtre'
             ])
-            ->add('theaterPresident', null, [
-                'attr' => ['placeholder' => 'Richard Arselin '],
+            ->add('theaterLicense', null, [
+                'attr' => ['placeholder' => 'Richard Arselin'],
                 'label' => 'Nom du représentant légal de la compagnie du théâtre'
+            ])
+            ->add('theaterLicense', null, [
+                'attr' => ['placeholder' => 'platesv-R-2020-007899'],
+                'label' => 'Numéro de licence de la compagnie du théâtre'
             ])
             ->add('theaterPhone', null, [
                 'attr' => ['placeholder' => '06 23 45 67 89 '],

@@ -62,6 +62,7 @@ class ContractGenerator
             'theaterAddress',
             'theaterSiret',
             'theaterPresident',
+            'theaterLicense',
             'theaterEmail',
             'theaterPhone',
             'companyName',

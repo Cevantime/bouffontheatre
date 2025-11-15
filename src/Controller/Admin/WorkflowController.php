@@ -113,7 +113,6 @@ class WorkflowController extends AbstractController
             $entityManager->persist($link);
             $entityManager->persist($linkItem);
             $entityManager->flush();
-
         }
         if($workflowService->workflowCanAccess($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             $tickbossExcel = new TickbossRevenueExcel();

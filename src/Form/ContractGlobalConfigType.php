@@ -52,6 +52,10 @@ class ContractGlobalConfigType extends AbstractType
                 'attr' => ['placeholder' => 'Richard Arselin '],
                 'label' => 'Nom du représentant légal de la compagnie du théâtre'
             ])
+            ->add('theaterLicense', TextType::class, [
+                'attr' => ['placeholder' => 'platesv-R-2020-007899'],
+                'label' => 'Licence de la compagnie du théâtre'
+            ])
             ->add('theaterPhone', TelType::class, [
                 'attr' => ['placeholder' => '06 23 45 67 89 '],
                 'label' => 'Numéro de téléphone du théâtre'
