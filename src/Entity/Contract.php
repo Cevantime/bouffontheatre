@@ -198,6 +198,9 @@ class Contract
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private ?string $showAppPrice = null;
 
+    #[ORM\Column(length: 150)]
+    private ?string $theaterLicense = null;
+
     public function __construct()
     {
         $this->performances = new ArrayCollection();
@@ -847,6 +850,18 @@ class Contract
     public function setShowAppPrice(string $showAppPrice): static
     {
         $this->showAppPrice = $showAppPrice;
+
+        return $this;
+    }
+
+    public function getTheaterLicense(): ?string
+    {
+        return $this->theaterLicense;
+    }
+
+    public function setTheaterLicense(string $theaterLicense): static
+    {
+        $this->theaterLicense = $theaterLicense;
 
         return $this;
     }

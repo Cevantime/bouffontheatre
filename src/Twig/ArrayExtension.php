@@ -14,13 +14,8 @@ class ArrayExtension extends AbstractExtension
             // If your filter generates SAFE HTML, you should add a third
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
-            new TwigFilter('flip', [$this, 'flipArray']),
+            new TwigFilter('flip', 'array_flip'),
             new TwigFilter('sum', 'array_sum'),
         ];
-    }
-
-    public function flipArray(array $array)
-    {
-        return array_flip($array);
     }
 }

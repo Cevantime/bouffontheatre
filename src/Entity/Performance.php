@@ -48,7 +48,7 @@ class Performance
     private ?int $appPriceCount = null;
 
     #[ORM\Column]
-    private ?int $quota = 45;
+    private ?int $quota = 15;
 
     public function __construct()
     {

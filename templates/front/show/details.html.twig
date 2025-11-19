@@ -149,7 +149,7 @@
                         <dd>{{ link(role.artist) }}</dd>
                     {% endfor %}
                     {% if is_granted('ROLE_INSIGHT_SHOW_VIEW', show) and there_are_insights_for_this_show %}
-                        <dt>Accéder aux résa billetreduc</dt>
+                        <dt>Accéder aux résas billetreduc</dt>
                         <dd><a href="{{ path('app_booking_billetreduc', {id: show.id}) }}" class="btn btn-primary">Résas billetreduc</a></dd>
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') or (is_granted('ROLE_ARTIST') and app.user == show.owner)%}
