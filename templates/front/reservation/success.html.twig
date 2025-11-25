@@ -16,6 +16,10 @@
             en précisant bien le nom de la réservation et l'action que vous souhaitez effectuer
         </div>
 
+        <div class="alert alert-warning">
+            Attention, les places vous sont réservées mais le paiement s'effectue <strong>sur place</strong>. Tout <strong>retard</strong> peut entraîner le <strong>retrait</strong> de votre réservation.
+        </div>
+
         <a href="{{ path('app_reservation', {'slug':p.relatedProject.slug}) }}">Revenir aux réservations</a>
     </section>
 {% endblock %}

@@ -7,7 +7,7 @@
 <div class="container">
     {% set p = performance %}
     <h1>Réservation pour {{ performance.relatedProject.name }} le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i')}} </h1>
-    <p>{{ p.availableReservationsSum }} place(s) restante(s)</p>
+    <p>{{ p.availableReservationsSum }} place(s) restante(s) sur {{ p.quota }}</p>
     {{ form(form) }}
     <a class="btn btn-outline-success mb-3" href="{{ path('app_reservation', {slug: p.relatedProject.slug}) }}">Revenir aux représentations</a>
 </div>

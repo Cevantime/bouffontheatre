@@ -12,12 +12,12 @@ use App\Repository\PerformanceRepository;
 use App\Repository\ReservationRepository;
 use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/reservation")]
 class ReservationController extends AbstractController
@@ -50,10 +50,10 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() and $form->isValid()) {
-            if($reservation->getEmail() === null && $this->getUser() != null){
+            if ($reservation->getEmail() === null && $this->getUser() != null) {
                 $reservation->setEmail($this->getUser()->getEmail());
             }
-            if($this->getUser() != null){
+            if ($this->getUser() != null) {
                 $reservation->setAuthor($this->getUser());
             }
             $emailService->sendMailTo(
@@ -115,11 +115,11 @@ class ReservationController extends AbstractController
     #[Route('/view/{id}', name: 'app_reservation_view')]
     public function view(Performance $performance): Response
     {
-        if( ! $this->isGranted('SHOW_LIST_RESERVATION', $performance->getRelatedProject())) {
+        if (!$this->isGranted('SHOW_LIST_RESERVATION', $performance->getRelatedProject())) {
             throw $this->createAccessDeniedException();
         }
         $sortedReservation = $performance->getReservations()->toArray();
-        usort($sortedReservation, function(Reservation $r1, Reservation $r2){
+        usort($sortedReservation, function (Reservation $r1, Reservation $r2) {
             return $r1->getLastName() <=> $r2->getLastName();
         });
         return $this->render('front/reservation/view.html.twig', [
@@ -136,7 +136,7 @@ class ReservationController extends AbstractController
 
         $form->handleRequest($requestStack->getMainRequest());
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->addFlash('success', 'Le quota a bien été mis à jour');
             $entityManager->persist($performance);
             $entityManager->flush();
@@ -155,4 +155,18 @@ class ReservationController extends AbstractController
             'reservation' => $reservation
         ]);
     }
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/check/{id}', name: 'app_reservation_check', options: ['expose' => true])]
+    public function check(Reservation $reservation, EntityManagerInterface $manager, Request $request): Response
+    {
+        $checked = $request->get('checked');
+        if($checked === null) {
+            throw $this->createAccessDeniedException();
+        }
+        $reservation->setChecked(intval($checked) === 1);
+        $manager->flush();
+        return new Response("ok");
+    }
+
 }

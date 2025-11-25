@@ -3,6 +3,23 @@
 {% block title %}
     Réservation pour le spectacle {{ performance.relatedProject.name }}
 {% endblock %}
+
+{% block stylesheets %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <style>
+            tr.crossed {
+                position: relative;
+                text-decoration-line: line-through;
+            }
+
+            tr.crossed > td:last-of-type > * {
+                display: none;
+            }
+
+        </style>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <section class="container">
         {% set p = performance %}
@@ -10,37 +27,45 @@
         le {{ p.performedAt | date('d') }} {{ p.performedAt | date('F') | trans }} à {{ p.performedAt | date('H:i') }}
 
 
-        <table class="table">
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Nombre de places</th>
-                <th>Tarif</th>
-                <th>Commentaire</th>
-                <th>Actions</th>
-            </tr>
-            {% for r in reservations %}
+        <div class="table-responsive">
+            <table{% if is_granted('ROLE_ADMIN')%} {{ stimulus_controller('check_reservation') }}{% endif%} class="table">
                 <tr>
-                    <td>{{ r.lastName }}</td>
-                    <td>{{ r.firstName }}</td>
-                    <td>{{ r.placeCount }}</td>
-                    <td>{{ r.priceLabel }}</td>
-                    <td>{{ r.comment }}</td>
-                    <td>
-                        <div class="btn-group">
-                            {% if is_granted('RESERVATION_EDIT', r) %}
-                            <a href="{{ path("app_reservation_edit", {id: r.id}) }}"
-                               class="btn btn-success">Modifier</a>
-                            {% endif %}
-                            {% if is_granted('RESERVATION_DELETE', r) %}
-                            <a href="{{ path("app_reservation_delete", {id: r.id}) }}"
-                               class="btn btn-danger">Supprimer</a>
-                            {% endif %}
-                        </div>
-                    </td>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th>Rayer</th>
+                    {% endif %}
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Nombre de places</th>
+                    <th>Tarif</th>
+                    <th>Commentaire</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for r in reservations %}
+                    <tr{% if is_granted('ROLE_ADMIN') %} data-id="{{ r.id }}" {% if r.checked %}class="crossed" {% endif%}{% endif %}>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <td><input type="checkbox" class="cross-row"{% if r.checked%} checked="checked"{% endif %} ></td>
+                        {% endif %}
+                        <td>{{ r.lastName }}</td>
+                        <td>{{ r.firstName }}</td>
+                        <td>{{ r.placeCount }}</td>
+                        <td>{{ r.priceLabel }}</td>
+                        <td>{{ r.comment }}</td>
+                        <td>
+                            <div class="btn-group">
+                                {% if is_granted('RESERVATION_EDIT', r) %}
+                                <a href="{{ path("app_reservation_edit", {id: r.id}) }}"
+                                   class="btn btn-success">Modifier</a>
+                                {% endif %}
+                                {% if is_granted('RESERVATION_DELETE', r) %}
+                                <a href="{{ path("app_reservation_delete", {id: r.id}) }}"
+                                   class="btn btn-danger">Supprimer</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
         <a class="btn btn-success mb-3" href="{{ path('app_reservation_form', {id: performance.id}) }}">Ajouter une réservation</a>
         {% if is_granted('ROLE_ADMIN') %}
             {{ render(controller('App\\Controller\\ReservationController::editQuota', {'performance' : performance})) }}

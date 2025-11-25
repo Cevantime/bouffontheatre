@@ -53,6 +53,9 @@ class Reservation
     #[ORM\ManyToOne]
     private ?User $author = null;
 
+    #[ORM\Column]
+    private ?bool $checked = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -165,6 +168,18 @@ class Reservation
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function isChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    public function setChecked(bool $checked): static
+    {
+        $this->checked = $checked;
 
         return $this;
     }

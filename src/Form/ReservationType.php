@@ -14,9 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReservationType extends AbstractType
 {
-    public function __construct(private Security $security)
-    {
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
