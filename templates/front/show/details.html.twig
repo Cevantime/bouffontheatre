@@ -155,7 +155,6 @@
                 </dl>
                 {% if show.featuredLinks is not empty %}
                     <h3>Liens</h3>
-                    Autres liens :
                     {% set standard_links = show.featuredLinks | filter((l) => l.link.siteName == null) %}
                     {% if standard_links %}
                         <ul class="list-unstyled">

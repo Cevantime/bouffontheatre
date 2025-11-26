@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PerformanceRepository;
+use App\Validator\Quota;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PerformanceRepository::class)]
+#[Quota]
 class Performance
 {
     #[ORM\Id]
@@ -126,9 +128,9 @@ class Performance
         return $this;
     }
 
-    public function getReservationsSum(?Reservation $ignoreReservation = null)
+    public function getReservationsSum(?Reservation $ignoredReservation = null)
     {
-        return $this->reservations->reduce(fn ($acc, $r) => $acc + ($ignoreReservation == $r ? 0 : $r->getSumTarifs()));
+        return $this->reservations->reduce(fn ($acc, $r) => $acc + ($ignoredReservation == $r ? 0 : $r->getSumTarifs()));
     }
 
     public function isAvailableForReservation()
