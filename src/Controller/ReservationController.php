@@ -8,6 +8,7 @@ use App\Entity\Show;
 use App\Form\PerformanceQuotaType;
 use App\Form\ReservationEditType;
 use App\Form\ReservationType;
+use App\Repository\InsightRepository;
 use App\Repository\PerformanceRepository;
 use App\Repository\ReservationRepository;
 use App\Service\EmailService;
@@ -24,12 +25,20 @@ class ReservationController extends AbstractController
 {
     #[IsGranted('SHOW_BOOK_ONLINE', subject: 'show')]
     #[Route('/{slug}', name: 'app_reservation')]
-    public function index(Show $show, PerformanceRepository $performanceRepository): Response
+    public function index(Show $show, PerformanceRepository $performanceRepository, InsightRepository $insightRepository): Response
     {
         $availablePerformances = $performanceRepository->findAvailablePerformancesForShowWithReservations($show);
+
+        if($this->isGranted('ROLE_INSIGHT_SHOW_VIEW', $show)) {
+            $insights = $insightRepository->findBy(['relatedShow' => $show]);
+        } else {
+            $insights = [];
+        }
+
         return $this->render('front/reservation/index.html.twig', [
             'available_performances' => $availablePerformances,
             'show' => $show,
+            'insights' => $insights,
         ]);
     }
 

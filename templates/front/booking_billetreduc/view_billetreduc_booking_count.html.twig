@@ -3,7 +3,8 @@
 {% block title %}
     Notre blog
 {% endblock %}
-{% block body %}
+
+{% block stylesheets %}
     <style>
 
         .dashboard-row {
@@ -56,6 +57,9 @@
         }
 
     </style>
+{% endblock %}
+
+{% block body %}
     <div class="container">
         <h1>Réservations pour le spectacle "{{ show.name }}"</h1>
         {% for i in insights %}
@@ -66,11 +70,13 @@
         {% endfor %}
         <script>
 
-            $(function(){
-               $('.dashboard-row a').click(function(e){
-                   e.preventDefault();
-                   return false;
-               });
+            document.addEventListener('DOMContentLoaded', () => {
+               document.querySelectorAll('.dashboard-row a').forEach((el) => {
+                   el.addEventListener('click', (evt) => {
+                       evt.preventDefault();
+                       return false;
+                   });
+               })
             });
         </script>
     </div>

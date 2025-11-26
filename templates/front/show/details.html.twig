@@ -148,11 +148,7 @@
                         <dt>{{ role.artist.gender == constant('App\\Entity\\Artist::GENDER_FEMALE') ? role.job.feminin : role.job.name }}</dt>
                         <dd>{{ link(role.artist) }}</dd>
                     {% endfor %}
-                    {% if is_granted('ROLE_INSIGHT_SHOW_VIEW', show) and there_are_insights_for_this_show %}
-                        <dt>Accéder aux résas billetreduc</dt>
-                        <dd><a href="{{ path('app_booking_billetreduc', {id: show.id}) }}" class="btn btn-primary">Résas billetreduc</a></dd>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') or (is_granted('ROLE_ARTIST') and app.user == show.owner)%}
+                    {% if is_granted("SHOW_BOOK_ONLINE", show) %}
                         <dt>Accéder aux résas sur le site</dt>
                         <dd><a class="btn btn-primary" href="{{ path('app_reservation', {slug: show.slug}) }}">Résas sur le site</a></dd>
                     {% endif %}

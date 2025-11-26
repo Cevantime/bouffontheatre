@@ -15,7 +15,6 @@
             tr.crossed > td:last-of-type > * {
                 display: none;
             }
-
         </style>
     {% endif %}
 {% endblock %}
@@ -41,7 +40,7 @@
                     <th>Actions</th>
                 </tr>
                 {% for r in reservations %}
-                    <tr{% if is_granted('ROLE_ADMIN') %} data-id="{{ r.id }}" {% if r.checked %}class="crossed" {% endif%}{% endif %}>
+                    <tr{% if is_granted('ROLE_ADMIN') %} data-id="{{ r.id }}"{% if r.checked %} class="crossed" {% endif%}{% endif %}>
                         {% if is_granted('ROLE_ADMIN') %}
                             <td><input type="checkbox" class="cross-row"{% if r.checked%} checked="checked"{% endif %} ></td>
                         {% endif %}
@@ -71,7 +70,7 @@
             {{ render(controller('App\\Controller\\ReservationController::editQuota', {'performance' : performance})) }}
         {% endif %}
         <div class="mt-3">
-            <a class="btn btn-outline-success" href="{{ path('app_reservation', {slug: performance.relatedProject.slug}) }}">Revenir aux représentations</a>
+            <a class="btn btn-outline-success" href="{{ path('app_reservation', {slug: performance.relatedProject.slug}) }}#show-performances">Revenir aux représentations</a>
         </div>
     </section>
 {% endblock %}

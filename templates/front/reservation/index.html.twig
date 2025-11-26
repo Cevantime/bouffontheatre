@@ -1,5 +1,58 @@
 {% extends "front/base.html.twig" %}
+{% block stylesheets %}
+    <style>
 
+        .dashboard-row {
+            width: 100%;
+            display: table;
+        }
+
+        .dashboard-row > div {
+            display: inline-block;
+        }
+
+        .dashboard-header > div {
+            display: inline-block;
+        }
+
+        .dashboard-row:not(.w-full) {
+            display: table-row;
+        }
+
+        .dashboard-row:not(.w-full) > div {
+            display: table-cell;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(1),
+        .dashboard-row:not(.w-full) > div:nth-child(2),
+        .dashboard-row:not(.w-full) > div:nth-child(4),
+        .dashboard-row:not(.w-full) > div:nth-child(5),
+        .dashboard-row:not(.w-full) > div:nth-child(6),
+        .dashboard-row:not(.w-full) > div:nth-child(9),
+        .dashboard-row:not(.w-full) > div:nth-child(10) {
+            display: none;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(4) {
+            width: 20% !important;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(7) {
+            width: 10% !important;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(7) span a {
+            text-decoration: none;
+            color: black;
+            cursor: default;
+        }
+
+        .dashboard-row:not(.w-full) > div:nth-child(8) {
+            width: 10% !important;
+        }
+
+    </style>
+{% endblock %}
 {% block title %}
     Réservation pour le spectacle {{ show.name }}
 {% endblock %}
@@ -19,9 +72,33 @@
             </div>
         </div>
     </div>
-    <section id="show-profile" class="container">
-        <h1>{{ show.name }}</h1>
-        <h2 class="mb-4">Dates disponibles</h2>
+    <header class="container mt-5">
+        <h1>Réservations pour le spectacle <em>{{ show.name }}</em></h1>
+    </header>
+    {% if is_granted('ROLE_INSIGHT_SHOW_VIEW', show) and insights %}
+        <section class="container" id="show-billetreduc">
+            <h2>Réservations billetreduc</h2>
+            {% for i in insights %}
+                {{ i.html | raw }}
+                <p class="mt-5">
+                    Mis à jour le {{ i.createdAt | date("d/m/Y à H:i", "Europe/Paris") }}
+                </p>
+            {% endfor %}
+            <script>
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.querySelectorAll('.dashboard-row a').forEach((el) => {
+                        el.addEventListener('click', (evt) => {
+                            evt.preventDefault();
+                            return false;
+                        });
+                    })
+                });
+            </script>
+        </section>
+    {% endif %}
+    <section id="show-performances" class="container">
+        <h2 class="mb-4">Réservations sur le site</h2>
         <div class="row">
             {% for p in available_performances %}
                 <div class="col-md-3">
