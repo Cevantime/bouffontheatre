@@ -4392,7 +4392,7 @@
                     <w:color w:val="000000"/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>-Paiement</w:t>
+                <w:t>-PAIEMENT</w:t>
             </w:r>
             <w:r>
                 <w:rPr>
@@ -4443,7 +4443,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                {% set showTotalPrice = showCount * rentPrice %}
+                {% set showRentTotalPrice = showCount * rentPrice %}
                 <w:t>{{ showCount }} Représentations x {{ rentPrice | euro }} TTC : {{ showRentTotalPrice | euro }}</w:t>
             </w:r>
         </w:p>

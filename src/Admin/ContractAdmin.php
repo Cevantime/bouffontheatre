@@ -54,7 +54,6 @@ class ContractAdmin extends AbstractAdmin
                 'label' => 'Statut',
                 'template' => 'sonata/contract_status_show.html.twig'
             ])
-
             ->add('fetchDataStatus', null, [
                 'label' => 'Demande d\'informations',
                 'template' => 'sonata/contract_status_show.html.twig'
@@ -128,11 +127,15 @@ class ContractAdmin extends AbstractAdmin
                 'label' => 'Part des recettes revenant à la compagnie (en €)'
             ]);
 
-        if ( ! $contract->isRent()) {
-            $showMapper->add('showMinimumShare', null, [
-                'attr' => ['placeholder' => '100'],
-                'label' => 'Minimum garanti (en €)'
+        if (!$contract->isRent()) {
+            $showMapper->add('rentPrice', null, [
+                'attr' => ['placeholder' => '250'],
+                'label' => 'Tarif horaire de la location'
             ])
+                ->add('showMinimumShare', null, [
+                    'attr' => ['placeholder' => '100'],
+                    'label' => 'Minimum garanti (en €)'
+                ])
                 ->add('showCompanySharePercent', null, [
                     'attr' => ['placeholder' => '50'],
                     'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
@@ -142,19 +145,19 @@ class ContractAdmin extends AbstractAdmin
                     'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
                 ]);
         } else {
-            if($contract->isRentWithStageManager()) {
+            if ($contract->isRentWithStageManager()) {
                 $showMapper->add('stageManagementInstallHourCount', null, [
                     'label' => 'Nombre d\'heures de régie d\'installation'
                 ])
-                ->add('stageManagementInstallPrice', null, [
-                    'label' => 'Tarif horaire de la régie d\'installation'
-                ])
-                ->add('stageManagementShowHourCount', null, [
-                    'label' => 'Nombre d\'heures de régie spectacle'
-                ])
-                ->add('stageManagementShowPrice', null, [
-                    'label' => 'Tarif horaire de la régie spectacle'
-                ]);
+                    ->add('stageManagementInstallPrice', null, [
+                        'label' => 'Tarif horaire de la régie d\'installation'
+                    ])
+                    ->add('stageManagementShowHourCount', null, [
+                        'label' => 'Nombre d\'heures de régie spectacle'
+                    ])
+                    ->add('stageManagementShowPrice', null, [
+                        'label' => 'Tarif horaire de la régie spectacle'
+                    ]);
             }
             $showMapper->add('rentPrice', null, [
                 'label' => 'Prix de la location pour un spectacle (en €)'

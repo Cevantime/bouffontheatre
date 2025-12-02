@@ -24,11 +24,17 @@ class WorkflowAdmin extends AbstractAdmin
                     'name' => 'edit',
                 ]
             ])
-            ->add('contract', ModelType::class, [
+            ->addIdentifier('contract', ModelType::class, [
                 'label' => 'Contrat associé',
+                'route' => [
+                    'name' => 'edit',
+                ]
             ])
-            ->add('associatedShow', ModelType::class, [
+            ->addIdentifier('associatedShow', ModelType::class, [
                 'label' => 'Projet associé',
+                'route' => [
+                    'name' => 'edit',
+                ]
             ])
             ->addIdentifier('createdAt', null, [
                 'label' => 'Crée le',
@@ -42,7 +48,6 @@ class WorkflowAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper): void
     {
         /** @var Contract $contract */
-        $contract = $this->getSubject();
         $showMapper
             ->add('contract', ModelType::class, [
                 'label' => 'Contrat associé'
