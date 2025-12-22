@@ -382,7 +382,7 @@ class WorkflowService
 
     }
 
-    public function generateRevenueExport(Workflow $workflow): Export
+    public function generateRevenueExport(Workflow $workflow): RevenueExport
     {
         $reader = IOFactory::createReader("Xlsx");
 
@@ -466,8 +466,9 @@ class WorkflowService
         $path = tempnam('/tmp', 'revenue_report_');
 
         $writer->save($path);
+        $companyRevenueCell = $worksheet->getCell(sprintf('G%s', 15 + $pCount));
 
-        return new RevenueExport($path, sprintf('Recettes globales %s.xlsx', $workflow->getAssociatedShow()), $worksheet->getCell(sprintf('G%s', 15 + $pCount))->getFormattedValue());
+        return new RevenueExport($path, sprintf('Recettes globales %s.xlsx', $workflow->getAssociatedShow()), $companyRevenueCell->getFormattedValue(), $companyRevenueCell->getValue());
     }
 
     private function duplicateRowWithValues(Worksheet $sheet, int $sourceRow, array $customValues = []): void

@@ -1688,7 +1688,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t>Le {{producer}} affirme disposer des droits de représentation en France du spectacle susnommé pendant la période indiquée. Il fournit, au moment de la signature de ce contrat, une copie de l&apos;autorisation délivrée par la SACD, l&apos;auteur ou ses représentants.
+                <w:t>Le {{producer}} affirme disposer des droits de représentation en France du spectacle susnommé pendant la période indiquée. Il fournit, au moment de la signature de ce contrat, une copie de l&apos;autorisation délivrée par la SACD, l&apos;auteur ou ses représentants.  Il reverse, le cas échéant, aux sociétés d’auteurs (SACD) et/ou d’interprètes (SACEM, SPEDIDAM) les droits et taxes qu’elles doivent percevoir.
                 </w:t>
             </w:r>
         </w:p>{%endif%}{% if location %}
@@ -1713,7 +1713,7 @@
                     <w:sz w:val="20"/>
                     <w:szCs w:val="20"/>
                 </w:rPr>
-                <w:t xml:space="preserve">Le Preneur fait son affaire de l’obtention des droits de représentation du spectacle et de l’information du directeur sur les auteurs de l’œuvre présentée au public. Il reverse, le cas échéant, aux sociétés d’auteurs (SACD) et/ou d’interprètes (SACEM, SPEDIDAM) les droits et taxes qu’elles doivent percevoir.</w:t>
+                <w:t xml:space="preserve">Le {{ producer }} fait son affaire de l’obtention des droits de représentation du spectacle et de l’information du directeur sur les auteurs de l’œuvre présentée au public. Il reverse, le cas échéant, aux sociétés d’auteurs (SACD) et/ou d’interprètes (SACEM, SPEDIDAM) les droits et taxes qu’elles doivent percevoir.</w:t>
             </w:r>
 
         </w:p>{% endif %}
@@ -4444,7 +4444,7 @@
                     <w:szCs w:val="20"/>
                 </w:rPr>
                 {% set showRentTotalPrice = showCount * rentPrice %}
-                <w:t>{{ showCount }} Représentations x {{ rentPrice | euro }} TTC : {{ showRentTotalPrice | euro }}</w:t>
+                <w:t>{{ showCount }} Représentations x {{ rentPrice | euro }} HT : {{ showRentTotalPrice | euro }}</w:t>
             </w:r>
         </w:p>
         <w:p>
@@ -4489,7 +4489,7 @@
                     <w:szCs w:val="20"/>
                 </w:rPr>
                 {% set showTotalPriceWithTaxes = showTaxesPrice + showRentTotalPrice %}
-                <w:t>TOTAL HT: {{ showTotalPriceWithTaxes | euro }}</w:t>
+                <w:t>TOTAL TTC: {{ showTotalPriceWithTaxes | euro }}</w:t>
             </w:r>
         </w:p>{% endif %}
         <w:p>

@@ -283,7 +283,9 @@ class WorkflowController extends AbstractController
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
-        $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
+        if($revenueReport->rawCompanyRevenue > 0.0) {
+            $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
+        }
         $emailService->sendRevenueEmailToCompany($workflow, $revenueReport);
         $workflow->setRevenueEmailSentToPresident(true);
         $workflow->setRevenueEmailSentToCompany(true);
@@ -298,7 +300,9 @@ class WorkflowController extends AbstractController
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
-        $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
+        if($revenueReport->rawCompanyRevenue > 0.0) {
+            $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
+        }
         $workflow->setRevenueEmailSentToPresident(true);
         $entityManager->flush();
         return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
