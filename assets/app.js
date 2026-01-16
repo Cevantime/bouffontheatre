@@ -9,13 +9,14 @@
 import './styles/app.scss';
 
 import '@splidejs/splide/css';
+import 'cropperjs/dist/cropper.css';
 
 import './extensions';
 
 // start the Stimulus application
 // import 'bootstrap/js/dist/util';
-import 'bootstrap/js/src/dropdown';
-import 'bootstrap/js/src/carousel';
-import 'bootstrap/js/src/collapse';
+import { Modal } from 'bootstrap';
+// Expose only Modal component to window for Stimulus controllers
+window.bootstrap = { Modal };
 
 import './bootstrap';

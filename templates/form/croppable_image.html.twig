@@ -1,0 +1,111 @@
+{% block croppable_image_widget %}
+    {% set modal_id = 'croppable-modal-' ~ form.vars.id %}
+    
+    <div data-controller="croppable" 
+         data-croppable-aspect-ratio-value="{{ aspect_ratio }}"
+            data-croppable-modal-id-value="{{ modal_id }}"
+            {% if existing_url %}data-croppable-existing-url-value="{{ existing_url }}"{% endif %}
+         class="croppable-image-field">
+        
+        <!-- Champs cachés -->
+        {{ form_widget(form.cropData) }}
+        {{ form_widget(form.tempPath) }}
+        
+        <!-- Preview + Upload -->
+        <div class="d-flex gap-3 align-items-start mb-3">
+            <!-- Préview de l'image -->
+            <div class="flex-shrink-0">
+                <div class="border rounded bg-light d-flex align-items-center justify-content-center" 
+                     style="width: 150px; height: 150px; overflow: hidden;">
+                    <img data-croppable-target="preview" 
+                         src="{{ existing_url ?? 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Crect fill=%22%23e9ecef%22 width=%22150%22 height=%22150%22/%3E%3C/svg%3E' }}"
+                         alt="Aperçu"
+                         class="img-fluid"
+                         style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                </div>
+            </div>
+            
+            <!-- Contrôles -->
+            <div class="flex-grow-1">
+                {{ form_label(form.file, 'Choisir une image' ) }}
+                {{ form_widget(form.file, {
+                    'attr': {
+                        'data-action': 'change->croppable#fileSelected',
+                        'accept': 'image/*',
+                        'class': 'form-control'
+                    }
+                }) }}
+                {{ form_errors(form.file) }}
+                <small class="text-muted d-block mt-2">
+                    Format accepté : ratio {{ aspect_ratio }}. Max 4Mo.
+                </small>
+                
+                {% if existing_url %}
+                    <button type="button" 
+                            class="btn btn-outline-primary btn-sm mt-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#{{ modal_id }}"
+                            data-action="croppable#prepareExistingModal">
+                        ✏️ Modifier
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Modale Cropper -->
+        <div class="modal fade" 
+             id="{{ modal_id }}"
+             tabindex="-1" 
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Recadrer l'image</h5>
+                        <button type="button" 
+                                class="btn-close" 
+                                data-bs-dismiss="modal" 
+                                aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div data-croppable-target="cropperContainer" 
+                             style="display: none;">
+                            <!-- L'image sera insérée ici par le contrôleur -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" 
+                                class="btn btn-secondary" 
+                                data-bs-dismiss="modal">
+                            Annuler
+                        </button>
+                        <button type="button" 
+                                class="btn btn-primary"
+                                data-action="croppable#applyCrop">
+                            Valider le recadrage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block croppable_image_row %}
+    <div class="mb-3">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_help(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{% block collection_widget %}
+    <div {{ block('attributes') }} 
+         data-controller="form-collection"
+         data-prototype="{{ form_widget(prototype)|escape }}">
+        {% for child in form %}
+            {{ form_widget(child) }}
+        {% endfor %}
+    </div>
+{% endblock %}
+

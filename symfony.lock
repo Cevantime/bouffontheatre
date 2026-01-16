@@ -438,6 +438,9 @@
             "config/routes/ux_autocomplete.yaml"
         ]
     },
+    "symfony/ux-cropperjs": {
+        "version": "v2.32.0"
+    },
     "symfony/validator": {
         "version": "5.4",
         "recipe": {

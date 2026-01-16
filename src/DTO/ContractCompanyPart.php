@@ -48,7 +48,7 @@ class ContractCompanyPart
 
     public $showBanner = null;
     public $showPoster = null;
-    public $showMedia = null;
+    public $showMedia = [];
 
     public ?string $showExcerpt = null;
 
@@ -75,4 +75,7 @@ class ContractCompanyPart
 
     public bool $showHasBanner = false;
     public bool $showHasPoster = false;
+
+    public ?string $showBannerUrl = null;
+    public ?string $showPosterUrl = null;
 }

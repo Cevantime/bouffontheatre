@@ -26,7 +26,6 @@ use App\Service\DTOService;
 use App\Service\EmailService;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +54,6 @@ class WorkflowController extends AbstractController
             $entityManager->persist($workflow);
             $entityManager->flush();
             return $this->redirectToRoute('app_workflow_edit', ['id' => $workflow->getId()]);
-
         }
 
         return $this->render('sonata/workflow/create.html.twig', [
@@ -71,8 +69,7 @@ class WorkflowController extends AbstractController
         EntityManagerInterface $entityManager,
         ContractFactory        $contractFactory,
         DTOService             $DTOService,
-    ): Response
-    {
+    ): Response {
         $viewData = [
             'workflow' => $workflow,
             'workflow_service' => $workflowService
@@ -114,14 +111,14 @@ class WorkflowController extends AbstractController
             $entityManager->persist($linkItem);
             $entityManager->flush();
         }
-        if($workflowService->workflowCanAccess($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+        if ($workflowService->workflowCanAccess($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             $tickbossExcel = new TickbossRevenueExcel();
 
             $tickbossExcelForm = $this->createForm(TickbossRevenueExcelType::class, $tickbossExcel);
 
             $tickbossExcelForm->handleRequest($request);
 
-            if($tickbossExcelForm->isSubmitted() && $tickbossExcelForm->isValid()) {
+            if ($tickbossExcelForm->isSubmitted() && $tickbossExcelForm->isValid()) {
                 $workflowService->prefillPerformancesWithRevenueExcel($workflow, $tickbossExcel->revenueExcel);
             }
 
@@ -135,7 +132,7 @@ class WorkflowController extends AbstractController
             $viewData['workflow_revenue_form'] = $workflowRevenueForm;
             if ($workflowRevenueForm->isSubmitted() && $workflowRevenueForm->isValid()) {
                 $DTOService->transferDataTo($workflowRevenue, $workflow);
-                if($request->files->get('workflow_revenue')['revenueTickBossFile'] !== null) {
+                if ($request->files->get('workflow_revenue')['revenueTickBossFile'] !== null) {
                     $media = new Media();
                     $media->setProviderName('sonata.media.provider.file');
                     $media->setContext('default');
@@ -260,7 +257,7 @@ class WorkflowController extends AbstractController
     #[Route(path: '/workflow/download-revenue-excel/{id}', name: 'app_workflow_download_excel_revenue')]
     public function downloadRevenueExcel(Workflow $workflow, WorkflowService $workflowService)
     {
-        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+        if (! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             throw $this->createAccessDeniedException();
         }
         $revenueExport = $workflowService->generateRevenueExport($workflow);
@@ -279,11 +276,11 @@ class WorkflowController extends AbstractController
     #[Route(path: '/workflow/send-revenue-emails/{id}', name: 'app_workflow_send_revenue_emails')]
     public function sendRevenueEmails(Workflow $workflow, WorkflowService $workflowService, EmailService $emailService, EntityManagerInterface $entityManager)
     {
-        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+        if (! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
-        if($revenueReport->rawCompanyRevenue > 0.0) {
+        if ($revenueReport->rawCompanyRevenue > 0.0) {
             $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
         }
         $emailService->sendRevenueEmailToCompany($workflow, $revenueReport);
@@ -296,11 +293,11 @@ class WorkflowController extends AbstractController
     #[Route(path: '/workflow/send-revenue-email-to-president/{id}', name: 'app_workflow_send_revenue_email_to_president')]
     public function sendRevenueEmailToPresident(Workflow $workflow, WorkflowService $workflowService, EmailService $emailService, EntityManagerInterface $entityManager)
     {
-        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+        if (! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
-        if($revenueReport->rawCompanyRevenue > 0.0) {
+        if ($revenueReport->rawCompanyRevenue > 0.0) {
             $emailService->sendRevenueEmailToPresident($workflow, $revenueReport);
         }
         $workflow->setRevenueEmailSentToPresident(true);
@@ -312,7 +309,7 @@ class WorkflowController extends AbstractController
     #[Route(path: '/workflow/send-revenue-email-to-company/{id}', name: 'app_workflow_send_revenue_email_to_company')]
     public function sendRevenueEmailToCompany(Workflow $workflow, WorkflowService $workflowService, EmailService $emailService, EntityManagerInterface $entityManager)
     {
-        if( ! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+        if (! $workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
             throw $this->createAccessDeniedException();
         }
         $revenueReport = $workflowService->generateRevenueExport($workflow);
@@ -437,5 +434,4 @@ class WorkflowController extends AbstractController
             'contracts' => array_map(fn(Contract $contract) => ['id' => $contract->getId(), 'name' => $contract->__toString()], $workflowReadyContracts)
         ]);
     }
-
 }

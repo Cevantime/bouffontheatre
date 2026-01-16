@@ -7,13 +7,18 @@ use App\Entity\ArtistItem;
 use App\Entity\Contract;
 use App\Entity\Media;
 use App\Entity\MediaGalleryItem;
+use App\Entity\Project;
 use App\Entity\Show;
 use App\Entity\User;
 use App\Form\ContractCompanyPartType;
 use App\Repository\ContractRepository;
 use App\Service\DTOService;
 use App\Service\EmailService;
+use App\Service\ImageCropService;
+use App\Service\ProjectMediaService;
 use Doctrine\ORM\EntityManagerInterface;
+use Sonata\MediaBundle\Model\MediaManagerInterface;
+use Sonata\MediaBundle\Provider\Pool;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,12 +37,13 @@ class ContractInformationsController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         EmailService $emailService,
-    ): Response
-    {
+        Pool $pool,
+        ProjectMediaService $projectMediaService,
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
         $contracts = $contractRepository->getUserContractsToComplete($user);
-        if( ! $contracts) {
+        if (! $contracts) {
             return $this->render('front/contract_informations/no_contract.html.twig');
         }
         set_time_limit(300);
@@ -46,7 +52,7 @@ class ContractInformationsController extends AbstractController
         $contractCompanyPart = new ContractCompanyPart();
         $DTOService->transferDataTo($lastContract, $contractCompanyPart);
         $lastCompletedContract = $contractRepository->getUserLastCompletedContract($user);
-        if($lastCompletedContract !== null) {
+        if ($lastCompletedContract !== null) {
             $DTOService->transferDataTo($lastCompletedContract, $contractCompanyPart);
         }
         /** @var Show $relatedProject */
@@ -60,11 +66,27 @@ class ContractInformationsController extends AbstractController
         $contractCompanyPart->showHasBanner = $relatedProject->getBanner() !== null;
         $contractCompanyPart->showHasPoster = $relatedProject->getPoster() !== null;
 
+        // Générer les URLs publiques pour les médias existants
+        if ($relatedProject->getBanner()) {
+            $provider = $pool->getProvider($relatedProject->getBanner()->getProviderName());
+            $contractCompanyPart->showBannerUrl = $provider->generatePublicUrl(
+                $relatedProject->getBanner(),
+                $provider->getFormatName($relatedProject->getBanner(), 'reference')
+            );
+        }
+        if ($relatedProject->getPoster()) {
+            $provider = $pool->getProvider($relatedProject->getPoster()->getProviderName());
+            $contractCompanyPart->showPosterUrl = $provider->generatePublicUrl(
+                $relatedProject->getPoster(),
+                $provider->getFormatName($relatedProject->getPoster(), 'reference')
+            );
+        }
+
         $form = $this->createForm(ContractCompanyPartType::class, $contractCompanyPart);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $DTOService->transferDataTo($contractCompanyPart, $lastContract);
             $lastContract->setShowArtistCount(count($contractCompanyPart->showArtists));
             $lastContract->setShowDirector(CoreExtension::join($contractCompanyPart->showDirectors, ', ', ' et '));
@@ -115,41 +137,47 @@ class ContractInformationsController extends AbstractController
             /** @var File $file */
             $gallery = $relatedProject->getGallery();
             $i = $gallery->getGalleryItems()->count();
-            foreach ($contractCompanyPart->showMedia as $file) {
-                $media = new Media();
-                $media->setProviderName('sonata.media.provider.image');
-                $media->setContext('default');
-                $media->setName('Element n°'.$i);
-                $media->setBinaryContent($file->getRealPath());
-                $galleryItem = new MediaGalleryItem();
-                $galleryItem->setPosition($i++);
-                $galleryItem->setMedia($media);
-                $gallery->addGalleryItem($galleryItem);
-                $entityManager->persist($media);
-                $entityManager->persist($galleryItem);
+
+            // Traiter la collection de médias
+            if ($contractCompanyPart->showMedia) {
+                foreach ($contractCompanyPart->showMedia as $mediaData) {
+                    // Créer le média via le service
+                    $media = $projectMediaService->createMediaFromFormData(
+                        $mediaData,
+                        null,
+                        'Photo n°' . ($i + 1)
+                    );
+
+                    if (!$media) {
+                        continue;
+                    }
+
+                    // Ajouter à la galerie
+                    $galleryItem = new MediaGalleryItem();
+                    $galleryItem->setPosition($i++);
+                    $galleryItem->setMedia($media);
+                    $gallery->addGalleryItem($galleryItem);
+                    $entityManager->persist($galleryItem);
+                }
             }
-            if($contractCompanyPart->showBanner) {
-                $bannerMedia = new Media();
-                $bannerMedia->setProviderName('sonata.media.provider.image');
-                $bannerMedia->setName('Bannière de '.$relatedProject->getName());
-                $bannerMedia->setContext('default');
-                $bannerMedia->setBinaryContent($contractCompanyPart->showBanner->getRealPath());
 
-                $entityManager->persist($bannerMedia);
+            // Traiter showBanner
+            $projectMediaService->updateProjectMedia(
+                $relatedProject,
+                is_array($contractCompanyPart->showBanner) ? $contractCompanyPart->showBanner : null,
+                $contractCompanyPart->showBanner instanceof File ? $contractCompanyPart->showBanner : null,
+                'banner',
+                'Bannière de ' . $relatedProject->getName()
+            );
 
-                $relatedProject->setBanner($bannerMedia);
-            }
-            if($contractCompanyPart->showPoster) {
-                $posterMedia = new Media();
-                $posterMedia->setProviderName('sonata.media.provider.image');
-                $posterMedia->setName('Affiche de '.$relatedProject->getName());
-                $posterMedia->setContext('default');
-                $posterMedia->setBinaryContent($contractCompanyPart->showPoster->getRealPath());
-
-                $entityManager->persist($posterMedia);
-
-                $relatedProject->setPoster($posterMedia);
-            }
+            // Traiter showPoster
+            $projectMediaService->updateProjectMedia(
+                $relatedProject,
+                is_array($contractCompanyPart->showPoster) ? $contractCompanyPart->showPoster : null,
+                $contractCompanyPart->showPoster instanceof File ? $contractCompanyPart->showPoster : null,
+                'poster',
+                'Affiche de ' . $relatedProject->getName()
+            );
 
             $emailService->sendMailTo($relatedProject->getOwner()->getEmail(), 'Fiche infos remplie', 'emails/contract_informations_filled_user.html.twig', [
                 'contract' => $lastContract
@@ -171,5 +199,4 @@ class ContractInformationsController extends AbstractController
             'lastContract' => $lastContract
         ]);
     }
-
 }

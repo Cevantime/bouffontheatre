@@ -42,6 +42,11 @@ services:
         arguments:
             $pool: '@sonata.media.pool'
 
+    App\Service\ImageCropService:
+        arguments:
+            $imageManager: '@cropper.image_manager'
+            $projectDir: '%kernel.project_dir%'
+
     App\Admin\Extension\MediaBrowserAdminExtension:
         tags: 
             - { name: sonata.admin.extension, attributes: { target: sonata.media.admin.media } }

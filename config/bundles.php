@@ -31,4 +31,5 @@ return [
     Sonata\FormatterBundle\SonataFormatterBundle::class => ['all' => true],
     Symfony\UX\Autocomplete\AutocompleteBundle::class => ['all' => true],
     Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
+    Symfony\UX\Cropperjs\CropperjsBundle::class => ['all' => true],
 ];
