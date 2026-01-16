@@ -99,13 +99,3 @@
     </div>
 {% endblock %}
 
-{% block collection_widget %}
-    <div {{ block('attributes') }} 
-         data-controller="form-collection"
-         data-prototype="{{ form_widget(prototype)|escape }}">
-        {% for child in form %}
-            {{ form_widget(child) }}
-        {% endfor %}
-    </div>
-{% endblock %}
-
