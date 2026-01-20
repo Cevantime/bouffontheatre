@@ -33,9 +33,11 @@
                         <div class="splide__track">
                             <ul class="splide__list">
                                 {% for mediaItem in show.gallery.galleryItems %}
-                                    <li class="splide__slide">
-                                        <img src="{{ sonata_path(mediaItem.media, 'very_big') }}" alt="">
-                                    </li>
+                                    {% if mediaItem.media != null %}
+                                        <li class="splide__slide">
+                                            <img src="{{ sonata_path(mediaItem.media, 'very_big') }}" alt="">
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -48,9 +50,11 @@
                         <div class="splide__track">
                             <ul class="splide__list">
                                 {% for mediaItem in show.gallery.galleryItems %}
+                                    {% if mediaItem.media != null %}
                                     <li class="splide__slide">
                                         <img src="{{ sonata_path(mediaItem.media, 'square') }}" alt="">
                                     </li>
+                                    {% endif %} 
                                 {% endfor %}
                             </ul>
                         </div>
