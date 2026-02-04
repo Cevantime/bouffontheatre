@@ -59,6 +59,18 @@
             </article>
         </div>
     </section>
+    {% if not service.roles.empty %}
+    <section class="container">
+        <h3>L'équipe</h3>
+        <dl>
+            {% for roleItem in service.roles | filter((r) => r.displayed) %}
+                {% set role = roleItem.role %}
+                <dt>{{ role.artist.gender == constant('App\\Entity\\Artist::GENDER_FEMALE') ? role.job.feminin : role.job.name }}</dt>
+                <dd>{{ link(role.artist) }}</dd>
+            {% endfor %}
+        </dl>
+    </section>
+    {% endif %}
     <section class="container">
         {% if service.offers is not empty %}
             <div class="text-center">
