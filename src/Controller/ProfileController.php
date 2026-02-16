@@ -38,7 +38,7 @@ class ProfileController extends AbstractController
 
         return $this->render('front/profile/index.html.twig', [
             'downloads' => $downloads,
-            'formProfile' => $form->createView(),
+            'formProfile' => $formProfile->createView(),
             'formPassword' => $formPassword->createView()
         ]);
     }

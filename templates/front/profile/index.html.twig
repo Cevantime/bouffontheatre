@@ -12,7 +12,7 @@
         <h2 class="section-title">Mes informations</h2>
         <hr>
         <div class="row justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-4 text-center">
                 <dl>
                     <dt>Nom</dt>
                     <dd>{{ app.user.lastname }}</dd>
@@ -36,13 +36,13 @@
         <h2 class="section-title">Mon mot de passe</h2>
         <hr>
         <div class="row justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-4 text-center">
                 <button {{ stimulus_action('popup_group', 'displayPopup') }} class="btn btn-primary">Modifier mon mot de
                     passe
                 </button>
             </div>
         </div>
-        <div class="popup" {{ stimulus_target('popup_group', 'popup') }} {{ stimulus_action('popup_group', 'hidePopup', 'click') }}>
+        <div class="popup text-center" {{ stimulus_target('popup_group', 'popup') }} {{ stimulus_action('popup_group', 'hidePopup', 'click') }}>
             <div class="popup-wrap" {{ stimulus_action('popup_group', 'stopPropagation', 'click') }}>
                 {{ form_start(formPassword) }}
                 {{ form_widget(formPassword) }}
