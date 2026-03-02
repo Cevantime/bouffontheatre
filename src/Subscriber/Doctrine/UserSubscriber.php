@@ -12,19 +12,17 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsDoctrineListener(event: Events::prePersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
 class UserSubscriber
 {
-    private UserPasswordHasherInterface $hasher;
-    private MailerInterface $mailer;
 
-    public function __construct(UserPasswordHasherInterface $hasher, MailerInterface $mailer)
-    {
-        $this->hasher = $hasher;
-        $this->mailer = $mailer;
-    }
+    public function __construct(
+        private UserPasswordHasherInterface $hasher,
+        private MailerInterface $mailer
+    ) {}
 
     public function prePersist(LifecycleEventArgs $args): void
     {

@@ -1,20 +1,22 @@
 Bonjour {{ user.firstname }} {{ user.lastname }}, <br>
-<br>
+<p>
 Vous avez été ajouté à la plateforme bouffontheatre.fr. Un mot de passe a été généré pour vous. N'oubliez pas de le changer:
-<br>
-<br>
+</p>
+<p>
 <em>{{ plain_password }}</em>
-<br>
+</p>
+
 {% if user.hasRole('ROLE_ADMIN') %}
-<br>
+<p>
 Vous pouvez dès à présent accéder à notre interface d'administration via ce lien : <a href="{{ absolute_url(path('sonata_admin_dashboard')) }}">interface d'administration</a>.
-<br>
+</p>
 {% endif %}
-<br>
+<p>
 Vous pouvez réinitialiser votre mot de passe en cliquant sur ce lien : <a href="{{ absolute_url(path('app_forgot_password_request')) }}">réinitialiser mon mot de passe</a>
-<br>
-<br>
+</p>
+<p>
 À très bientôt,
-<br>
-<br>
+</p>
+<p>
 Toute l'équipe du Bouffon Théâtre
+</p>
