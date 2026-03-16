@@ -482,7 +482,7 @@
                     </li>
                     <li>
                         Recette Hors TVA : <strong
-                                class="clipboard">{{ ((performances.map((p) => p.grossRevenue).toArray() | sum) / 1.021) | number_format(2, '.', '') }}</strong>
+                                class="clipboard">{{ notax_revenue | number_format(2, '.', '') }}</strong>
                     </li>
                     <li>
                         Numéro SIRET/SIREN/ASSO : <strong
@@ -534,6 +534,18 @@
                 <ul>
                     <li>Recette brute : <strong
                                 class="clipboard">{{ workflow.contract.performances.map((p) => p.grossRevenue).toArray() | sum }}</strong>
+                    </li>
+                    <li>
+                        Recette Hors TVA : <strong
+                                class="clipboard">{{ notax_revenue | number_format(2, '.', '') }}</strong>
+                    </li>
+                    <li>
+                        Recette nette : <strong
+                                class="clipboard">{{ net_revenue | number_format(2, '.', '') }}</strong>
+                    </li>
+                    <li>
+                        Revenue de la compagnie : <strong
+                                class="clipboard">{{ raw_company_revenue | number_format(2, '.', '') }}</strong>
                     </li>
                 </ul>
             </div>

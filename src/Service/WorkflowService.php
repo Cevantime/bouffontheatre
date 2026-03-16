@@ -31,8 +31,7 @@ class WorkflowService
         private ContentRepository         $contentRepository,
         private EntityManagerInterface    $entityManager,
         private KernelInterface           $kernel,
-    )
-    {
+    ) {
         IOFactory::registerWriter('Pdf', Mpdf::class);
     }
 
@@ -59,7 +58,6 @@ class WorkflowService
             case Workflow::STEP_DECTANET:
             case Workflow::STEP_MANUAL:
                 return $this->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION);
-
         }
         return false;
     }
@@ -98,7 +96,6 @@ class WorkflowService
                 return $workflow->isDectanetDone();
             case Workflow::STEP_MANUAL:
                 return $workflow->isManualStepsDone();
-
         }
 
         return false;
@@ -189,9 +186,9 @@ class WorkflowService
             $this->entityManager->persist($periodItem);
         }
         $workflow->setShowHighlighted(true);
+        $workflow->setShowRemoved(false);
 
         $this->entityManager->flush();
-
     }
 
     public function remove(Workflow $workflow)
@@ -379,7 +376,6 @@ class WorkflowService
             }
         }
         $this->entityManager->flush();
-
     }
 
     public function generateRevenueExport(Workflow $workflow): RevenueExport
@@ -425,7 +421,7 @@ class WorkflowService
         $spreadsheet->getNamedRange('TVA')->setRange(sprintf('$C$%s', 10 + $pCount));
         $spreadsheet->getNamedRange('PART_THEATRE')->setRange(sprintf('$F$%s', 14 + $pCount));
         $spreadsheet->getNamedRange('PART_COMPAGNIE')->setRange(sprintf('$F$%s', 15 + $pCount));
-//        $spreadsheet->getNamedRange('LIGNE_APPLICABLE')->setRange(sprintf('$B$%s:$B$%s', 12 + $pCount, 14 + $pCount));
+        //        $spreadsheet->getNamedRange('LIGNE_APPLICABLE')->setRange(sprintf('$B$%s:$B$%s', 12 + $pCount, 14 + $pCount));
         $spreadsheet->getNamedRange('RECETTE_NETTE')->setRange(sprintf('$C$%s', 16 + $pCount));
         $spreadsheet->getNamedRange('MINIMUM_GARANTI_THEATRE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 9 + $pCount));
         $spreadsheet->getNamedRange('MINIMUM_GARANTI_TOTAL')->setRange(sprintf('$G$%s', 10 + $pCount));
@@ -467,8 +463,21 @@ class WorkflowService
 
         $writer->save($path);
         $companyRevenueCell = $worksheet->getCell(sprintf('G%s', 15 + $pCount));
+        $companyRevenueFormattedValue = $companyRevenueCell->getFormattedValue();
+        $companyRevenueCalculatedValue = $companyRevenueCell->getCalculatedValue();
+        $netRevenueCell = $worksheet->getCell(sprintf('C%s', 16 + $pCount));
+        $netRevenueCalculatedValue = $netRevenueCell->getCalculatedValue();
+        $notaxRevenueCell = $worksheet->getCell(sprintf('C%s', 11 + $pCount));
+        $notaxRevenueCalculatedValue = $notaxRevenueCell->getCalculatedValue();
 
-        return new RevenueExport($path, sprintf('Recettes globales %s.xlsx', $workflow->getAssociatedShow()), $companyRevenueCell->getFormattedValue(), $companyRevenueCell->getValue());
+        return new RevenueExport(
+            $path,
+            sprintf('Recettes globales %s.xlsx', $workflow->getAssociatedShow()),
+            $companyRevenueFormattedValue,
+            $companyRevenueCalculatedValue,
+            $notaxRevenueCalculatedValue    ,
+            $netRevenueCalculatedValue
+        );
     }
 
     private function duplicateRowWithValues(Worksheet $sheet, int $sourceRow, array $customValues = []): void
@@ -492,7 +501,6 @@ class WorkflowService
             } else {
                 $sheet->setCellValue($targetCell, $fromCell->getValue());
             }
-
         }
 
         // Inject custom values
@@ -517,5 +525,4 @@ class WorkflowService
             return $full;
         }, $formula);
     }
-
 }

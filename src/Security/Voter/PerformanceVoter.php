@@ -32,13 +32,20 @@ class PerformanceVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::ADD_TO_PERFORMANCE:
+                if (! ($subject->getRelatedProject() instanceof Show)) {
+                    return false;
+                }
                 if ($this->security->isGranted('ROLE_ADMIN')) {
                     return true;
                 }
-                if($this->security->isGranted('ROLE_ARTIST')) {
-                    return $subject->getRelatedProject() instanceof Show && $subject->getRelatedProject()->getOwner() === $token->getUser();
+                $show = $subject->getRelatedProject();
+                if ($show->isBookableOnline()) {
+                    return true;
                 }
-                return $subject->getRelatedProject() instanceof Show && $subject->getRelatedProject()->isBookableOnline();
+                if ($this->security->isGranted('ROLE_ARTIST')) {
+                    return $show->getOwner() === $token->getUser();
+                }
+                return false;
         }
 
         return false;

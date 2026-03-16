@@ -78,7 +78,7 @@ class WorkflowController extends AbstractController
         if ($contract === null) {
             $contract = $contractFactory->createDefaultContract($workflow->getAssociatedShow());
         } else if ($contract->getRelatedProject() !== $workflow->getAssociatedShow()) {
-            throw new LogicException("Project associated with a workflow is different from the contract's project");
+            throw new \LogicException("Project associated with a workflow is different from the contract's project");
         }
         if (!$workflowService->isWorkflowContractFrozen($workflow)) {
             $contractForm = $this->createForm(WorkflowContractType::class, $contract);
@@ -143,6 +143,17 @@ class WorkflowController extends AbstractController
                 }
                 $entityManager->flush();
             }
+        }
+
+        if ($workflowService->workflowValidated($workflow, Workflow::STEP_REVENUE_DECLARATION)) {
+            $revenueExport = $workflowService->generateRevenueExport($workflow);
+            $viewData['raw_company_revenue'] = $revenueExport->rawCompanyRevenue;
+            $viewData['notax_revenue'] = $revenueExport->notaxRevenue;
+            $viewData['net_revenue'] = $revenueExport->netRevenue;
+        } else {
+            $viewData['raw_company_revenue'] = null;
+            $viewData['notax_revenue'] = null;
+            $viewData['net_revenue'] = null;
         }
         $viewData['shop_link_form'] = $shopLinkForm;
         return $this->render('sonata/workflow/edit.html.twig', $viewData);
