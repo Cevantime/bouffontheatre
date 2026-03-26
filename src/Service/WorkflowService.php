@@ -306,6 +306,9 @@ class WorkflowService
 
     public function isRevenueDeclarationDone(Workflow $workflow)
     {
+        if ($workflow->getContract() === null) {
+            return false;
+        }
         foreach ($workflow->getContract()->getPerformances() as $performance) {
             foreach (['grossRevenue', 'fullPriceCount', 'halfPriceCount'] as $field) {
                 if ($this->propertyAccessor->getValue($performance, $field) === null) {
@@ -475,7 +478,7 @@ class WorkflowService
             sprintf('Recettes globales %s.xlsx', $workflow->getAssociatedShow()),
             $companyRevenueFormattedValue,
             $companyRevenueCalculatedValue,
-            $notaxRevenueCalculatedValue    ,
+            $notaxRevenueCalculatedValue,
             $netRevenueCalculatedValue
         );
     }
