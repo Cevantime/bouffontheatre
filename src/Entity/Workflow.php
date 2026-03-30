@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\WorkflowRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -62,7 +64,6 @@ class Workflow
     #[ORM\Column]
     private ?bool $revenueEmailSentToPresident = false;
 
-
     #[ORM\Column]
     private ?bool $revenueEmailSentToCompany = false;
 
@@ -87,6 +88,15 @@ class Workflow
 
     #[ORM\Column]
     private ?bool $manualStepsDone = false;
+
+    #[ORM\OneToMany(mappedBy: 'workflow', targetEntity: WorkflowOvertime::class, orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OrderBy(['workedAt' => 'ASC'])]
+    private Collection $overtimes;
+
+    public function __construct()
+    {
+        $this->overtimes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -261,7 +271,7 @@ class Workflow
 
     public function getAssociatedShowName(): ?string
     {
-        if($this->associatedShow === null) {
+        if ($this->associatedShow === null) {
             return null;
         }
         return $this->associatedShow->getName();
@@ -269,7 +279,7 @@ class Workflow
 
     public function getContractName(): ?string
     {
-        if($this->contract === null) {
+        if ($this->contract === null) {
             return null;
         }
         return $this->contract->__toString();
@@ -283,6 +293,35 @@ class Workflow
     public function setRevenueEmailSentToCompany(bool $revenueEmailSentToCompany): static
     {
         $this->revenueEmailSentToCompany = $revenueEmailSentToCompany;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WorkflowOvertime>
+     */
+    public function getOvertimes(): Collection
+    {
+        return $this->overtimes;
+    }
+
+    public function addOvertime(WorkflowOvertime $overtime): static
+    {
+        if (!$this->overtimes->contains($overtime)) {
+            $this->overtimes->add($overtime);
+            $overtime->setWorkflow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOvertime(WorkflowOvertime $overtime): static
+    {
+        if ($this->overtimes->removeElement($overtime)) {
+            if ($overtime->getWorkflow() === $this) {
+                $overtime->setWorkflow(null);
+            }
+        }
 
         return $this;
     }

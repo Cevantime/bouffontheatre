@@ -43,14 +43,20 @@
             margin-top: 1.5rem;
         }
 
-        #workflow_revenue_performances fieldset {
+        .alert > p {
+            margin-top: 0;
+        }
+
+        #workflow_revenue_performances fieldset,
+        #workflow_revenue_overtimes fieldset {
             display: inline-block;
             margin: 2rem;
             border: 1px solid black;
             padding: 2rem;
         }
 
-        #workflow_revenue_performances legend {
+        #workflow_revenue_performances legend,
+        #workflow_revenue_overtimes legend {
             display: none;
         }
 
@@ -122,7 +128,7 @@
                     <div class="alert alert-warning">
                         <p>
                             <i class="fas fa-exclamation-triangle"></i> Les informations liées au workflow ont été
-                            déduites automatiquement par le système. <br>
+                            déduites automatiquement par le système.
                         </p>
                         <p>
                             Si vous souhaitez effectuer une demande d'info, vous pouvez toujours envoyer la
@@ -312,7 +318,19 @@
                     l'export de l'état simplifié des recettes Tickboss.
                     {{ form(workflow_revenue_excel_form) }}
                 </div>
-                {{ form(workflow_revenue_form) }}
+                {{ form_start(workflow_revenue_form) }}
+                {{ form_row(workflow_revenue_form.revenueTickBossFile) }}
+                {{ form_row(workflow_revenue_form.copyrightApplicable) }}
+                {{ form_row(workflow_revenue_form.retirementContribApplicable) }}
+                {{ form_row(workflow_revenue_form.agessaContribApplicable) }}
+                {{ form_row(workflow_revenue_form.performances) }}
+                {{ form_row(workflow_revenue_form.overtimes) }}
+                <div class="btn-group">
+                    <button class="btn btn-primary mb-3" type="button" id="add_overtime">Ajouter une heure supplémentaire</button>
+                </div>
+                <p><strong>Total heures supplémentaires : <span id="overtime_total_amount">0,00 €</span></strong></p>
+                {{ form_row(workflow_revenue_form.submit) }}
+                {{ form_end(workflow_revenue_form) }}
             </div>
         {% endif %}
         {{ workflow_section_end() }}
@@ -465,7 +483,7 @@
                     <li>Titre de spectacle : <strong class="clipboard">{{ workflow.associatedShow.name }}</strong>
                     </li>
                     <li>Lieu de représentation : <strong class="clipboard">Bouffon Théâtre</strong></li>
-                    <li>Code postal : <strong class="clipboard">75012</strong></li>
+                    <li>Code postal : <strong class="clipboard">75019</strong></li>
                     <li>Nombre de représentations : <strong
                                 class="clipboard">{{ performances.count }}</strong></li>
                     <li>Date de début : <strong
@@ -512,7 +530,7 @@
         {{ workflow_section_end() }}
         {{ workflow_section_start(workflow, constant('App\\Entity\\Workflow::STEP_MANUAL')) }}
         <div class="box-header">
-            Étapes manuellles
+            Étapes manuelles
         </div>
         <div class="box-body">
             <div class="insight">
@@ -573,29 +591,111 @@
                     $(this).parent().toggleClass('displayed');
                 });
 
-                function addDeletePerformanceButton(row) {
-                    $('<button class="btn btn-danger">Supprimer</button>').click(function () {
+                function addDeleteButton(row, onDelete = null) {
+                    $('<button class="btn btn-danger" type="button">Supprimer</button>').click(function () {
                         row.remove();
+                        if (onDelete) {
+                            onDelete();
+                        }
                     }).appendTo(row);
                 }
 
-                const $performanceList = $('#workflow_contract_performances');
-                $performanceList.children().each(function () {
-                    addDeletePerformanceButton($(this));
-                    $(this).find('label').text('Représentation n°' + ($(this).index() + 1));
-                });
-                const performanceRowPrototype = $performanceList.data('prototype');
+                function setupDynamicCollection(listSelector, addSelector, itemLabelPrefix, onCollectionChange = null) {
+                    const $list = $(listSelector);
+                    if (!$list.length) {
+                        return;
+                    }
 
-                $('#add_performance').click(function () {
-                    const newIndex = $performanceList.children().length;
-                    const newRow = performanceRowPrototype
-                        .replace(/__name__label__/g, 'Représentation n°' + (newIndex + 1))
-                        .replace(/__name__/g, newIndex)
-                    ;
-                    const $row = $(newRow);
-                    $performanceList.append($row);
-                    addDeletePerformanceButton($row);
+                    function setCollectionItemLabel($row, label) {
+                        const $directLabel = $row.children('label').first();
+                        if ($directLabel.length) {
+                            $directLabel.text(label);
+                            return;
+                        }
+
+                        const $legend = $row.children('fieldset').children('legend').first();
+                        if ($legend.length) {
+                            $legend.text(label);
+                        }
+                    }
+
+                    function relabelRows() {
+                        $list.children().each(function () {
+                            setCollectionItemLabel($(this), itemLabelPrefix + ' n°' + ($(this).index() + 1));
+                        });
+                    }
+
+                    $list.children().each(function () {
+                        addDeleteButton($(this), function () {
+                            relabelRows();
+                            if (onCollectionChange) {
+                                onCollectionChange();
+                            }
+                        });
+                    });
+
+                    relabelRows();
+
+                    const rowPrototype = $list.data('prototype');
+                    $(addSelector).click(function () {
+                        const newIndex = $list.children().length;
+                        const newRow = rowPrototype
+                            .replace(/__name__label__/g, itemLabelPrefix + ' n°' + (newIndex + 1))
+                            .replace(/__name__/g, newIndex)
+                        ;
+                        const $row = $(newRow);
+                        $list.append($row);
+                        addDeleteButton($row, function () {
+                            relabelRows();
+                            if (onCollectionChange) {
+                                onCollectionChange();
+                            }
+                        });
+                        relabelRows();
+                        if (onCollectionChange) {
+                            onCollectionChange();
+                        }
+                    });
+                }
+
+                function parseDecimal(value) {
+                    if (!value) {
+                        return 0;
+                    }
+
+                    const normalizedValue = String(value).replace(',', '.');
+                    const parsed = parseFloat(normalizedValue);
+
+                    return Number.isNaN(parsed) ? 0 : parsed;
+                }
+
+                function updateOvertimeTotal() {
+                    const $overtimeList = $('#workflow_revenue_overtimes');
+                    if (!$overtimeList.length) {
+                        return;
+                    }
+
+                    let total = 0;
+                    $overtimeList.children().each(function () {
+                        const hourCount = parseDecimal($(this).find('input[name$="[hourCount]"]').val());
+                        const unitHourPrice = parseDecimal($(this).find('input[name$="[unitHourPrice]"]').val());
+                        total += hourCount * unitHourPrice;
+                    });
+
+                    $('#overtime_total_amount').text(total.toLocaleString('fr-FR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }) + ' €');
+                }
+
+                setupDynamicCollection('#workflow_contract_performances', '#add_performance', 'Représentation');
+                setupDynamicCollection('#workflow_revenue_overtimes', '#add_overtime', 'Heure supplémentaire', updateOvertimeTotal);
+
+                $(document).on('input', '#workflow_revenue_overtimes input[name$="[hourCount]"], #workflow_revenue_overtimes input[name$="[unitHourPrice]"]', function () {
+                    updateOvertimeTotal();
                 });
+
+                updateOvertimeTotal();
 
                 $(".clipboard").each(function () {
                     const $row = $(this);

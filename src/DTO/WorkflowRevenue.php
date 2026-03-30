@@ -23,4 +23,5 @@ class WorkflowRevenue
     public ?bool $agessaContribApplicable = true;
 
     public array|Collection $performances;
+    public array|Collection $overtimes = [];
 }

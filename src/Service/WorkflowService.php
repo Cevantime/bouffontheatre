@@ -385,7 +385,7 @@ class WorkflowService
     {
         $reader = IOFactory::createReader("Xlsx");
 
-        $spreadsheet = $reader->load($this->kernel->getProjectDir() . '/assets/ods/global_revenue_template.xlsx');
+        $spreadsheet = $reader->load($this->kernel->getProjectDir() . '/assets/ods/global_revenue_template_new.xlsx');
         $worksheet = $spreadsheet->getActiveSheet();
 
         $worksheet->setCellValue('B2', $workflow->getAssociatedShow()->getName());
@@ -395,15 +395,20 @@ class WorkflowService
         $worksheet->getCell('D5')->setValueExplicit($performances->first()->getPerformedAt()->format('m/d/Y'), DataType::TYPE_ISO_DATE);
         $worksheet->getCell('F5')->setValueExplicit($performances->last()->getPerformedAt()->format('m/d/Y'), DataType::TYPE_ISO_DATE);
 
-        $firstPerformance = $performances->get(0);
-        $worksheet->setCellValue('B9', $firstPerformance->getPerformedAt()->format('d/m/Y'));
-        $worksheet->setCellValue('C9', $firstPerformance->getGrossRevenue());
-        $worksheet->setCellValue('E9', $firstPerformance->getFullPriceCount() + $firstPerformance->getHalfPriceCount() + $firstPerformance->getAppPriceCount() + $firstPerformance->getTaxFreePriceCount());
-        $worksheet->setCellValue('F9', $firstPerformance->getFreeCount());
+        $firstPerformanceOffset = 9;
 
-        for ($i = 1; $i < $performances->count(); $i++) {
+        $firstPerformance = $performances->get(0);
+        $worksheet->setCellValue('B' . $firstPerformanceOffset, $firstPerformance->getPerformedAt()->format('d/m/Y'));
+        $worksheet->setCellValue('C' . $firstPerformanceOffset, $firstPerformance->getGrossRevenue());
+        $worksheet->setCellValue('E' . $firstPerformanceOffset, $firstPerformance->getFullPriceCount() + $firstPerformance->getHalfPriceCount() + $firstPerformance->getAppPriceCount() + $firstPerformance->getTaxFreePriceCount());
+        $worksheet->setCellValue('F' . $firstPerformanceOffset, $firstPerformance->getFreeCount());
+
+
+        $pCount = $performances->count();
+
+        for ($i = 1; $i < $pCount; $i++) {
             $p = $performances->get($i);
-            $this->duplicateRowWithValues($worksheet, 8 + $i, [
+            $this->duplicateRowWithValues($worksheet, $firstPerformanceOffset - 1 + $i, [
                 'B' => $p->getPerformedAt()->format('d/m/Y'),
                 'C' => $p->getGrossRevenue(),
                 'E' => $p->getFullPriceCount() + $p->getHalfPriceCount() + $p->getAppPriceCount() + $p->getTaxFreePriceCount(),
@@ -411,66 +416,109 @@ class WorkflowService
             ]);
         }
 
-        $pCount = $performances->count();
+        $spreadsheet->getNamedRange('RECETTES')->setRange(sprintf('$C$9:$C$%s', $firstPerformanceOffset - 1 + $pCount));
+        $spreadsheet->getNamedRange('NOMBRE_REPRESENTATIONS')->setRange(sprintf('$A$9:$A$%s', $firstPerformanceOffset - 1 + $pCount));
 
-        $spreadsheet->getNamedRange('RECETTES')->setRange(sprintf('$C$9:$C$%s', 8 + $pCount));
-        $spreadsheet->getNamedRange('CONTRIBUTION_DIFFUSEUR_AGESSA')->setRange(sprintf('$C$%s', 14 + $pCount));
-        $spreadsheet->getNamedRange('NOMBRE_REPRESENTATIONS')->setRange(sprintf('$A$9:$A$%s', 8 + $pCount));
-        $spreadsheet->getNamedRange('CONTRIBUTION_RETRAITE')->setRange(sprintf('$C$%s', 13 + $pCount));
-        $spreadsheet->getNamedRange('DROIT_D_AUTEUR')->setRange(sprintf('$C$%s', 12 + $pCount));
-        $spreadsheet->getNamedRange('RECETTE_BRUTE')->setRange(sprintf('$C$%s', 9 + $pCount));
-        $spreadsheet->getNamedRange('RECETTE_HTVA')->setRange(sprintf('$C$%s', 11 + $pCount));
-        $spreadsheet->getNamedRange('TAXE_PARAFISCALE')->setRange(sprintf('$C$%s', 15 + $pCount));
-        $spreadsheet->getNamedRange('TVA')->setRange(sprintf('$C$%s', 10 + $pCount));
-        $spreadsheet->getNamedRange('PART_THEATRE')->setRange(sprintf('$F$%s', 14 + $pCount));
-        $spreadsheet->getNamedRange('PART_COMPAGNIE')->setRange(sprintf('$F$%s', 15 + $pCount));
+        $lineRevenueOffset = $firstPerformanceOffset + $pCount + 1;
+
+        $spreadsheet->getNamedRange('CONTRIBUTION_DIFFUSEUR_AGESSA')->setRange(sprintf('$C$%s', 5 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('CONTRIBUTION_RETRAITE')->setRange(sprintf('$C$%s', 4 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('DROIT_D_AUTEUR')->setRange(sprintf('$C$%s', 3 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('RECETTE_BRUTE')->setRange(sprintf('$C$%s', $lineRevenueOffset));
+        $spreadsheet->getNamedRange('RECETTE_HTVA')->setRange(sprintf('$C$%s', 2 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('TAXE_PARAFISCALE')->setRange(sprintf('$C$%s', 6 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('TVA')->setRange(sprintf('$C$%s', 1 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('PART_THEATRE')->setRange(sprintf('$F$%s', 5 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('PART_COMPAGNIE')->setRange(sprintf('$F$%s', 6 + $lineRevenueOffset));
         //        $spreadsheet->getNamedRange('LIGNE_APPLICABLE')->setRange(sprintf('$B$%s:$B$%s', 12 + $pCount, 14 + $pCount));
-        $spreadsheet->getNamedRange('RECETTE_NETTE')->setRange(sprintf('$C$%s', 16 + $pCount));
-        $spreadsheet->getNamedRange('MINIMUM_GARANTI_THEATRE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 9 + $pCount));
-        $spreadsheet->getNamedRange('MINIMUM_GARANTI_TOTAL')->setRange(sprintf('$G$%s', 10 + $pCount));
-        $spreadsheet->getNamedRange('MINIMUM_COMPAGNIE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 11 + $pCount));
-        $spreadsheet->getNamedRange('DIFFERENCE_RECETTE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 12 + $pCount));
-        $spreadsheet->getNamedRange('TVA_DIFFERENCE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 13 + $pCount));
-        $spreadsheet->getNamedRange('TOTAL_THEATRE')->setRange(sprintf('$G$%s', 14 + $pCount));
+        $spreadsheet->getNamedRange('RECETTE_NETTE')->setRange(sprintf('$C$%s', 7 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('MINIMUM_GARANTI_THEATRE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', $lineRevenueOffset));
+        $spreadsheet->getNamedRange('MINIMUM_GARANTI_TOTAL')->setRange(sprintf('$G$%s', 1 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('MINIMUM_COMPAGNIE_PAR_REPRESENTATION')->setRange(sprintf('$G$%s', 2 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('DIFFERENCE_RECETTE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 3 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('TVA_DIFFERENCE_MINIMUM_GARANTI')->setRange(sprintf('$G$%s', 4 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('TOTAL_THEATRE')->setRange(sprintf('$G$%s', 5 + $lineRevenueOffset));
+        $spreadsheet->getNamedRange('TOTAL_CIE')->setRange(sprintf('$G$%s', 6 + $lineRevenueOffset));
 
-        $theaterMinimumShareCell = $worksheet->getCell(sprintf('G%s', 9 + $pCount));
+        $theaterMinimumShareCell = $worksheet->getCell(sprintf('G%s', $lineRevenueOffset));
         $theaterMinimumShareCell->setValue($workflow->getContract()->getShowTheaterShare());
 
-        $companyMinimumShareCell = $worksheet->getCell(sprintf('G%s', 11 + $pCount));
+        $companyMinimumShareCell = $worksheet->getCell(sprintf('G%s', 2 + $lineRevenueOffset));
         $companyMinimumShareCell->setValue($workflow->getContract()->getShowCompanyShare());
 
 
-        $theaterShareCell = $worksheet->getCell(sprintf('F%s', 14 + $pCount));
+        $theaterShareCell = $worksheet->getCell(sprintf('F%s', 5 + $lineRevenueOffset));
         $theaterShareCell->setValue($workflow->getContract()->getShowTheaterSharePercent() / 100.00);
 
-        $companyShareCell = $worksheet->getCell(sprintf('F%s', 15 + $pCount));
+        $companyShareCell = $worksheet->getCell(sprintf('F%s', 6 + $lineRevenueOffset));
         $companyShareCell->setValue($workflow->getContract()->getShowCompanySharePercent() / 100.00);
 
-        $copyrightApplicableCell = $worksheet->getCell(sprintf('B%s', 12 + $pCount));
-        $retirementApplicableCell = $worksheet->getCell(sprintf('B%s', 13 + $pCount));
-        $contribAgessaApplicableCell = $worksheet->getCell(sprintf('B%s', 14 + $pCount));
+        $copyrightApplicableCell = $worksheet->getCell(sprintf('B%s', 3 + $lineRevenueOffset));
+        $retirementApplicableCell = $worksheet->getCell(sprintf('B%s', 4 + $lineRevenueOffset));
+        $contribAgessaApplicableCell = $worksheet->getCell(sprintf('B%s', 5 + $lineRevenueOffset));
 
         $copyrightApplicableCell->setValueExplicit($workflow->isCopyrightApplicable() ? 'Applicable' : 'Non applicable');
         $retirementApplicableCell->setValueExplicit($workflow->isRetirementContribApplicable() ? 'Applicable' : 'Non applicable');
         $contribAgessaApplicableCell->setValueExplicit($workflow->isAgessaContribApplicable() ? 'Applicable' : 'Non applicable');
 
-        $worksheet->getCell(sprintf('C%s', 12 + $pCount))->updateInCollection();
-        $worksheet->getCell(sprintf('C%s', 13 + $pCount))->updateInCollection();
-        $worksheet->getCell(sprintf('C%s', 14 + $pCount))->updateInCollection();
+        $worksheet->getCell(sprintf('C%s', 3 + $lineRevenueOffset))->updateInCollection();
+        $worksheet->getCell(sprintf('C%s', 4 + $lineRevenueOffset))->updateInCollection();
+        $worksheet->getCell(sprintf('C%s', 5 + $lineRevenueOffset))->updateInCollection();
 
-        $worksheet->setCellValue(sprintf('A%s', 18 + $pCount), sprintf("BILAN FAIT A PARIS EN DEUX EXEMPLAIRES LE %s", (new \DateTime())->format('d/m/y')));
+        $overtimesOffset = 7 + $lineRevenueOffset + 4;
+
+        $oCount = $workflow->getOvertimes()->count();
+
+        if ($oCount == 0) {
+            $dateCell = $worksheet->getCell(sprintf('B%s', $overtimesOffset));
+            $dateCell->setValue('');
+            $hourCount1Cell = $worksheet->getCell(sprintf('D%s', $overtimesOffset));
+            $hourCount1Cell->setValue(0);
+            $unitHourPrice1Cell = $worksheet->getCell(sprintf('E%s', $overtimesOffset));
+            $unitHourPrice1Cell->setValue(0);
+            $worksheet->getCell(sprintf('C%s', $overtimesOffset))->updateInCollection();
+        } else {
+            $overtime = $workflow->getOvertimes()->first();
+            $dateCell = $worksheet->getCell(sprintf('B%s', $overtimesOffset));
+            $dateCell->setValue($overtime->getWorkedAt()->format('d/m/Y'));
+            $hourCount1Cell = $worksheet->getCell(sprintf('D%s', $overtimesOffset));
+            $hourCount1Cell->setValue($overtime->getHourCount());
+            $unitHourPrice1Cell = $worksheet->getCell(sprintf('E%s', $overtimesOffset));
+            $unitHourPrice1Cell->setValue($overtime->getUnitHourPrice());
+            $worksheet->getCell(sprintf('C%s', $overtimesOffset))->updateInCollection();
+        }
+        $overtimes = $workflow->getOvertimes()->getValues();
+        for ($i = 1; $i < $oCount; $i++) {
+            $overtime = $overtimes[$i];
+            $this->duplicateRowWithValues($worksheet, $overtimesOffset - 1 + $i, [
+                'B' => $overtime->getWorkedAt()->format('d/m/Y'),
+                'D' => $overtime->getHourCount(),
+                'E' => $overtime->getUnitHourPrice()
+            ]);
+            $worksheet->getCell(sprintf('C%s', $overtimesOffset + $i))->updateInCollection();
+        }
+
+        $rentTotalOffset = $overtimesOffset + max(1, $oCount);
+        $spreadsheet->getNamedRange('MONTANT_LOCATION')->setRange(sprintf('$C$22:$C$%s', $rentTotalOffset));
+        $spreadsheet->getNamedRange('TOTAL_LOCATION_SUPPLEMENTAIRE')->setRange(sprintf('$C$%s', $rentTotalOffset + 1));
+        $spreadsheet->getNamedRange('TOTAL_COMPAGNIE_APRES_DEDUCTION')->setRange(sprintf('$C$%s', $rentTotalOffset + 2));
+
+        $worksheet->getCell(sprintf('C%s', $rentTotalOffset + 1))->updateInCollection();
+        $worksheet->getCell(sprintf('C%s', $rentTotalOffset + 2))->updateInCollection();
+        $worksheet->setCellValue(sprintf('A%s', $rentTotalOffset + 4), sprintf("BILAN FAIT A PARIS EN DEUX EXEMPLAIRES LE %s", (new \DateTime())->format('d/m/y')));
 
         $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
 
         $path = tempnam('/tmp', 'revenue_report_');
 
         $writer->save($path);
-        $companyRevenueCell = $worksheet->getCell(sprintf('G%s', 15 + $pCount));
+
+        $companyRevenueCell = $worksheet->getCell(sprintf('C%s', $rentTotalOffset + 2));
         $companyRevenueFormattedValue = $companyRevenueCell->getFormattedValue();
         $companyRevenueCalculatedValue = $companyRevenueCell->getCalculatedValue();
-        $netRevenueCell = $worksheet->getCell(sprintf('C%s', 16 + $pCount));
+        $netRevenueCell = $worksheet->getCell(sprintf('C%s', $lineRevenueOffset + 7));
         $netRevenueCalculatedValue = $netRevenueCell->getCalculatedValue();
-        $notaxRevenueCell = $worksheet->getCell(sprintf('C%s', 11 + $pCount));
+        $notaxRevenueCell = $worksheet->getCell(sprintf('C%s', $lineRevenueOffset + 2));
         $notaxRevenueCalculatedValue = $notaxRevenueCell->getCalculatedValue();
 
         return new RevenueExport(

@@ -215,6 +215,8 @@
                 <w:t xml:space="preserve"> {{ theaterPresident }}, en sa qualité de président</w:t>
             </w:r>
         </w:p>
+        {% set theater_licences = theaterLicense|split(' ') %}
+        {% for theater_license_part in theater_licences %}
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>
@@ -233,51 +235,11 @@
                     <w:caps/>
                     <w:sz w:val="20"/>
                 </w:rPr>
-                <w:t>Licence 1 Ref : {{ theaterLicense }}</w:t>
+                <w:t>Licence {{ loop.index }} Ref : {{ theater_license_part }}</w:t>
             </w:r>
         </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:b/>
-                    <w:b/>
-                    <w:caps/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:caps/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>Licence 2 REF : pLATESV-R-2020-007900</w:t>
-            </w:r>
-        </w:p>
-        <w:p>
-            <w:pPr>
-                <w:pStyle w:val="Normal"/>
-                <w:rPr>
-                    <w:rFonts w:ascii="Garamond" w:hAnsi="Garamond" w:cs="Garamond"/>
-                    <w:b/>
-                    <w:b/>
-                    <w:caps/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-            </w:pPr>
-            <w:r>
-                <w:rPr>
-                    <w:rFonts w:cs="Garamond" w:ascii="Garamond" w:hAnsi="Garamond"/>
-                    <w:b/>
-                    <w:caps/>
-                    <w:sz w:val="20"/>
-                </w:rPr>
-                <w:t>lICENCE 3 REF : pLATESV-r-2020-007901</w:t>
-            </w:r>
-        </w:p>
+        {% endfor %}
+       
         <w:p>
             <w:pPr>
                 <w:pStyle w:val="Normal"/>

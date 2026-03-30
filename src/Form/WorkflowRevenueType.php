@@ -37,6 +37,13 @@ class WorkflowRevenueType extends AbstractType
                 'entry_type' => PerformanceRevenueType::class,
                 'label' => 'Déclaration par représentation'
             ])
+            ->add('overtimes', CollectionType::class, [
+                'entry_type' => WorkflowOvertimeType::class,
+                'label' => 'Heures locatives supplémentaires',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Déclarer les recettes'
             ])
