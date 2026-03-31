@@ -238,6 +238,13 @@
                         Vous pouvez accéder à l'édition complète du spectacle
                         <a target="_blank" href="{{ path('admin_app_show_edit', {id: workflow.associatedShow.id}) }}">ici</a>
                     </li>
+                    
+                    <li>
+                        Vous pouvez élécharger les médias du spectacle (bannière, affiche, photos de galerie) :
+                        <a class="btn btn-primary" target="_blank"
+                           href="{{ path('app_workflow_download_show_media', {id: workflow.id}) }}">Télécharger les
+                            médias en ZIP</a>
+                    </li>
                 </ul>
             </div>
             {% if workflow.associatedShow.shopLinks.empty %}

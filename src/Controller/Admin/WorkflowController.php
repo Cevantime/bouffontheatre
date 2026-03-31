@@ -24,6 +24,7 @@ use App\Form\WorkflowUserType;
 use App\Repository\ContractRepository;
 use App\Service\DTOService;
 use App\Service\EmailService;
+use App\Service\MediaZipService;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use ZipArchive;
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/admin/app')]
@@ -444,5 +446,55 @@ class WorkflowController extends AbstractController
                 ->getValues(),
             'contracts' => array_map(fn(Contract $contract) => ['id' => $contract->getId(), 'name' => $contract->__toString()], $workflowReadyContracts)
         ]);
+    }
+
+    #[Route(path: '/workflow/download-show-media/{id}', name: 'app_workflow_download_show_media')]
+    public function downloadShowMedia(Workflow $workflow, MediaZipService $mediaZipService): Response
+    {
+        $show = $workflow->getAssociatedShow();
+        if (!$show) {
+            throw $this->createNotFoundException('Show not found');
+        }
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'show_media_');
+        $zip = new ZipArchive();
+
+        if ($zip->open($tempFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('Could not create zip file');
+        }
+
+        try {
+            // Ajouter la bannière
+            $mediaZipService->addMediaToZip($show->getBanner(), 'banniere', $zip);
+
+            // Ajouter l'affiche
+            $mediaZipService->addMediaToZip($show->getPoster(), 'affiche', $zip);
+
+            // Ajouter les photos de la galerie
+            if ($show->getGallery()) {
+                $galleryItems = $show->getGallery()->getGalleryItems();
+                foreach ($galleryItems as $item) {
+                    $media = $item->getMedia();
+                    $filenameWithoutExt = $item->getPosition();
+                    $mediaZipService->addMediaToZip($media, 'gallerie/' . $filenameWithoutExt, $zip);
+                }
+            }
+
+            $zip->close();
+
+            $response = new BinaryFileResponse($tempFile);
+            $response->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'medias_' . $show->getSlug() . '.zip'
+            );
+            $response->deleteFileAfterSend(true);
+
+            return $response;
+        } catch (\Exception $e) {
+            if (file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+            throw $e;
+        }
     }
 }
