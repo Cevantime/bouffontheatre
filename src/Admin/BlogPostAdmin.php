@@ -47,7 +47,7 @@ class BlogPostAdmin extends AbstractAdmin
                 'help' => 'Une courte description accrocheuse du contenu du post. Apparaît dans certaines galeries.'
             ])
             ->add('content', FormatterType::class, [
-                'label' => 'Description',
+                'label' => 'Contenu',
                 // 'config_name' => 'article_config',
                 'format_field'   => 'contentFormatter',
                 // 'format_field_options' => [
@@ -95,7 +95,7 @@ class BlogPostAdmin extends AbstractAdmin
                 'label' => 'Titre du post'
             ])
             ->add('excerpt', CKEditorType::class, [
-                'label' => 'Description'
+                'label' => 'Contenu'
             ])
             ->add('author', ModelListType::class, [
                 'label' => 'Auteur',

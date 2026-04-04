@@ -456,7 +456,21 @@ class WorkflowController extends AbstractController
             throw $this->createNotFoundException('Show not found');
         }
 
-        $tempFile = tempnam(sys_get_temp_dir(), 'show_media_');
+        $tmpDir = sys_get_temp_dir();
+        if (!is_string($tmpDir) || '' === $tmpDir || !is_dir($tmpDir) || !is_writable($tmpDir)) {
+            $tmpDir = $this->getParameter('kernel.project_dir') . '/var/tmp';
+            if (!is_dir($tmpDir) && !mkdir($tmpDir, 0775, true) && !is_dir($tmpDir)) {
+                throw new \RuntimeException('Could not create temporary directory');
+            }
+            if (!is_writable($tmpDir)) {
+                throw new \RuntimeException('Temporary directory is not writable');
+            }
+        }
+
+        $tempFile = tempnam($tmpDir, 'show_media_');
+        if (false === $tempFile) {
+            throw new \RuntimeException('Could not create temporary zip file');
+        }
         $zip = new ZipArchive();
 
         if ($zip->open($tempFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {

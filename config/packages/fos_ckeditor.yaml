@@ -26,11 +26,12 @@ fos_ck_editor:
                 { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
                 { name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
                 '/',
-                { name: 'styles', items: [ 'Styles', 'FontSize' ] },
+                { name: 'styles', items: [ 'Format', 'Styles', 'FontSize' ] },
                 { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
                 { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
                 { name: 'about', items: [ 'About' ] }
             ]
+            format_tags: 'p;h2;h3;h4;h5;h6;pre;address;div'
             filebrowserBrowseRoute: admin_app_media_custom_browser
             filebrowserImageBrowseRoute: admin_app_media_custom_browser
             # Display images by default when clicking the image dialog browse button
