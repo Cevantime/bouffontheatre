@@ -457,4 +457,22 @@ class Show extends Project
 
         return $this;
     }
+
+    public function hasUser(?User $user): bool
+    {
+        if ($user === null) {
+            return false;
+        }
+        if ($this->getOwner() && $this->getOwner() === $user) {
+            return true;
+        }
+        foreach ([$this->actors, $this->directors, $this->authors] as $group) {
+            foreach ($group as $artistItem) {
+                if ($artistItem->getArtist()->getUser() === $user) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

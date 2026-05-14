@@ -53,7 +53,7 @@ class ShowVoter extends Voter
             case self::ADMIN_DELETE:
             case self::LIST_RESERVATION:
                 /** @var Show $subject */
-                return $subject->getOwner() === $token->getUser();
+                return $subject->hasUser($token->getUser());
             case self::BOOK_ONLINE:
                 /** @var Show $subject */
                 return $subject->isBookableOnline() || $subject->getOwner() === $token->getUser();
