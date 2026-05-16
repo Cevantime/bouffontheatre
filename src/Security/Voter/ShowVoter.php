@@ -61,7 +61,7 @@ class ShowVoter extends Voter
                 if ($this->security->isGranted('ROLE_ADMIN')) {
                     return true;
                 }
-                return $subject->getOwner() === $this->security->getUser();
+                return $subject->hasUser($token->getUser());
         }
 
         return false;

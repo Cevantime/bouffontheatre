@@ -468,7 +468,7 @@ class Show extends Project
         }
         foreach ([$this->actors, $this->directors, $this->authors] as $group) {
             foreach ($group as $artistItem) {
-                if ($artistItem->getArtist()->getUser() === $user) {
+                if ($artistItem->getArtist()->getAssociatedUser() === $user) {
                     return true;
                 }
             }

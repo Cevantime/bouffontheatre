@@ -28,8 +28,7 @@ class SourceScrapper
         private ParameterBagInterface $params,
         private InsightRepository $insightRepository,
         private ShowRepository $showRepository
-    ) {
-    }
+    ) {}
 
     public static function createReliableClient()
     {
@@ -67,8 +66,8 @@ class SourceScrapper
         $crawler = $client->refreshCrawler();
         $cardsToCheckCount = $crawler->filter('.event-card [style="background: rgb(154, 220, 117);"]')->count();
         $nbPass = 0;
-        while($nbPass < $cardsToCheckCount) {
-            $client->executeScript('document.querySelector("main > div > div .v-row > div:nth-child('.($nbPass + 1).') .event-card button").click();');
+        while ($nbPass < $cardsToCheckCount) {
+            $client->executeScript('document.querySelector("main > div > div .v-row > div:nth-child(' . ($nbPass + 1) . ') .event-card button").click();');
             $client->waitFor('.dashboard-table .dashboard-body div');
             $crawler = $client->refreshCrawler();
             $showTitle = $crawler->filter('.text-h6[style="color: rgb(65, 82, 121);"]')->getText();
@@ -104,7 +103,7 @@ class SourceScrapper
                 //     }
                 // });
             }
-            if(++$nbPass == $cardsToCheckCount) {
+            if (++$nbPass == $cardsToCheckCount) {
                 break;
             }
             $client->request('GET', "https://pro.billetreduc.com");
@@ -159,6 +158,7 @@ class SourceScrapper
         // $this->entityManager->flush();
 
         // return $result;
+        $client->quit();
     }
 
     public function scrapOld()

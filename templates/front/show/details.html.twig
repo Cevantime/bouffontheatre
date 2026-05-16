@@ -4,6 +4,41 @@
     {{ show.name }}
 {% endblock %}
 
+{% block og_title %}
+    {{ show.name }}
+{% endblock %}
+
+{% block og_description %}
+    {% if show.punchline %}
+        {{ show.punchline|striptags|trim }}
+    {% elseif show.description %}
+        {{ show.description|striptags|trim|slice(0, 200) }}
+    {% else %}
+        Découvrez {{ show.name }} au Bouffon Théâtre
+    {% endif %}
+{% endblock %}
+
+{% block og_url %}
+    {{ absolute_url(path('app_show_details', {slug: show.slug})) }}
+{% endblock %}
+
+{% block og_image %}
+    {% set galleryMediaItem = null %}
+    {% if show.gallery is defined and show.gallery and show.gallery.galleryItems is not empty %}
+        {% set galleryMediaItem = (show.gallery.galleryItems|filter(mediaItem => mediaItem.media)|first) %}
+    {% endif %}
+
+    {% if show.banner %}
+        {{ absolute_url(sonata_path(show.banner, 'banner')) }}
+    {% elseif show.poster %}
+        {{ absolute_url(sonata_path(show.poster, 'big')) }}
+    {% elseif galleryMediaItem and galleryMediaItem.media %}
+        {{ absolute_url(sonata_path(galleryMediaItem.media, 'big')) }}
+    {% else %}
+        {{ absolute_url(asset('images/separator')) }}
+    {% endif %}
+{% endblock %}
+
 {% block body %}
     <div class="banner">
         {% if show.banner is defined and show.banner %}
