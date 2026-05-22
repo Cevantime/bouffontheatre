@@ -159,14 +159,6 @@ class SourceScrapper
 
         // return $result;
         $client->quit();
-
-        // removes the temporary directories created by ChromeDriver
-        $scopedDirs = glob('/tmp/org.chromium.Chromium.scoped_dir.*');
-        foreach ($scopedDirs as $dir) {
-            if (is_dir($dir)) {
-                exec("rm -rf $dir");
-            }
-        }
     }
 
     public function scrapOld()
