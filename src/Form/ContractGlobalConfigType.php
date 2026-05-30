@@ -107,11 +107,11 @@ class ContractGlobalConfigType extends AbstractType
             ])
             ->add('showCompanySharePercent', TextType::class, [
                 'attr' => ['placeholder' => '50'],
-                'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
+                'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
             ])
             ->add('showTheaterSharePercent', TextType::class, [
                 'attr' => ['placeholder' => '50'],
-                'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
+                'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
             ])
             ->add('contractCity', TextType::class, [
                 'attr' => ['placeholder' => 'Paris'],
