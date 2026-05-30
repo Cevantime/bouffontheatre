@@ -138,11 +138,11 @@ class ContractAdmin extends AbstractAdmin
                 ])
                 ->add('showCompanySharePercent', null, [
                     'attr' => ['placeholder' => '50'],
-                    'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
+                    'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
                 ])
                 ->add('showTheaterSharePercent', null, [
                     'attr' => ['placeholder' => '50'],
-                    'label' => 'Pourcentage du partage des recettes en faveur de la compagnie (en %)'
+                    'label' => 'Pourcentage du partage des recettes en faveur du théâtre (en %)'
                 ]);
         } else {
             if ($contract->isRentWithStageManager()) {
