@@ -62,12 +62,15 @@ class SourceScrapper
 
         $submitButton->click();
 
-        $client->waitFor('.event-card');
+        $client->waitFor('.ec');
         $crawler = $client->refreshCrawler();
-        $cardsToCheckCount = $crawler->filter('.event-card [style="background: rgb(154, 220, 117);"]')->count();
+        $cardsToCheckCount = $crawler->filter('.ec .v-btn.text-red')->count();
         $nbPass = 0;
         while ($nbPass < $cardsToCheckCount) {
-            $client->executeScript('document.querySelector("main > div > div .v-row > div:nth-child(' . ($nbPass + 1) . ') .event-card button").click();');
+            //$client->executeScript('document.querySelector("main > div > div .v-row > div:nth-child(' . ($nbPass + 1) . ') .ec button").click();');
+            $cancelButton = $crawler->filter('.ec .v-btn.text-red')->eq($nbPass);
+            $cancelButton->closest('.ec__actions')->filter('button')->click();
+            
             $client->waitFor('.dashboard-table .dashboard-body div');
             $crawler = $client->refreshCrawler();
             $showTitle = $crawler->filter('.text-h6[style="color: rgb(65, 82, 121);"]')->getText();
@@ -107,7 +110,7 @@ class SourceScrapper
                 break;
             }
             $client->request('GET', "https://pro.billetreduc.com");
-            $client->waitFor('.event-card');
+            $client->waitFor('.ec');
             $crawler = $client->refreshCrawler();
         }
 
