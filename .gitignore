@@ -9,6 +9,7 @@
 /var/
 /vendor/
 /public/upload
+/drivers/
 /.idea/
 /.vscode/
 ###< symfony/framework-bundle ###

@@ -16,7 +16,6 @@ use Facebook\WebDriver\Remote\Service\DriverService;
 use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Panther\Client;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 use Symfony\Component\Panther\DomCrawler\Link;
 
@@ -32,7 +31,7 @@ class SourceScrapper
 
     public static function createReliableClient()
     {
-        return Client::createChromeClient(null, [
+        return ChromeClientFactory::create([
             '--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
             '--headless=new',
             '--window-size=1200,1100',

@@ -11,5 +11,5 @@ yarn install --force
 yarn build
 sed -i 's/MAINTENANCE_MODE=1/MAINTENANCE_MODE=0/' .env.local
 rm -rf drivers
-vendor/bin/bdi detect drivers
+vendor/bin/bdi browser:google-chrome drivers
 chown -R www-data:www-data .
