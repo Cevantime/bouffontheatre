@@ -19,19 +19,22 @@ class CroppableImageType extends AbstractType
 		$builder
 			->add('file', FileType::class, [
 				'label' => false,
-				'required' => false,
+				'required' => $options['required'],
 				'attr' => [
 					'accept' => 'image/jpeg,image/png',
 					'data-croppable-target' => 'fileInput',
 				],
-				'constraints' => [
+				'constraints' => array_filter([
+					$options['required'] ? new Assert\NotBlank([
+						'message' => 'Veuillez fournir une image.',
+					]) : null,
 					new Assert\Image([
 						'mimeTypes' => ['image/jpeg', 'image/png'],
 						'mimeTypesMessage' => 'Veuillez fournir une image valide (formats acceptés : JPG, PNG).',
 						'maxSize' => '4M',
 						'maxSizeMessage' => 'La taille de l\'image ne doit pas dépasser 4 Mo.',
 					]),
-				],
+				]),
 			])
 			->add('cropData', HiddenType::class, [
 				'label' => false,

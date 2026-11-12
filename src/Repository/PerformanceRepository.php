@@ -38,6 +38,46 @@ class PerformanceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Performances with the number of seats reserved on them, for the Quotas API.
+     *
+     * @param list<int> $ids  restrict to these performances (all when empty)
+     * @param int|null $showId restrict to this show
+     * @param \DateTimeImmutable|null $from wall-clock time, as stored in performedAt
+     *
+     * @return list<array{id: int, projectId: int, projectName: string, performedAt: \DateTimeImmutable, quota: int, reserved: int}>
+     */
+    public function findWithReservedCount(array $ids = [], ?int $showId = null, ?\DateTimeImmutable $from = null, int $limit = 500): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p.id AS id', 'pr.id AS projectId', 'pr.name AS projectName', 'p.performedAt AS performedAt', 'p.quota AS quota', 'COALESCE(SUM(r.placeCount), 0) AS reserved')
+            ->join('p.relatedProject', 'pr')
+            ->leftJoin('p.reservations', 'r')
+            ->groupBy('p.id', 'pr.id', 'pr.name', 'p.performedAt', 'p.quota')
+            ->orderBy('p.performedAt', 'ASC')
+            ->addOrderBy('p.id', 'ASC')
+            ->setMaxResults($limit);
+
+        if ([] !== $ids) {
+            $qb->andWhere('p.id IN (:ids)')->setParameter('ids', $ids);
+        }
+        if (null !== $showId) {
+            $qb->andWhere('pr.id = :show')->setParameter('show', $showId);
+        }
+        if (null !== $from) {
+            $qb->andWhere('p.performedAt >= :from')->setParameter('from', $from);
+        }
+
+        return array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'projectId' => (int) $row['projectId'],
+            'projectName' => (string) $row['projectName'],
+            'performedAt' => $row['performedAt'],
+            'quota' => (int) $row['quota'],
+            'reserved' => (int) $row['reserved'],
+        ], $qb->getQuery()->getArrayResult());
+    }
+
     public function availablePerformancesQueryBuilder()
     {
         $dateLimit = new DateTime();

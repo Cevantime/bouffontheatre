@@ -47,7 +47,9 @@ class ContractCompanyPart
     public $showArtists = null;
 
     public $showBanner = null;
+    
     public $showPoster = null;
+
     public $showMedia = [];
 
     public ?string $showExcerpt = null;
