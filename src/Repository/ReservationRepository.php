@@ -21,6 +21,41 @@ class ReservationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reservation::class);
     }
 
+    /**
+     * Who booked how many seats, for the Quotas API. No e-mail, no comment: only what the door list needs.
+     *
+     * @param list<int> $performanceIds
+     *
+     * @return array<int, list<array{id: int, firstName: string, lastName: string, places: int, price: string}>> by performance id
+     */
+    public function findGuestsByPerformance(array $performanceIds): array
+    {
+        if ([] === $performanceIds) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('r')
+            ->select('r.id AS id', 'IDENTITY(r.performance) AS performanceId', 'r.firstName AS firstName', 'r.lastName AS lastName', 'r.placeCount AS places', 'r.price AS price')
+            ->where('r.performance IN (:ids)')
+            ->setParameter('ids', $performanceIds)
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        $guests = [];
+        foreach ($rows as $row) {
+            $guests[(int) $row['performanceId']][] = [
+                'id' => (int) $row['id'],
+                'firstName' => (string) $row['firstName'],
+                'lastName' => (string) $row['lastName'],
+                'places' => (int) $row['places'],
+                'price' => Reservation::AVAILABLE_PRICES[$row['price']] ?? '',
+            ];
+        }
+
+        return $guests;
+    }
+
 //    /**
 //     * @return Reservation[] Returns an array of Reservation objects
 //     */

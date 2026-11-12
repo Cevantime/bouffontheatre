@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Performance;
 use App\Repository\PerformanceRepository;
+use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,20 +16,23 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * What the Quotas tool needs from the theatre's own ticketing: read the reservations of each performance
  * and cap the seats offered online. Reachable only with the Quotas token (see QuotasTokenHandler).
  *
- * Reservations are exposed as a count per performance, with no personal data: a deleted reservation
- * simply lowers the count, so the tool never keeps a booking that no longer exists.
+ * Each performance carries the count of seats reserved, which follows reservations added or deleted. The names
+ * of those who booked (and nothing else about them) are given only when asked for with include=reservations.
  */
 #[Route('/api/quotas')]
 class QuotasApiController extends AbstractController
 {
     private const TIMEZONE = 'Europe/Paris';
 
-    public function __construct(private readonly PerformanceRepository $performances)
-    {
+    public function __construct(
+        private readonly PerformanceRepository $performances,
+        private readonly ReservationRepository $reservations,
+    ) {
     }
 
     /**
-     * Query: ids (comma separated), show (id), from (ISO 8601, default: yesterday).
+     * Query: ids (comma separated), show (id), from (ISO 8601, default: yesterday),
+     * include=reservations to also get who booked how many seats.
      */
     #[Route('/performances', name: 'api_quotas_performances', methods: ['GET'])]
     public function list(Request $request): JsonResponse
@@ -56,7 +60,16 @@ class QuotasApiController extends AbstractController
 
         $rows = $this->performances->findWithReservedCount($ids, null === $show ? null : (int) $show, $this->toStoredTime($from));
 
-        return $this->json(['performances' => array_map($this->present(...), $rows)]);
+        $presented = array_map($this->present(...), $rows);
+        if ('reservations' === $request->query->get('include')) {
+            $guests = $this->reservations->findGuestsByPerformance(array_column($rows, 'id'));
+            foreach ($presented as &$performance) {
+                $performance['reservations'] = $guests[$performance['id']] ?? [];
+            }
+            unset($performance);
+        }
+
+        return $this->json(['performances' => $presented]);
     }
 
     /** Body: {"quota": 12}. Refused when below the seats already reserved. */
